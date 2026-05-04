@@ -23,6 +23,15 @@ const socket = io('http://localhost:5000');
 const PRIMARY_COLOR = "#4F46E5";
 const PRIMARY_HOVER = "#4338CA";
 
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    // Dòng thần thánh giúp xuyên qua màn hình cảnh báo của Ngrok
+    "ngrok-skip-browser-warning": "69420",
+    "Content-Type": "application/json"
+  }
+});
+
 // BI�U TƯỢNG CẢM X�aC (SVG outline thay emoji)
 const REACTION_ICONS = {
   'LIKE': (
@@ -562,12 +571,12 @@ const formatChatTime = (dateString) => {
   const timeStr = date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
   const isSameYear = date.getFullYear() === now.getFullYear();
   const isSameDay = isSameYear && date.getMonth() === now.getMonth() && date.getDate() === now.getDate();
-  
+
   if (isSameDay) return timeStr;
-  
+
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  
+
   return isSameYear ? `${day}/${month} ${timeStr}` : `${day}/${month}/${date.getFullYear()} ${timeStr}`;
 };
 
@@ -817,7 +826,7 @@ function App() {
     } else if (activeTab === 'study' && studySubView) {
       newHash += `/${studySubView}`;
     }
-    
+
     if (currentHash !== newHash) {
       // Dùng pushState để tạo record lịch sử hỗ trợ Back/Forward tránh render liên tục
       window.history.pushState(null, '', `#${newHash}`);
@@ -896,7 +905,7 @@ function App() {
     try {
       await axios.post('http://localhost:5000/api/reports', { reporterId: user.id, targetType, targetId, reason });
       showAlert('Đã gửi báo cáo thành công! Cảm ơn bạn.', 'success');
-    } catch(e) { showAlert('Lỗi khi gửi báo cáo: ' + e.message, 'error'); }
+    } catch (e) { showAlert('Lỗi khi gửi báo cáo: ' + e.message, 'error'); }
   };
   popupProps.onReport = handleReport;
 
@@ -918,7 +927,7 @@ function App() {
     e.preventDefault();
     setQnuSyncError('');
     setIsSyncingQnu(true);
-    
+
     // Offline Mock - wait 5s then show success
     setTimeout(() => {
       setIsSyncingQnu(false);
@@ -1089,7 +1098,7 @@ function App() {
     try {
       const res = await axios.get(`http://localhost:5000/api/messages/${user.id}/${friendId}/transactions`);
       if (res.data.success) setTransHistoryData(res.data.transactions);
-    } catch (e) {}
+    } catch (e) { }
   };
   const sendMessage = async (e) => {
     e.preventDefault(); if (!newMessageContent.trim() && !newChatImage) return;
@@ -1915,7 +1924,7 @@ function App() {
                                       </tr>
                                     </thead>
                                     <tbody>
-                                      {[ {name: 'Sáng (1-5)', min: 1, max: 5}, {name: 'Chiều (6-10)', min: 6, max: 10}, {name: 'Tối (11-15)', min: 11, max: 15} ].map(session => (
+                                      {[{ name: 'Sáng (1-5)', min: 1, max: 5 }, { name: 'Chiều (6-10)', min: 6, max: 10 }, { name: 'Tối (11-15)', min: 11, max: 15 }].map(session => (
                                         <tr key={session.name}>
                                           <td className="border border-gray-200 p-2 font-bold text-center bg-slate-50 text-gray-700">{session.name}</td>
                                           {dayOptions.slice(1).map(day => {
@@ -2282,7 +2291,7 @@ function App() {
 
           {/* BANNER SẢN PHẨM ĐANG THƯƠNG LƯỢNG */}
           {chatRefItem && !showTransHistory && (
-            <div className="flex items-center gap-2 px-3 py-2 border-b bg-indigo-50 text-indigo-800" style={{fontSize: 12}}>
+            <div className="flex items-center gap-2 px-3 py-2 border-b bg-indigo-50 text-indigo-800" style={{ fontSize: 12 }}>
               <Icons.ShoppingBag className="w-4 h-4 text-indigo-500 shrink-0" />
               <span className="font-semibold flex-1 truncate">2 bạn đang chat về:
                 <button
@@ -2309,9 +2318,9 @@ function App() {
                   <span style={{ color: 'white', fontWeight: 800, fontSize: 16 }}>
                     {chatRefType === 'DOCUMENT' ? '📄 Chi tiết tài liệu'
                       : chatRefType === 'ERRAND' ? '🛵 Chi tiết đơn mua hộ'
-                      : chatRefType === 'PRODUCT' ? '📦 Chi tiết sản phẩm'
-                      : chatRefType === 'RIDE' ? '🚗 Chi tiết chuyến đi'
-                      : 'Chi tiết'}
+                        : chatRefType === 'PRODUCT' ? '📦 Chi tiết sản phẩm'
+                          : chatRefType === 'RIDE' ? '🚗 Chi tiết chuyến đi'
+                            : 'Chi tiết'}
                   </span>
                   <button onClick={() => setShowRefDetailModal(false)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', borderRadius: '50%', width: 28, height: 28, cursor: 'pointer', fontWeight: 'bold', fontSize: 14 }}>✕</button>
                 </div>
@@ -2436,9 +2445,9 @@ function App() {
                           ? <div style={{ fontSize: 11, color: '#dc2626', fontWeight: 700, textAlign: 'center', background: '#fef2f2', borderRadius: 6, padding: '4px 0' }}>❌ Đã từ chối</div>
                           : !isMe
                             ? <div style={{ display: 'flex', gap: 6 }}>
-                                <button onClick={() => handleAcceptOffer(m)} style={{ flex: 1, padding: '6px 0', borderRadius: 8, background: '#22c55e', color: 'white', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>✓ Chấp nhận</button>
-                                <button onClick={() => handleRejectOffer(m.id)} style={{ flex: 1, padding: '6px 0', borderRadius: 8, background: '#f1f5f9', color: '#64748b', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>✕ Từ chối</button>
-                              </div>
+                              <button onClick={() => handleAcceptOffer(m)} style={{ flex: 1, padding: '6px 0', borderRadius: 8, background: '#22c55e', color: 'white', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>✓ Chấp nhận</button>
+                              <button onClick={() => handleRejectOffer(m.id)} style={{ flex: 1, padding: '6px 0', borderRadius: 8, background: '#f1f5f9', color: '#64748b', border: 'none', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>✕ Từ chối</button>
+                            </div>
                             : <div style={{ fontSize: 10, color: '#94a3b8', textAlign: 'right' }}>Đang chờ phản hồi...</div>
                       }
                     </div>
@@ -2515,23 +2524,23 @@ function App() {
               )}
               {showOfferInput && chatRefItem
                 ? <>
-                    <input
-                      type="number"
-                      autoFocus
-                      placeholder="Nhập giá đề xuất (UC)..."
-                      value={offerPrice}
-                      onChange={e => setOfferPrice(e.target.value)}
-                      className={`flex-1 rounded-full px-4 py-2 outline-none text-[14px] border-2 border-indigo-300 focus:border-indigo-500 ${panicMode ? 'bg-slate-700 text-white' : 'bg-white text-black'}`}
-                    />
-                    <button type="submit" style={{ padding: '8px 14px', borderRadius: 20, background: '#4F46E5', color: 'white', border: 'none', fontWeight: 700, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap' }}>💰 Gửi</button>
-                    <button type="button" onClick={() => setShowOfferInput(false)} style={{ padding: '8px 10px', borderRadius: 20, background: '#f1f5f9', color: '#64748b', border: 'none', fontWeight: 700, cursor: 'pointer' }}>✕</button>
-                  </>
+                  <input
+                    type="number"
+                    autoFocus
+                    placeholder="Nhập giá đề xuất (UC)..."
+                    value={offerPrice}
+                    onChange={e => setOfferPrice(e.target.value)}
+                    className={`flex-1 rounded-full px-4 py-2 outline-none text-[14px] border-2 border-indigo-300 focus:border-indigo-500 ${panicMode ? 'bg-slate-700 text-white' : 'bg-white text-black'}`}
+                  />
+                  <button type="submit" style={{ padding: '8px 14px', borderRadius: 20, background: '#4F46E5', color: 'white', border: 'none', fontWeight: 700, fontSize: 13, cursor: 'pointer', whiteSpace: 'nowrap' }}>💰 Gửi</button>
+                  <button type="button" onClick={() => setShowOfferInput(false)} style={{ padding: '8px 10px', borderRadius: 20, background: '#f1f5f9', color: '#64748b', border: 'none', fontWeight: 700, cursor: 'pointer' }}>✕</button>
+                </>
                 : <>
-                    <input type="text" value={newMessageContent} onChange={e => setNewMessageContent(e.target.value)} placeholder="Aa" className={`flex-1 rounded-full px-4 py-2 outline-none text-[15px] ${panicMode ? 'bg-slate-700 text-white' : 'bg-[#F0F2F5] text-black'}`} />
-                    <button type="submit" disabled={!newMessageContent.trim() && !newChatImage} className="px-2 group">
-                      <Icons.Send className={`w-5 h-5 ${(!newMessageContent.trim() && !newChatImage) ? 'text-gray-400' : 'text-indigo-600 group-hover:scale-110 transition'}`} />
-                    </button>
-                  </>
+                  <input type="text" value={newMessageContent} onChange={e => setNewMessageContent(e.target.value)} placeholder="Aa" className={`flex-1 rounded-full px-4 py-2 outline-none text-[15px] ${panicMode ? 'bg-slate-700 text-white' : 'bg-[#F0F2F5] text-black'}`} />
+                  <button type="submit" disabled={!newMessageContent.trim() && !newChatImage} className="px-2 group">
+                    <Icons.Send className={`w-5 h-5 ${(!newMessageContent.trim() && !newChatImage) ? 'text-gray-400' : 'text-indigo-600 group-hover:scale-110 transition'}`} />
+                  </button>
+                </>
               }
             </div>
           </form>}
@@ -2836,7 +2845,7 @@ const GoogleClassroomSyncButton = ({ userId, onSyncSuccess, showAlert }) => {
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl p-6 shadow-2xl max-w-sm w-full text-center" style={{ animation: 'popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-               <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
             </div>
             <h3 className="text-xl font-bold text-gray-800 mb-2">Đồng bộ thành công!</h3>
             <p className="text-sm text-gray-500 mb-6">{syncResult.message}</p>
