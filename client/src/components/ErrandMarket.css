@@ -1,0 +1,999 @@
+/* ============================================ */
+/* ErrandMarket.css - Mua Hộ Sinh Viên          */
+/* ============================================ */
+
+/* --- Animations --- */
+@keyframes errandFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes errandPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  50% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+}
+
+@keyframes errandShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes errandBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* --- Banner CTA --- */
+.errand-banner {
+  background: linear-gradient(135deg, #059669 0%, #10B981 50%, #34D399 100%);
+  border-radius: 16px;
+  padding: 20px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  animation: errandFadeIn 0.4s ease-out;
+}
+
+.errand-banner::before {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -20%;
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.errand-banner::after {
+  content: '';
+  position: absolute;
+  bottom: -30%;
+  left: -10%;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.errand-banner-title {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.errand-banner-sub {
+  font-size: 13px;
+  opacity: 0.9;
+  margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
+  line-height: 1.4;
+}
+
+.errand-gps-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.errand-gps-btn.inactive {
+  background: rgba(255, 255, 255, 0.95);
+  color: #059669;
+}
+
+.errand-gps-btn.inactive:hover {
+  background: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.errand-gps-btn.active {
+  background: #fff;
+  color: #059669;
+  animation: errandPulse 2s ease-in-out infinite;
+}
+
+.errand-gps-btn .gps-dot {
+  width: 10px;
+  height: 10px;
+  background: #22C55E;
+  border-radius: 50%;
+  animation: errandPulse 1.5s ease-in-out infinite;
+}
+
+/* --- Category Quick Select --- */
+.errand-category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.errand-category-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-size: 13px;
+  font-weight: 700;
+  color: #555;
+}
+
+.errand-category-btn:hover {
+  border-color: #059669;
+  background: #F0FDF4;
+  color: #059669;
+}
+
+.errand-category-btn.selected {
+  border-color: #059669;
+  background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%);
+  color: #059669;
+  box-shadow: 0 2px 10px rgba(5, 150, 105, 0.15);
+}
+
+.errand-category-btn .cat-icon {
+  font-size: 24px;
+}
+
+/* --- Form Inputs --- */
+.errand-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.errand-input-wrap {
+  position: relative;
+}
+
+.errand-input-wrap .errand-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.errand-input {
+  width: 100%;
+  padding: 12px 14px 12px 40px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  transition: all 0.25s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.errand-input:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.errand-input::placeholder {
+  color: #999;
+}
+
+.errand-input.no-icon {
+  padding-left: 14px;
+}
+
+/* --- Payment Block --- */
+.errand-payment-block {
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
+  border-radius: 12px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.errand-payment-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: #92400E;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.errand-payment-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+@media (max-width: 420px) {
+  .errand-payment-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.errand-payment-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.25s ease;
+}
+
+.errand-payment-input:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+}
+
+.errand-payment-input.tip {
+  border-color: #FCD34D;
+}
+
+.errand-payment-input.tip:focus {
+  border-color: #F59E0B;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+
+.errand-payment-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.errand-payment-label.tip-label {
+  color: #D97706;
+}
+
+.errand-tip-hint {
+  font-size: 11px;
+  color: #D97706;
+  font-weight: 600;
+  font-style: italic;
+  margin-top: 2px;
+}
+
+/* --- Submit Button --- */
+.errand-submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #EA580C 0%, #DC2626 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(234, 88, 12, 0.3);
+  margin-top: 4px;
+}
+
+.errand-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(234, 88, 12, 0.45);
+}
+
+.errand-submit-btn:active {
+  transform: translateY(0);
+}
+
+/* --- Smart Batching Box --- */
+.errand-smart-batch {
+  border: 2px solid transparent;
+  border-radius: 16px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(135deg, #059669, #10B981, #34D399, #059669) border-box;
+  animation: errandFadeIn 0.5s ease-out;
+}
+
+.errand-smart-batch::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #059669, #34D399, #059669);
+  background-size: 200% 100%;
+  animation: errandShimmer 3s linear infinite;
+}
+
+.errand-smart-batch-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: #059669;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errand-smart-batch-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.errand-smart-batch-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #F8FAF8;
+  border-radius: 10px;
+  border: 1px solid #E5E7EB;
+  transition: all 0.2s ease;
+}
+
+.errand-smart-batch-item:hover {
+  background: #F0FDF4;
+  border-color: #BBF7D0;
+}
+
+.errand-smart-batch-item .batch-num {
+  width: 24px;
+  height: 24px;
+  background: #059669;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.errand-smart-batch-item .batch-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.errand-smart-batch-item .batch-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.errand-smart-batch-item .batch-route {
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+}
+
+.errand-smart-batch-item .batch-coin {
+  font-size: 13px;
+  font-weight: 800;
+  color: #D97706;
+  white-space: nowrap;
+}
+
+.errand-batch-accept-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.errand-batch-accept-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px rgba(5, 150, 105, 0.4);
+}
+
+/* --- Errand Card --- */
+.errand-card {
+  background: #fff;
+  border: 1px solid #EAEAEA;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: errandFadeIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.errand-card:hover {
+  border-color: #D0D0D0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.errand-card-header {
+  padding: 14px 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.errand-card-tags {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.errand-card-type-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.errand-card-type-tag.food {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.errand-card-type-tag.print {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.errand-card-type-tag.pickup {
+  background: #FFF7ED;
+  color: #EA580C;
+}
+
+.errand-card-status-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: #FEF3C7;
+  color: #D97706;
+  letter-spacing: 0.3px;
+}
+
+.errand-card-reward {
+  text-align: right;
+}
+
+.errand-card-reward-value {
+  font-size: 18px;
+  font-weight: 900;
+  color: #059669;
+  line-height: 1;
+}
+
+.errand-card-reward-tip {
+  font-size: 11px;
+  font-weight: 700;
+  color: #D97706;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  justify-content: flex-end;
+  margin-top: 3px;
+}
+
+/* --- Route Timeline --- */
+.errand-card-route {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.errand-route-point {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.errand-route-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.errand-route-dot.from {
+  background: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.errand-route-dot.to {
+  background: #22C55E;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.errand-route-text {
+  font-size: 12px;
+  font-weight: 700;
+  color: #555;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.errand-route-arrow {
+  flex-shrink: 0;
+  padding: 0 8px;
+  color: #CCC;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* --- Card Body --- */
+.errand-card-body {
+  padding: 4px 14px 10px;
+  flex: 1;
+}
+
+.errand-card-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.errand-card-requester {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errand-card-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #3B82F6;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.errand-card-requester-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #777;
+}
+
+/* --- Card Footer --- */
+.errand-card-footer {
+  padding: 10px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F5F5F5;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.errand-card-time {
+  font-size: 11px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.errand-accept-btn {
+  padding: 9px 18px;
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.errand-accept-btn:hover {
+  box-shadow: 0 3px 12px rgba(5, 150, 105, 0.35);
+  transform: scale(1.03);
+}
+
+.errand-accept-btn:active {
+  transform: scale(0.98);
+}
+
+.errand-chat-btn {
+  padding: 9px 14px;
+  border: 1.5px solid #E0E0E0;
+  background: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #555;
+  white-space: nowrap;
+}
+
+.errand-chat-btn:hover {
+  border-color: #3B82F6;
+  color: #3B82F6;
+  background: #EFF6FF;
+}
+
+/* --- Section Divider --- */
+.errand-section-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.errand-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Label --- */
+.errand-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* --- Panic Mode --- */
+.errand-panic .errand-banner {
+  background: linear-gradient(135deg, #065F46 0%, #047857 50%, #059669 100%);
+}
+
+.errand-panic .errand-category-btn {
+  background: #334155;
+  border-color: #475569;
+  color: #94a3b8;
+}
+
+.errand-panic .errand-category-btn:hover,
+.errand-panic .errand-category-btn.selected {
+  border-color: #059669;
+  background: #0f3d2f;
+  color: #34D399;
+}
+
+.errand-panic .errand-input {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.errand-panic .errand-input::placeholder {
+  color: #64748b;
+}
+
+.errand-panic .errand-input:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+}
+
+.errand-panic .errand-payment-block {
+  background: #33291a;
+  border-color: #5a4520;
+}
+
+.errand-panic .errand-payment-title {
+  color: #FCD34D;
+}
+
+.errand-panic .errand-payment-input {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.errand-panic .errand-smart-batch {
+  background: linear-gradient(#1e293b, #1e293b) padding-box,
+              linear-gradient(135deg, #059669, #10B981, #34D399, #059669) border-box;
+}
+
+.errand-panic .errand-smart-batch-item {
+  background: #334155;
+  border-color: #475569;
+}
+
+.errand-panic .errand-smart-batch-item:hover {
+  background: #0f3d2f;
+  border-color: #059669;
+}
+
+.errand-panic .errand-smart-batch-item .batch-title {
+  color: #e2e8f0;
+}
+
+.errand-panic .errand-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.errand-panic .errand-card:hover {
+  border-color: #475569;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.errand-panic .errand-card-title {
+  color: #e2e8f0;
+}
+
+.errand-panic .errand-route-text {
+  color: #94a3b8;
+}
+
+.errand-panic .errand-card-footer {
+  border-top-color: #334155;
+}
+
+.errand-panic .errand-card-requester-name {
+  color: #94a3b8;
+}
+
+.errand-panic .errand-section-title {
+  color: #e2e8f0;
+}
+
+.errand-panic .errand-label {
+  color: #94a3b8;
+}
+
+.errand-panic .errand-chat-btn {
+  background: #334155;
+  border-color: #475569;
+  color: #94a3b8;
+}
+
+.errand-panic .errand-chat-btn:hover {
+  border-color: #3B82F6;
+  color: #60A5FA;
+  background: #1e3a5f;
+}
+
+/* --- Tabs Navigation --- */
+.errand-main-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+}
+
+.errand-main-tab-btn {
+  flex: 1;
+  padding: 10px 6px;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.errand-main-tab-btn.active {
+  background: #fff;
+  color: #059669;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* --- Mobile Responsive --- */
+@media (max-width: 480px) {
+  .errand-main-tab-btn {
+    font-size: 12px;
+    padding: 8px 4px;
+  }
+  
+  .errand-section-title {
+    font-size: 14px;
+  }
+  
+  .errand-banner-title {
+    font-size: 14px;
+  }
+  
+  .errand-banner-sub {
+    font-size: 12px;
+  }
+  
+  .errand-gps-btn {
+    font-size: 13px;
+    padding: 12px;
+  }
+  
+  .errand-category-btn {
+    font-size: 11px;
+    padding: 10px 6px;
+    gap: 4px;
+  }
+  
+  .errand-category-btn .cat-icon {
+    font-size: 20px;
+  }
+  
+  .errand-label {
+    font-size: 11px;
+  }
+  
+  .errand-input {
+    font-size: 13px;
+    padding: 10px 12px 10px 36px;
+  }
+  
+  .errand-submit-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  .errand-payment-title {
+    font-size: 12px;
+  }
+  
+  .errand-filter-input, .errand-filter-select {
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  
+  .errand-filter-input {
+    min-width: 0;
+  }
+  
+  .errand-filter-select {
+    min-width: 0;
+    flex: 1;
+  }
+  
+  .errand-filter-bar {
+    gap: 8px;
+  }
+  
+  .errand-smart-batch {
+    padding: 12px;
+  }
+  
+  .errand-smart-batch-title {
+    font-size: 12px;
+  }
+  
+  .errand-smart-batch-item .batch-title {
+    font-size: 12px;
+  }
+  
+  .errand-smart-batch-item .batch-coin {
+    font-size: 11px;
+  }
+  
+  .errand-smart-batch-item .batch-route {
+    font-size: 10px;
+  }
+}
+
+.errand-panic .errand-main-tabs {
+  background: #1e293b;
+}
+
+.errand-panic .errand-main-tab-btn {
+  color: #94a3b8;
+}
+
+.errand-panic .errand-main-tab-btn.active {
+  background: #334155;
+  color: #34d399;
+}
+
+/* --- Filter Bar --- */
+.errand-filter-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.errand-filter-input, .errand-filter-select {
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  background: #fff;
+  color: #1e293b;
+}
+
+.errand-filter-input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.errand-filter-select {
+  min-width: 120px;
+}
+
+.errand-filter-input:focus, .errand-filter-select:focus {
+  border-color: #059669;
+}
+
+.errand-panic .errand-filter-input, .errand-panic .errand-filter-select {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}

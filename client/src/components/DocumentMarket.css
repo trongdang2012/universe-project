@@ -1,0 +1,914 @@
+/* ============================================ */
+/* DocumentMarket.css - Chợ Tài Liệu Sinh Viên */
+/* ============================================ */
+
+/* --- Animations --- */
+@keyframes docMarketFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes docMarketPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes docMarketShimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bountyFlame {
+  0%, 100% { transform: scale(1) rotate(-3deg); }
+  50% { transform: scale(1.15) rotate(3deg); }
+}
+
+/* --- Segmented Control (Toggle) --- */
+.doc-market-toggle {
+  display: flex;
+  background: #F0F2F5;
+  border-radius: 12px;
+  padding: 4px;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.doc-market-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(230, 0, 61, 0.03) 100%);
+  pointer-events: none;
+}
+
+.doc-market-toggle-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.doc-market-toggle-btn.active {
+  background: linear-gradient(135deg, #E6003D 0%, #C50034 100%);
+  color: #fff;
+  box-shadow: 0 4px 15px rgba(230, 0, 61, 0.35);
+}
+
+.doc-market-toggle-btn.inactive {
+  background: transparent;
+  color: #555;
+}
+
+.doc-market-toggle-btn.inactive:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #333;
+}
+
+/* --- Form Panel --- */
+.doc-market-form-panel {
+  animation: docMarketFadeIn 0.35s ease-out;
+}
+
+.doc-market-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  transition: all 0.25s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.doc-market-input:focus {
+  border-color: #E6003D;
+  box-shadow: 0 0 0 3px rgba(230, 0, 61, 0.08);
+}
+
+.doc-market-input::placeholder {
+  color: #999;
+}
+
+.doc-market-input-icon-wrap {
+  position: relative;
+}
+
+.doc-market-input-icon-wrap .doc-market-input {
+  padding-left: 38px;
+}
+
+.doc-market-input-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 16px;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.doc-market-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a1a1a;
+  background: #fff;
+  transition: all 0.25s ease;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23999' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  font-family: inherit;
+}
+
+.doc-market-select:focus {
+  border-color: #E6003D;
+  box-shadow: 0 0 0 3px rgba(230, 0, 61, 0.08);
+}
+
+/* --- Checkbox Combo --- */
+.doc-market-checkbox-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid #E0E0E0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  background: #fff;
+  user-select: none;
+}
+
+.doc-market-checkbox-wrap:hover {
+  border-color: #E6003D;
+  background: #FFF5F7;
+}
+
+.doc-market-checkbox-wrap input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: #E6003D;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.doc-market-checkbox-wrap .checkbox-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.doc-market-checkbox-wrap .checkbox-desc {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+/* --- Buttons --- */
+.doc-market-btn-primary {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 800;
+  font-size: 15px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.3px;
+}
+
+.doc-market-btn-primary.sell {
+  background: linear-gradient(135deg, #E6003D 0%, #C50034 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(230, 0, 61, 0.3);
+}
+
+.doc-market-btn-primary.sell:hover {
+  box-shadow: 0 6px 28px rgba(230, 0, 61, 0.45);
+  transform: translateY(-1px);
+}
+
+.doc-market-btn-primary.sell:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(230, 0, 61, 0.3);
+}
+
+.doc-market-btn-primary.bounty {
+  background: linear-gradient(135deg, #FF6B00 0%, #E65500 100%);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(255, 107, 0, 0.3);
+}
+
+.doc-market-btn-primary.bounty:hover {
+  box-shadow: 0 6px 28px rgba(255, 107, 0, 0.45);
+  transform: translateY(-1px);
+}
+
+.doc-market-btn-secondary {
+  width: 100%;
+  padding: 11px;
+  border: 2px solid #D0D0D0;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  background: #fff;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.25s ease;
+}
+
+.doc-market-btn-secondary:hover {
+  border-color: #999;
+  background: #F8F9FA;
+  color: #333;
+}
+
+/* --- Feed Tab Bar --- */
+.doc-market-feed-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 2px solid #F0F0F0;
+  margin-bottom: 16px;
+}
+
+.doc-market-feed-tab {
+  flex: 1;
+  padding: 12px 8px;
+  font-weight: 700;
+  font-size: 14px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #888;
+}
+
+.doc-market-feed-tab.active {
+  color: #E6003D;
+  border-bottom-color: #E6003D;
+}
+
+.doc-market-feed-tab:hover:not(.active) {
+  color: #555;
+  background: #FAFAFA;
+}
+
+.doc-market-feed-tab .tab-count {
+  background: #F0F0F0;
+  color: #888;
+  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-weight: 800;
+}
+
+.doc-market-feed-tab.active .tab-count {
+  background: #FFF0F3;
+  color: #E6003D;
+}
+
+/* --- Card Grid --- */
+.doc-market-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .doc-market-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+/* --- Document Card --- */
+.doc-card {
+  background: #fff;
+  border: 1px solid #EAEAEA;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: docMarketFadeIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.doc-card:hover {
+  border-color: #D0D0D0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.doc-card-header {
+  padding: 14px 14px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.doc-card-type-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.doc-card-type-icon.pdf {
+  background: linear-gradient(135deg, #FF4444 0%, #CC0000 100%);
+  color: #fff;
+}
+
+.doc-card-type-icon.word {
+  background: linear-gradient(135deg, #2B7CE9 0%, #1A5CC6 100%);
+  color: #fff;
+}
+
+.doc-card-type-icon.slide {
+  background: linear-gradient(135deg, #FF9800 0%, #E68A00 100%);
+  color: #fff;
+}
+
+.doc-card-type-icon.summary {
+  background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+  color: #fff;
+}
+
+.doc-card-title {
+  font-weight: 800;
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.doc-card-tag-combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+  color: #7A4900;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.doc-card-body {
+  padding: 10px 14px;
+  flex: 1;
+}
+
+.doc-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.doc-card-meta-item {
+  font-size: 12px;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.4;
+}
+
+.doc-card-meta-item span.meta-icon {
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.doc-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #FF9800;
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.doc-card-rating .rating-count {
+  color: #999;
+  font-weight: 500;
+  font-size: 11px;
+}
+
+.doc-card-footer {
+  padding: 10px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #F5F5F5;
+  margin-top: auto;
+}
+
+.doc-card-seller {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doc-card-seller-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #E6003D;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.doc-card-seller-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.doc-card-buy-btn {
+  padding: 7px 14px;
+  background: linear-gradient(135deg, #E6003D 0%, #C50034 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+
+.doc-card-buy-btn:hover {
+  box-shadow: 0 3px 12px rgba(230, 0, 61, 0.35);
+  transform: scale(1.03);
+}
+
+.doc-card-buy-btn:active {
+  transform: scale(0.98);
+}
+
+.doc-card-preview-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1.5px solid #E0E0E0;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.doc-card-preview-btn:hover {
+  border-color: #E6003D;
+  background: #FFF5F7;
+}
+
+/* --- Bounty Card --- */
+.bounty-card {
+  background: #fff;
+  border: 1.5px solid #FFF0E0;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: docMarketFadeIn 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.bounty-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #FF6B00, #FFB800, #FF6B00);
+  background-size: 200% 100%;
+  animation: docMarketShimmer 3s linear infinite;
+}
+
+.bounty-card:hover {
+  border-color: #FFD0A0;
+  box-shadow: 0 8px 30px rgba(255, 107, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.bounty-card-header {
+  padding: 16px 14px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.bounty-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #FF6B00 0%, #E65500 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  animation: bountyFlame 2s ease-in-out infinite;
+}
+
+.bounty-card-urgent-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: linear-gradient(135deg, #FF3D00 0%, #DD2C00 100%);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bounty-card-title {
+  font-weight: 800;
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.bounty-card-body {
+  padding: 10px 14px;
+  flex: 1;
+}
+
+.bounty-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.bounty-card-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: #777;
+}
+
+.bounty-card-deadline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #E65500;
+  background: #FFF5EC;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
+  width: fit-content;
+}
+
+.bounty-card-footer {
+  padding: 10px 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #FFF5EC;
+  margin-top: auto;
+  gap: 8px;
+}
+
+.bounty-card-reward {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  font-weight: 900;
+  color: #E65500;
+  white-space: nowrap;
+}
+
+.bounty-card-reward .coin-icon {
+  font-size: 18px;
+}
+
+.bounty-card-reward .coin-value {
+  font-size: 15px;
+}
+
+.bounty-card-submit-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, #1B8AE6 0%, #0D6EBF 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.bounty-card-submit-btn:hover {
+  box-shadow: 0 3px 12px rgba(27, 138, 230, 0.35);
+  transform: scale(1.03);
+}
+
+.bounty-card-submit-btn:active {
+  transform: scale(0.98);
+}
+
+/* --- Empty State --- */
+.doc-market-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: #aaa;
+}
+
+.doc-market-empty-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.6;
+}
+
+.doc-market-empty-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #999;
+}
+
+/* --- Section Titles --- */
+.doc-market-section-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- Panic Mode Overrides --- */
+.doc-market-panic .doc-market-toggle {
+  background: #1e293b;
+}
+
+.doc-market-panic .doc-market-toggle-btn.inactive {
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-market-toggle-btn.inactive:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #cbd5e1;
+}
+
+.doc-market-panic .doc-market-input,
+.doc-market-panic .doc-market-select {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.doc-market-panic .doc-market-input::placeholder {
+  color: #64748b;
+}
+
+.doc-market-panic .doc-market-input:focus,
+.doc-market-panic .doc-market-select:focus {
+  border-color: #E6003D;
+  box-shadow: 0 0 0 3px rgba(230, 0, 61, 0.15);
+}
+
+.doc-market-panic .doc-market-checkbox-wrap {
+  background: #334155;
+  border-color: #475569;
+}
+
+.doc-market-panic .doc-market-checkbox-wrap:hover {
+  background: #3b4a63;
+}
+
+.doc-market-panic .doc-market-checkbox-wrap .checkbox-label {
+  color: #e2e8f0;
+}
+
+.doc-market-panic .doc-market-btn-secondary {
+  background: #334155;
+  border-color: #475569;
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-market-btn-secondary:hover {
+  border-color: #64748b;
+  background: #3b4a63;
+  color: #e2e8f0;
+}
+
+.doc-market-panic .doc-market-feed-tabs {
+  border-bottom-color: #334155;
+}
+
+.doc-market-panic .doc-market-feed-tab {
+  color: #64748b;
+}
+
+.doc-market-panic .doc-market-feed-tab.active {
+  color: #E6003D;
+}
+
+.doc-market-panic .doc-market-feed-tab:hover:not(.active) {
+  background: #1e293b;
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.doc-market-panic .doc-card:hover {
+  border-color: #475569;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.doc-market-panic .doc-card-title {
+  color: #e2e8f0;
+}
+
+.doc-market-panic .doc-card-meta-item {
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-card-footer {
+  border-top-color: #334155;
+}
+
+.doc-market-panic .doc-card-seller-name {
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-card-preview-btn {
+  background: #334155;
+  border-color: #475569;
+}
+
+.doc-market-panic .doc-card-preview-btn:hover {
+  border-color: #E6003D;
+  background: #3b2030;
+}
+
+.doc-market-panic .bounty-card {
+  background: #1e293b;
+  border-color: #3d2800;
+}
+
+.doc-market-panic .bounty-card-title {
+  color: #e2e8f0;
+}
+
+.doc-market-panic .bounty-card-meta-item {
+  color: #94a3b8;
+}
+
+.doc-market-panic .bounty-card-footer {
+  border-top-color: #334155;
+}
+
+.doc-market-panic .bounty-card-deadline {
+  background: #3d2800;
+  color: #FFB800;
+}
+
+.doc-market-panic .doc-market-section-title {
+  color: #e2e8f0;
+}
+
+.doc-market-panic .doc-market-feed-tab .tab-count {
+  background: #334155;
+  color: #94a3b8;
+}
+
+.doc-market-panic .doc-market-feed-tab.active .tab-count {
+  background: #3b2030;
+  color: #E6003D;
+}
+
+/* --- Form Spacing --- */
+.doc-market-form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doc-market-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 480px) {
+  .doc-market-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.doc-market-form-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+/* --- Label --- */
+.doc-market-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.doc-market-panic .doc-market-label {
+  color: #94a3b8;
+}

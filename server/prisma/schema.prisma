@@ -1,0 +1,456 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique
+  password  String
+  fullName  String?
+  bio       String?
+  major     String?
+  hometown  String?
+  dob       String?
+  gender    String?
+  avatarUrl String?
+  coverUrl  String?
+  coins     Int      @default(250)
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+
+  schoolName String?
+  schoolLat  Float?
+  schoolLng  Float?
+
+  qnuUsername        String?
+  qnuPassword        String?
+  googleRefreshToken String?
+
+  lastActive   DateTime @default(now())
+  showActivity Boolean  @default(true)
+
+  showBio      Boolean @default(true)
+  showMajor    Boolean @default(true)
+  showHometown Boolean @default(true)
+  showDob      Boolean @default(true)
+  showGender   Boolean @default(true)
+
+  tasks           Task[]
+  posts           Post[]
+  notifications   Notification[] @relation("UserNotif")
+  triggeredNotifs Notification[] @relation("SourceUserNotif") // Bổ sung để biết ai tạo thông báo
+
+  marketItems      MarketItem[]
+  postReactions    PostReaction[]
+  messageReactions MessageReaction[]
+  comments         Comment[]
+  commentLikes     CommentLike[]
+  hiddenPosts      HiddenPost[]
+  schedules        Schedule[]
+  exams            Exam[]
+  questionSets     QuestionSet[]
+  quizLogs         QuizLog[]
+
+  sentMessages     Message[]    @relation("SentMessages")
+  receivedMessages Message[]    @relation("ReceivedMessages")
+  friendshipsInit  Friendship[] @relation("UserFriendships")
+  friendshipsRecv  Friendship[] @relation("FriendFriendships")
+  ratingsGiven     UserRating[] @relation("Rater")
+  ratingsReceived  UserRating[] @relation("RatedUser")
+
+  // Chợ Sinh Viên relations
+  coinsSent        CoinTransaction[] @relation("CoinSender")
+  coinsReceived    CoinTransaction[] @relation("CoinReceiver")
+  documents        Document[]        @relation("DocumentAuthor")
+  boughtDocuments  Document[]        @relation("DocumentBuyer")
+  errandsRequested Errand[]          @relation("ErrandRequester")
+  errandsRun       Errand[]          @relation("ErrandRunner")
+  ownedItems       SecondhandItem[]
+  tradeProposals   TradeProposal[]
+  carpoolRequests  CarpoolRequest[]  @relation("PassengerRequests")
+  carpoolOffers    CarpoolOffer[]    @relation("DriverOffers")
+  reportsSubmitted Report[]          @relation("Reporter")
+}
+
+// ============================================
+// CHỢ SINH VIÊN - MODELS
+// ============================================
+
+model CoinTransaction {
+  id            Int      @id @default(autoincrement())
+  senderId      Int?
+  receiverId    Int?
+  amount        Int
+  type          String // TRANSFER, PURCHASE, LOCK, RELEASE, REFUND, ERRAND_FEE, RIDE_FEE
+  referenceId   Int? // ID đơn hàng/chuyến đi liên quan
+  referenceType String? // ERRAND, DOCUMENT, ITEM, RIDE
+  note          String?
+  createdAt     DateTime @default(now())
+
+  // --- CRYPTO LEDGER FIELDS ---
+  previousHash  String?
+  hash          String   @unique @default(uuid())
+  nonce         Int      @default(0)
+
+  sender   User? @relation("CoinSender", fields: [senderId], references: [id])
+  receiver User? @relation("CoinReceiver", fields: [receiverId], references: [id])
+}
+
+model Document {
+  id          Int      @id @default(autoincrement())
+  title       String
+  type        String // SELL, BOUNTY
+  fileUrl     String?
+  price       Int      @default(0)
+  subject     String? // Môn học
+  lecturer    String? // Giảng viên
+  category    String? // Đề thi, Slide, Giáo trình, Tóm tắt
+  isCombo     Boolean  @default(false)
+  description String?
+  status      String   @default("ACTIVE") // ACTIVE, PENDING_DELIVERY, SOLD, COMPLETED, CLOSED
+  authorId    Int
+  buyerId     Int? // Người mua (nếu đã xác nhận bán)
+  sellerConfirmed Boolean @default(false) // Người bán đã xác nhận
+  buyerConfirmed  Boolean @default(false) // Người mua đã xác nhận
+  createdAt   DateTime @default(now())
+
+  author User  @relation("DocumentAuthor", fields: [authorId], references: [id])
+  buyer  User? @relation("DocumentBuyer", fields: [buyerId], references: [id])
+}
+
+model Errand {
+  id              Int       @id @default(autoincrement())
+  title           String
+  category        String // FOOD, PRINT, PICKUP
+  locationBuy     String
+  locationDrop    String
+  distance        Float? // Khoảng cách theo km
+  fee             Int       @default(0)
+  tipAmount       Int       @default(0)
+  lockedAmount    Int       @default(0) // Số Coin đã tạm khóa = fee + tip
+  status          String    @default("PENDING") // PENDING, ACCEPTED, COMPLETED, CANCELLED
+  requesterId     Int
+  runnerId        Int?
+  acceptedAt      DateTime?
+  excuseRequested Boolean   @default(false)
+  excused         Boolean   @default(false)
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  requester User  @relation("ErrandRequester", fields: [requesterId], references: [id])
+  runner    User? @relation("ErrandRunner", fields: [runnerId], references: [id])
+}
+
+model SecondhandItem {
+  id             Int      @id @default(autoincrement())
+  name           String
+  condition      String // NEW, LIKE_NEW, USED
+  images         String? // JSON array of image URLs
+  tradeType      String // SELL, BARTER
+  price          Int      @default(0)
+  exchangeWanted String? // Muốn đổi lấy gì
+  category       String? // books, electronics, clothes, room
+  description    String?
+  status         String   @default("ACTIVE") // ACTIVE, SOLD, TRADED, CLOSED
+  ownerId        Int
+  createdAt      DateTime @default(now())
+
+  owner          User            @relation(fields: [ownerId], references: [id])
+  tradeProposals TradeProposal[]
+}
+
+model TradeProposal {
+  id           Int      @id @default(autoincrement())
+  itemId       Int
+  proposerId   Int
+  proposalText String // "Mình có sách Vi Mô, muốn đổi..."
+  status       String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt    DateTime @default(now())
+
+  item     SecondhandItem @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  proposer User           @relation(fields: [proposerId], references: [id])
+}
+
+model CarpoolRequest {
+  id             Int      @id @default(autoincrement())
+  departure      String
+  destination    String
+  departureTime  String // Vd: "17:00 01/04"
+  departureDate  String? // Optional
+  fee            Int      @default(0) // Giá khách mong muốn
+  phone          String?
+  seats          Int      @default(1)
+  onlyFemale     Boolean  @default(false)
+  distance       String? // Vd: "3 km"
+  status         String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  passengerId    Int
+  driverId       Int? // khi IN_PROGRESS thì lưu driver
+  createdAt      DateTime @default(now())
+
+  // --- GPS FIELDS ---
+  departureLat   Float?
+  departureLng   Float?
+  destinationLat Float?
+  destinationLng Float?
+
+  passenger User           @relation("PassengerRequests", fields: [passengerId], references: [id])
+  offers    CarpoolOffer[]
+}
+
+model CarpoolOffer {
+  id            Int      @id @default(autoincrement())
+  requestId     Int
+  driverId      Int
+  proposedPrice Int // Giá xế đề nghị
+  status        String   @default("PENDING") // PENDING, ACCEPTED, REJECTED
+  createdAt     DateTime @default(now())
+
+  request CarpoolRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  driver  User           @relation("DriverOffers", fields: [driverId], references: [id])
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  content   String
+  imageUrl  String? // BỔ SUNG ẢNH BÀI VIẾT
+  userId    Int
+  isHidden  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User           @relation(fields: [userId], references: [id])
+  reactions PostReaction[]
+  comments  Comment[]
+  hiddenBy  HiddenPost[]
+  notifs    Notification[] // Liên kết thông báo
+}
+
+model PostReaction {
+  id        Int      @id @default(autoincrement())
+  type      String
+  postId    Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([postId, userId])
+}
+
+model HiddenPost {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  postId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  postId    Int
+  userId    Int
+  parentId  Int?
+  createdAt DateTime @default(now())
+
+  post    Post          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user    User          @relation(fields: [userId], references: [id])
+  parent  Comment?      @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies Comment[]     @relation("CommentReplies")
+  likes   CommentLike[]
+}
+
+model CommentLike {
+  id        Int      @id @default(autoincrement())
+  commentId Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([commentId, userId])
+}
+
+model Friendship {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  friendId  Int
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  user      User     @relation("UserFriendships", fields: [userId], references: [id])
+  friend    User     @relation("FriendFriendships", fields: [friendId], references: [id])
+
+  @@unique([userId, friendId])
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  content    String
+  imageUrl   String? // BỔ SUNG ẢNH TIN NHẮN
+  senderId   Int
+  receiverId Int
+  isRead     Boolean  @default(false)
+  referenceId   Int?
+  referenceType String?
+  createdAt  DateTime @default(now())
+
+  sender    User              @relation("SentMessages", fields: [senderId], references: [id])
+  receiver  User              @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  reactions MessageReaction[]
+}
+
+model MessageReaction {
+  id        Int      @id @default(autoincrement())
+  type      String
+  messageId Int
+  userId    Int
+  createdAt DateTime @default(now())
+
+  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@unique([messageId, userId])
+}
+
+model Notification {
+  id           Int      @id @default(autoincrement())
+  content      String
+  type         String
+  isRead       Boolean  @default(false)
+  userId       Int
+  sourceUserId Int? // Lưu ID người tạo ra thông báo
+  postId       Int? // Lưu ID bài viết (nếu có)
+  createdAt    DateTime @default(now())
+
+  user       User  @relation("UserNotif", fields: [userId], references: [id], onDelete: Cascade)
+  sourceUser User? @relation("SourceUserNotif", fields: [sourceUserId], references: [id], onDelete: Cascade)
+  post       Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          Int      @id @default(autoincrement())
+  title       String
+  dueDate     String
+  color       String   @default("border-blue-500")
+  isLMS       Boolean  @default(false)
+  draftResult String?
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model MarketItem {
+  id          Int      @id @default(autoincrement())
+  title       String
+  reward      Int
+  category    String
+  description String?
+  imageUrl    String?
+  fileUrl     String?
+  location    String?
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+model Schedule {
+  id          Int      @id @default(autoincrement())
+  subjectName String
+  teacher     String?
+  dayOfWeek   String?
+  room        String?
+  timeInfo    String?
+  startDate   String?
+  endDate     String?
+  date        String
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+model Exam {
+  id        Int      @id @default(autoincrement())
+  subject   String
+  examDate  String
+  examTime  String?
+  room      String?
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+// ============================================
+// AI ÔN TẬP & QUIZ - MODELS
+// ============================================
+
+model QuestionSet {
+  id           Int        @id @default(autoincrement())
+  title        String // Tên bộ đề / tài liệu
+  subject      String? // Môn học 
+  category     String? // Loại đề (Ví dụ: Giữa kỳ, Cuối kỳ, Luyện tập)
+  isMarketItem Boolean    @default(false)
+  price        Int        @default(0)
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questions    Question[]
+  logs         QuizLog[]
+  createdAt    DateTime   @default(now())
+}
+
+model Question {
+  id      Int         @id @default(autoincrement())
+  setId   Int
+  content String
+  options String // JSON array of options
+  answer  Int // Index of correct option
+  set     QuestionSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+}
+
+model QuizLog {
+  id        Int         @id @default(autoincrement())
+  userId    Int
+  setId     Int
+  score     Int // số câu đúng
+  total     Int // tổng số câu
+  answers   String? // JSON array lịch sử chọn chi tiết
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  set       QuestionSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+}
+
+
+model UserRating {
+  id          Int      @id @default(autoincrement())
+  score       Int
+  comment     String?
+  raterId     Int
+  ratedUserId Int
+  createdAt   DateTime @default(now())
+
+  rater     User @relation("Rater", fields: [raterId], references: [id], onDelete: Cascade)
+  ratedUser User @relation("RatedUser", fields: [ratedUserId], references: [id], onDelete: Cascade)
+}
+
+// ============================================
+// SYSTEM & ADMIN - MODELS
+// ============================================
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  reporterId  Int
+  targetType  String   // vd: USER, POST, MARKET_ITEM, CONFESSION
+  targetId    Int
+  reason      String
+  status      String   @default("PENDING") // PENDING, RESOLVED, REJECTED
+  createdAt   DateTime @default(now())
+
+  reporter    User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+}
