@@ -22,7 +22,7 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, sh
   const fetchExams = useCallback(async () => {
     if (!userId) return;
     try {
-      const res = await axios.get(`http://localhost:5000/api/exams/${userId}`);
+      const res = await axios.get(`/api/exams/${userId}`);
       if (res.data.success) setExams(res.data.data || []);
     } catch (e) {}
   }, [userId]);
@@ -64,6 +64,10 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, sh
       const start = parseVnDate(s.startDate);
       const end = parseVnDate(s.endDate);
       if (!start || !end) return true;
+      
+      // Nếu là dữ liệu cũ của học kỳ trước (đã kết thúc), vẫn hiển thị theo thứ để phục vụ demo
+      if (end < new Date()) return true;
+      
       return targetDate >= start && targetDate <= end;
     });
     
@@ -197,7 +201,7 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, sh
     e.preventDefault();
     if (!examForm.subject || !examForm.examDate) return;
     try {
-      await axios.post('http://localhost:5000/api/exams', { ...examForm, userId });
+      await axios.post('/api/exams', { ...examForm, userId });
       setExamForm({ subject: '', examDate: '', examTime: '', room: '' });
       setShowExamForm(false);
       fetchExams();
@@ -208,7 +212,7 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, sh
     const confirmed = await showConfirm('Xóa lịch thi này?');
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:5000/api/exams/${id}`);
+      await axios.delete(`/api/exams/${id}`);
       fetchExams();
     } catch (err) {}
   };

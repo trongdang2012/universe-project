@@ -139,14 +139,14 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
   // --- API CALLS ---
   const fetchRequests = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/carpool/requests');
+      const res = await axios.get('/api/carpool/requests');
       if (res.data?.data) setRequests(res.data.data);
     } catch (err) { console.error(err); }
   };
 
   const fetchMyOrders = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/market/my-orders/${user.id}`);
+      const res = await axios.get(`/api/market/my-orders/${user.id}`);
       if (res.data?.data) setMyOrdersHistory(res.data.data);
     } catch (err) { console.error(err); }
   };
@@ -183,7 +183,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
     }
     setIsLoading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/carpool/requests', {
+      const res = await axios.post('/api/carpool/requests', {
         departure: formData.departure,
         destination: formData.destination,
         departureLat: formData.departureLat,
@@ -212,7 +212,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
     const confirmed = await showConfirm('Bạn có chắc chắn muốn chọn tài xế này? Hành trình sẽ được thiết lập.');
     if (!confirmed) return;
     try {
-      const res = await axios.put(`http://localhost:5000/api/carpool/offers/${offerId}/accept`, { passengerId: user.id });
+      const res = await axios.put(`/api/carpool/offers/${offerId}/accept`, { passengerId: user.id });
       showAlert(res.data?.message || 'Đã chốt xế!', 'success');
       fetchRequests();
     } catch (err) {
@@ -236,7 +236,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
       if (!confirm) return;
     }
     try {
-      const res = await axios.post('http://localhost:5000/api/carpool/offers', {
+      const res = await axios.post('/api/carpool/offers', {
         requestId, driverId: user.id, proposedPrice
       });
       showAlert(res.data?.message || 'Đã gửi đề nghị đến khách!', 'success');
@@ -250,7 +250,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
     const confirmed = await showConfirm('Bạn xác nhận chuyến xe này đã hoàn thành?');
     if (!confirmed) return;
     try {
-      const res = await axios.put(`http://localhost:5000/api/carpool/requests/${requestId}/complete`, { userId: user.id });
+      const res = await axios.put(`/api/carpool/requests/${requestId}/complete`, { userId: user.id });
       showAlert(res.data?.message || 'Chúc mừng! Chuyến đi kết thúc thành công.', 'success');
       fetchMyOrders();
     } catch (err) {
@@ -262,7 +262,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
     const confirmed = await showConfirm('Bạn có chắc chắn muốn huỷ chuyến xe này không?');
     if (!confirmed) return;
     try {
-      const res = await axios.put(`http://localhost:5000/api/carpool/requests/${requestId}/cancel`, { userId: user.id });
+      const res = await axios.put(`/api/carpool/requests/${requestId}/cancel`, { userId: user.id });
       showAlert(res.data?.message || 'Đã huỷ chuyến xe.', 'success');
       setSelectedRequest(null);
       fetchRequests();

@@ -357,7 +357,7 @@ router.get('/api/errands/my/:userId', async (req, res) => {
  */
 router.post('/api/errands', async (req, res) => {
   try {
-    const { title, category, locationBuy, locationDrop, distance, fee, tipAmount, requesterId } = req.body;
+    const { title, category, locationBuy, locationDrop, distance, fee, tipAmount, vndReward, requesterId } = req.body;
 
     if (!title || !locationBuy || !locationDrop || !requesterId) {
       return apiResponse(res, 400, 'Thiếu thông tin bắt buộc');
@@ -371,6 +371,7 @@ router.post('/api/errands', async (req, res) => {
       distance: distance ? parseFloat(distance) : null,
       fee: parseInt(fee) || 0,
       tipAmount: parseInt(tipAmount) || 0,
+      vndReward: parseInt(vndReward) || 0,
       requesterId
     });
 

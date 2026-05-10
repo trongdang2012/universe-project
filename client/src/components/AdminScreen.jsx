@@ -18,7 +18,7 @@ const AdminScreen = ({ user, onLogout }) => {
 
   // Setup axios instance cho Admin, đính kèm headers
   const adminAxios = axios.create({
-    baseURL: 'http://localhost:5000/api/admin',
+    baseURL: '/api/admin',
     headers: { 'admin-id': user?.id }
   });
 
@@ -41,7 +41,7 @@ const AdminScreen = ({ user, onLogout }) => {
   };
   const fetchContent = async () => {
     // Tạm thời fetch posts, có thể mở rộng sau này lấy cả marketItems
-    try { const res = await axios.get('http://localhost:5000/api/posts'); setContentList(res.data); } catch(e) { console.error(e); }
+    try { const res = await axios.get('/api/posts'); setContentList(res.data); } catch(e) { console.error(e); }
   };
   const fetchLedgerAudit = async () => {
     try {

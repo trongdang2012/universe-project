@@ -1,4 +1,4 @@
-﻿import { fmtUC } from '../utils';
+import { fmtUC } from '../utils';
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { Icons } from '../App';
@@ -140,10 +140,17 @@ const ErrandCard = ({ errand, onAccept, onChat, onOpenProfile, onCardClick }) =>
         <span className="errand-card-status-tag flex items-center justify-center gap-1"><Icons.Clock className="w-3 h-3 text-slate-500" /> {errand.status}</span>
       </div>
       <div className="errand-card-reward">
-        <div className="errand-card-reward-value">{fmtUC(errand.fee)} UC</div>
+        {errand.vndReward > 0 ? (
+           <div className="errand-card-reward-value" style={{ color: '#059669', display: 'flex', alignItems: 'center', gap: '2px' }}>
+             <Icons.DollarSign className="w-4 h-4" /> {new Intl.NumberFormat('vi-VN').format(errand.vndReward)} đ
+           </div>
+        ) : (
+           <div className="errand-card-reward-value">{fmtUC(errand.fee)} UC</div>
+        )}
+        
         {errand.tipAmount > 0 && (
           <div className="errand-card-reward-tip flex items-center gap-1">
-            <Icons.Flame className="w-3 h-3" /> +{errand.tipAmount} Tip
+            <Icons.Flame className="w-3 h-3" /> +{errand.tipAmount} UC Tip
           </div>
         )}
       </div>
@@ -224,8 +231,9 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
     title: '',
     locationBuy: '',
     locationDrop: '',
-    fee: '',
+    fee: '1',
     tipAmount: '',
+    vndReward: '',
   });
 
   // Modal Custom
@@ -243,7 +251,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const fetchPendingErrands = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/errands/pending');
+      const res = await axios.get('/api/errands/pending');
       setPendingErrands(res.data.data || []);
     } catch (err) {
       console.error(err);
@@ -255,7 +263,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const fetchMyErrands = async () => {
     try {
       if (!user?.id) return;
-      const res = await axios.get(`http://localhost:5000/api/errands/my/${user.id}`);
+      const res = await axios.get(`/api/errands/my/${user.id}`);
       setMyRequested(res.data.data.requested || []);
       setMyRunning(res.data.data.running || []);
     } catch (err) {
@@ -265,7 +273,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
 
   const fetchActiveShippers = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/posts?type=shippers');
+      const res = await axios.get('/api/posts?type=shippers');
       setActiveShippers(res.data || []);
     } catch (err) {
       console.error(err);
@@ -311,13 +319,14 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
         distance: computedDistance,
         fee: parseInt(formData.fee) || 0,
         tipAmount: formData.tipAmount ? parseInt(formData.tipAmount) : 0,
+        vndReward: parseInt(formData.vndReward) || 0,
         requesterId: user.id
       };
       
-      const res = await axios.post('http://localhost:5000/api/errands', payload);
+      const res = await axios.post('/api/errands', payload);
       showAlert(res.data.message || 'Tạo đơn nhờ mua thành công!');
       
-      setFormData({ title: '', locationBuy: '', locationDrop: '', fee: '', tipAmount: '' });
+      setFormData({ title: '', locationBuy: '', locationDrop: '', fee: '1', tipAmount: '', vndReward: '' });
       setSelectedCategory('');
       setShowCreateModal(false);
       setActiveTab('job_board');
@@ -330,7 +339,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
 
   const handleAcceptErrand = async (errand) => {
     try {
-      const res = await axios.put(`http://localhost:5000/api/errands/accept/${errand.id}`, { runnerId: user.id });
+      const res = await axios.put(`/api/errands/accept/${errand.id}`, { runnerId: user.id });
       showAlert(res.data.message || 'Nhận đơn thành công!');
       setPendingErrands(prev => prev.filter(e => e.id !== errand.id));
     } catch (err) {
@@ -348,7 +357,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const handleDeliverErrand = (errand) => {
     showConfirm("Bạn đã lấy hàng và bắt đầu đi giao?", async () => {
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/deliver/${errand.id}`, { runnerId: user.id });
+        const res = await axios.put(`/api/errands/deliver/${errand.id}`, { runnerId: user.id });
         showAlert(res.data.message || 'Đã cập nhật trạng thái Đang giao!');
         fetchMyErrands();
       } catch (err) {
@@ -360,12 +369,12 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const handleCompleteErrand = (errand) => {
     showConfirm("Xác nhận đã nhận hàng xong và hệ thống sẽ chuyển UC cho người mua hộ?", async () => {
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/complete/${errand.id}`, { requesterId: user.id });
+        const res = await axios.put(`/api/errands/complete/${errand.id}`, { requesterId: user.id });
         setTimeout(() => {
           showPrompt("Đã xác nhận hoàn thành! Nhập số sao (1-5) để đánh giá người mua hộ:", "5", async (score) => {
             if (score) {
               try {
-                await axios.post('http://localhost:5000/api/users/rate', { raterId: user.id, ratedUserId: errand.runnerId, score });
+                await axios.post('/api/users/rate', { raterId: user.id, ratedUserId: errand.runnerId, score });
                 showAlert("Cảm ơn bạn đã đánh giá!");
               } catch (e) {}
             }
@@ -381,7 +390,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const handleCancelErrand = (errand) => {
     showConfirm(`Bạn có chắc chắn muốn hủy đơn "${errand.title}" không?`, async () => {
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/cancel/${errand.id}`, { userId: user.id });
+        const res = await axios.put(`/api/errands/cancel/${errand.id}`, { userId: user.id });
         showAlert(res.data.message || 'Đơn đã hủy thành công!');
         fetchMyErrands();
       } catch (err) {
@@ -394,7 +403,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
     showPrompt("Nhập lại yêu cầu cần mua:", errand.title, async (newTitle) => {
       if (!newTitle) return;
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/${errand.id}`, { 
+        const res = await axios.put(`/api/errands/${errand.id}`, { 
           userId: user.id,
           title: newTitle,
         });
@@ -409,7 +418,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
   const handleExcuseErrand = (errand) => {
     showConfirm("Xin thông cảm bị trễ để không bị hệ thống tự động hủy & phạt UC?", async () => {
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/excuse/${errand.id}`, { runnerId: user.id });
+        const res = await axios.put(`/api/errands/excuse/${errand.id}`, { runnerId: user.id });
         showAlert(res.data.message || 'Đã gửi yêu cầu thông cảm!');
         fetchMyErrands();
       } catch (err) {
@@ -422,7 +431,7 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
     const actText = action === 'ACCEPT' ? "đồng ý thông cảm cho shipper" : "thu hồi đơn vui vẻ (không phạt Shipper)";
     showConfirm(`Bạn có muốn ${actText}?`, async () => {
       try {
-        const res = await axios.put(`http://localhost:5000/api/errands/excuse-resolve/${errand.id}`, { requesterId: user.id, action });
+        const res = await axios.put(`/api/errands/excuse-resolve/${errand.id}`, { requesterId: user.id, action });
         showAlert(res.data.message || 'Đã xử lý xong!');
         fetchMyErrands();
       } catch (err) {
@@ -589,29 +598,43 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                 {/* Payment Block */}
                 <div className="errand-payment-block">
                   <div className="errand-payment-title flex items-center gap-2"><Icons.CreditCard className="w-5 h-5 text-indigo-600" /> Thanh toán</div>
+                  
+                  <div style={{ marginBottom: 16 }}>
+                    <label className="errand-payment-label flex items-center gap-1.5" style={{ color: '#059669', fontSize: '15px' }}><Icons.DollarSign className="w-4 h-4" /> Tiền công thật (VNĐ) <span style={{ color: '#EF4444', fontSize: '12px' }}>*Shipper thích điều này</span></label>
+                    <input
+                      type="number"
+                      className="errand-payment-input"
+                      style={{ borderColor: '#10B981', borderLeft: '4px solid #10B981', color: '#047857', fontWeight: 'bold' }}
+                      placeholder="VD: 15000 (Sẽ trả ngoài bằng Momo/Tiền mặt)"
+                      min="0"
+                      value={formData.vndReward}
+                      onChange={(e) => setFormData({ ...formData, vndReward: e.target.value })}
+                    />
+                  </div>
+
                   <div className="errand-payment-row">
                     <div>
-                      <label className="errand-payment-label">Phí trả công (UC)</label>
+                      <label className="errand-payment-label">Phí nền tảng (UC)</label>
                       <input
                         type="number"
                         className="errand-payment-input"
-                        placeholder="10"
+                        placeholder="1"
                         min="1"
                         value={formData.fee}
                         onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
                       />
+                      <div className="errand-tip-hint" style={{ color: '#64748b' }}>Bắt buộc để ghi sổ cái</div>
                     </div>
                     <div>
-                      <label className="errand-payment-label tip-label flex items-center gap-1.5"><Icons.Flame className="w-4 h-4" /> Tip thêm (Optional)</label>
+                      <label className="errand-payment-label tip-label flex items-center gap-1.5"><Icons.Flame className="w-4 h-4" /> Tip UC thêm</label>
                       <input
                         type="number"
                         className="errand-payment-input tip"
-                        placeholder="5"
+                        placeholder="0"
                         min="0"
                         value={formData.tipAmount}
                         onChange={(e) => setFormData({ ...formData, tipAmount: e.target.value })}
                       />
-                      <div className="errand-tip-hint">Tip cao = có người nhận ngay!</div>
                     </div>
                   </div>
                 </div>
@@ -673,14 +696,24 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
               </div>
             </div>
 
+            {selectedErrand.vndReward > 0 && (
+              <div className="bg-emerald-50 p-3 rounded-xl mb-3 flex items-center gap-3 border border-emerald-100">
+                <div className="w-10 h-10 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-full shrink-0"><Icons.DollarSign className="w-6 h-6" /></div>
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider font-bold text-emerald-600/70 block mb-0.5">Tiền công nhận ngoài (VNĐ)</div>
+                  <div className="font-bold text-emerald-700 text-xl">{new Intl.NumberFormat('vi-VN').format(selectedErrand.vndReward)} đ</div>
+                </div>
+              </div>
+            )}
+
             <div className="bg-amber-50 p-3 rounded-xl mb-4 flex justify-between items-center border border-amber-100">
                <div>
-                 <span className="text-[11px] uppercase tracking-wider font-bold text-amber-600/70 block mb-0.5">Phí nhận</span>
+                 <span className="text-[11px] uppercase tracking-wider font-bold text-amber-600/70 block mb-0.5">Phí hệ thống (UC)</span>
                  <span className="font-bold text-amber-700 text-lg">{fmtUC(selectedErrand.fee)} UC</span>
                </div>
                {selectedErrand.tipAmount > 0 && (
                  <div className="text-right">
-                   <span className="text-[11px] uppercase tracking-wider font-bold text-orange-600/70 block mb-0.5">Tip thêm</span>
+                   <span className="text-[11px] uppercase tracking-wider font-bold text-orange-600/70 block mb-0.5">Tip UC thêm</span>
                    <span className="font-bold text-orange-600 text-lg">+{selectedErrand.tipAmount}</span>
                  </div>
                )}

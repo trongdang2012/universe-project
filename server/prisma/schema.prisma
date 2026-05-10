@@ -133,6 +133,7 @@ model Errand {
   fee             Int       @default(0)
   tipAmount       Int       @default(0)
   lockedAmount    Int       @default(0) // Số Coin đã tạm khóa = fee + tip
+  vndReward       Int       @default(0) // Tiền công bằng VNĐ
   status          String    @default("PENDING") // PENDING, ACCEPTED, COMPLETED, CANCELLED
   requesterId     Int
   runnerId        Int?

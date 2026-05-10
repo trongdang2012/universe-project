@@ -96,7 +96,7 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/items');
+      const res = await axios.get('/api/items');
       if (res.data?.data) {
         setProducts(res.data.data);
       }
@@ -178,7 +178,7 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
       const fd = new FormData();
       fd.append('image', img.file);
       try {
-        const res = await axios.post('http://localhost:5000/api/upload', fd);
+        const res = await axios.post('/api/upload', fd);
         if (res.data?.url) urls.push(res.data.url);
       } catch (err) {
         console.error('Upload error:', err);
@@ -222,13 +222,13 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
 
       if (editingProduct) {
         // Cập nhật
-        const res = await axios.put(`http://localhost:5000/api/items/${editingProduct.id}`, payload);
+        const res = await axios.put(`/api/items/${editingProduct.id}`, payload);
         if (res.data?.data) {
           showAlert(`🎉 Đã cập nhật "${formData.title}" thành công!`, 'success');
         }
       } else {
         // Đăng mới
-        const res = await axios.post('http://localhost:5000/api/items', payload);
+        const res = await axios.post('/api/items', payload);
         if (res.data?.data) {
           showAlert(`🎉 Đã đăng ${sellMode === 'sell' ? 'bán' : 'trao đổi'} "${formData.title}" thành công!`, 'success');
         }
@@ -295,7 +295,7 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
     const confirmed = await showConfirm(`Bạn có chắc muốn xóa "${product.name}" không? Thao tác này không thể hoàn tác.`);
     if (!confirmed) return;
     try {
-      const res = await axios.delete(`http://localhost:5000/api/items/${product.id}`, { data: { ownerId: user.id } });
+      const res = await axios.delete(`/api/items/${product.id}`, { data: { ownerId: user.id } });
       showAlert(res.data?.message || 'Đã xóa sản phẩm thành công!', 'success');
       setDetailProduct(null);
       fetchProducts();
@@ -308,7 +308,7 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
     const confirmed = await showConfirm('Bạn có chắc chắn muốn chấp nhận đề nghị này? (Nếu là mua bằng xu, người gửi phải đủ tiền, nếu là trao đổi, đồ sẽ được đánh dấu đã trao đổi).');
     if (!confirmed) return;
     try {
-      const res = await axios.put(`http://localhost:5000/api/items/accept-trade/${proposalId}`, { sellerId: user.id });
+      const res = await axios.put(`/api/items/accept-trade/${proposalId}`, { sellerId: user.id });
       showAlert(res.data?.message || 'Chấp nhận thành công!', 'success');
       setDetailProduct(null);
       fetchProducts();

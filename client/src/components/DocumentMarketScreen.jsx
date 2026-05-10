@@ -224,13 +224,13 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
 
   const fetchMarketData = async () => {
     try {
-      const resDocs = await axios.get('http://localhost:5000/api/documents?type=SELL');
+      const resDocs = await axios.get('/api/documents?type=SELL');
       if (resDocs.data.success !== false) setDocuments(resDocs.data.data);
 
-      const resBounties = await axios.get('http://localhost:5000/api/documents?type=BOUNTY');
+      const resBounties = await axios.get('/api/documents?type=BOUNTY');
       if (resBounties.data.success !== false) setBounties(resBounties.data.data);
 
-      const resOrders = await axios.get(`http://localhost:5000/api/documents/my-orders/${user.id}`);
+      const resOrders = await axios.get(`/api/documents/my-orders/${user.id}`);
       if (resOrders.data.success !== false) setMyOrders(resOrders.data.data);
 
     } catch (e) {
@@ -249,7 +249,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     formData.append('image', file); // API expects 'image' field for now
     setIsUploading(true);
     try {
-      const res = await axios.post('http://localhost:5000/api/upload', formData);
+      const res = await axios.post('/api/upload', formData);
       setSellForm({ ...sellForm, fileLink: res.data.url });
     } catch (err) {
       showAlert('Lỗi upload file! Vui lòng thử lại.', 'error');
@@ -262,11 +262,11 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
   const handlePurchase = (doc) => {
     showConfirm(`Bạn chắc chắn muốn mua tài liệu "${doc.title}" với giá ${fmtUC(doc.price)} UC?`, async () => {
       try {
-        const res = await axios.post(`http://localhost:5000/api/documents/buy/${doc.id}`, { buyerId: user.id });
+        const res = await axios.post(`/api/documents/buy/${doc.id}`, { buyerId: user.id });
         setTimeout(() => {
           showPrompt("Đã mua thành công! Bạn đánh giá người bán mấy sao (1-5)?", "5", async (score) => {
             if (score) {
-              try { await axios.post('http://localhost:5000/api/users/rate', { raterId: user.id, ratedUserId: doc.authorId, score }); } catch (e) { }
+              try { await axios.post('/api/users/rate', { raterId: user.id, ratedUserId: doc.authorId, score }); } catch (e) { }
               showAlert("Cảm ơn bạn đã đánh giá uy tín người bán!");
             }
             fetchMarketData();
@@ -282,7 +282,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     e.preventDefault();
     if (sellForm.price < 0) { showAlert('Giá bán không hợp lệ!', 'error'); return; }
     try {
-      await axios.post('http://localhost:5000/api/documents', {
+      await axios.post('/api/documents', {
         title: sellForm.title,
         type: 'SELL',
         category: sellForm.category,
@@ -307,7 +307,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     e.preventDefault();
     if (bountyForm.reward <= 0) { showAlert('Thưởng phải lớn hơn 0!', 'warning'); return; }
     try {
-      const res = await axios.post('http://localhost:5000/api/documents', {
+      const res = await axios.post('/api/documents', {
         title: bountyForm.title,
         type: 'BOUNTY',
         subject: bountyForm.subject,
@@ -328,7 +328,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     const confirmed = await showConfirm(`Bạn có chắc muốn mua tài liệu "${doc.title}" với giá ${fmtUC(doc.price)} UC không?`);
     if (confirmed) {
       try {
-        const res = await axios.post(`http://localhost:5000/api/documents/buy/${doc.id}`, { buyerId: user.id });
+        const res = await axios.post(`/api/documents/buy/${doc.id}`, { buyerId: user.id });
         let urlMsg = res.data.data?.fileUrl ? `\n\nLink tải tài liệu:\n${res.data.data.fileUrl}` : '\n\nTài liệu này chưa cập nhật link, hãy liên hệ người bán.';
         showAlert(res.data.message + urlMsg, 'success');
         fetchMarketData();
@@ -342,7 +342,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     const newPrice = await showPrompt('Nhập giá bán mới (UC):', String(doc.price));
     if (newPrice !== null && !isNaN(newPrice)) {
       try {
-        const res = await axios.put(`http://localhost:5000/api/documents/${doc.id}`, {
+        const res = await axios.put(`/api/documents/${doc.id}`, {
           ...doc,
           price: parseInt(newPrice)
         });
@@ -358,7 +358,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     const confirmed = await showConfirm(`Bạn có chắc muốn xóa tài liệu "${doc.title}" không? Hành động này không thể hoàn tác.`);
     if (!confirmed) return;
     try {
-      const res = await axios.delete(`http://localhost:5000/api/documents/${doc.id}`, {
+      const res = await axios.delete(`/api/documents/${doc.id}`, {
         data: { authorId: user.id }
       });
       showAlert(res.data?.message || 'Đã xóa tài liệu!', 'success');
@@ -372,11 +372,11 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
     const buyerUsername = await showPrompt('Nhập Tên tài khoản (username) của người mua mà bạn muốn xác nhận bán:');
     if (!buyerUsername) return;
     try {
-      const userRes = await axios.get(`http://localhost:5000/api/users/search?q=${buyerUsername}`);
+      const userRes = await axios.get(`/api/users/search?q=${buyerUsername}`);
       const matchedUser = userRes.data.find(u => u.username === buyerUsername);
       if (!matchedUser) { showAlert('Không tìm thấy người dùng này!', 'error'); return; }
 
-      const res = await axios.post(`http://localhost:5000/api/documents/confirm-sale/${doc.id}`, {
+      const res = await axios.post(`/api/documents/confirm-sale/${doc.id}`, {
         sellerId: user.id,
         buyerId: matchedUser.id
       });
@@ -833,7 +833,7 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                 previewDoc.fileUrl.match(/\.(jpeg|jpg|gif|png)$/i) ? (
                   <img src={previewDoc.fileUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                 ) : (
-                  <iframe src={`http://localhost:5000/api/documents/preview/${previewDoc.id}#toolbar=0`} width="100%" height="100%" style={{ border: 'none' }} title="Preview PDF" />
+                  <iframe src={`/api/documents/preview/${previewDoc.id}#toolbar=0`} width="100%" height="100%" style={{ border: 'none' }} title="Preview PDF" />
                 )
               ) : (
                 <div style={{ padding: 20 }}>Tài liệu này không có file đính kèm.</div>

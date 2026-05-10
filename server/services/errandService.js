@@ -14,14 +14,16 @@ const ErrandService = {
    * - Lock Coin từ requester
    * - Tạo Errand record
    */
-  async createErrand({ title, category, locationBuy, locationDrop, distance, fee, tipAmount, requesterId }) {
+  async createErrand({ title, category, locationBuy, locationDrop, distance, fee, tipAmount, vndReward, requesterId }) {
     const totalLock = (fee || 0) + (tipAmount || 0);
 
-    if (totalLock <= 0) throw new Error('Phí trả công phải lớn hơn 0');
+    if (totalLock <= 0) throw new Error('Phí nền tảng (UC) phải lớn hơn 0');
 
     const user = await prisma.user.findUnique({ where: { id: requesterId } });
     if (!user) throw new Error('Người dùng không tồn tại');
 
+    // Lock Coin từ requester (Tạm khóa)
+    await CoinService.lockCoin(requesterId, totalLock, null, 'ERRAND');
 
     // Tạo Errand trước để có ID
     const errand = await prisma.errand.create({
@@ -34,6 +36,7 @@ const ErrandService = {
         fee: fee || 0,
         tipAmount: tipAmount || 0,
         lockedAmount: totalLock,
+        vndReward: vndReward || 0,
         status: 'PENDING',
         requesterId
       }
@@ -81,6 +84,8 @@ const ErrandService = {
     if (errand.requesterId !== requesterId) throw new Error('Chỉ người tạo đơn mới được xác nhận hoàn thành');
     if (!errand.runnerId) throw new Error('Đơn chưa có người nhận');
 
+    // Giải phóng Coin đã khóa -> Trả cho Shipper (Runner)
+    await CoinService.releaseCoin(errand.requesterId, errand.runnerId, errand.lockedAmount, errand.id, 'ERRAND');
 
     // Cập nhật trạng thái
     const updatedErrand = await prisma.errand.update({
@@ -128,7 +133,8 @@ const ErrandService = {
         excused: false
       };
     } else {
-
+      // Người tạo đơn tự hủy -> Hoàn lại tiền (Refund)
+      await CoinService.refundCoin(errand.requesterId, errand.lockedAmount, errand.id, 'ERRAND');
     }
 
     const updatedErrand = await prisma.errand.update({

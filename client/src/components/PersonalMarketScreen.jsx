@@ -63,7 +63,7 @@ const PersonalMarketScreen = ({ user, panicMode, onChat }) => {
   const fetchMyOrders = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`http://localhost:5000/api/market/my-orders/${user.id}`);
+      const res = await axios.get(`/api/market/my-orders/${user.id}`);
       if (res.data.status === 200) {
         setData(res.data.data);
       }
