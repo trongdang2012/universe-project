@@ -271,7 +271,7 @@ app.post('/api/tasks/:id/draft', async (req, res) => {
     const task = await prisma.task.findUnique({ where: { id: parseInt(req.params.id) } });
     let draftHtml = "";
     try {
-      const result = await genAI.getGenerativeModel({ model: "gemini-2.5-flash" }).generateContent(`Đóng vai trợ lý. Lập dàn ý chuẩn APA cho bài tập: "${task.title}". Liệt kê 3 nguồn tham khảo.`);
+      const result = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(`Đóng vai trợ lý. Lập dàn ý chuẩn APA cho bài tập: "${task.title}". Liệt kê 3 nguồn tham khảo.`);
       draftHtml = result.response.text();
     } catch(aiErr) {
       draftHtml = `*(Chế độ Offline Mock)*\n\n**Dàn ý dự thảo cho bài tập: ${task.title}**\n\n1. **Phần mở đầu**\n   - Đặt vấn đề và lý do chọn đề tài\n   - Mục tiêu nghiên cứu\n\n2. **Nội dung chính**\n   - Tổng quan cơ sở lý thuyết\n   - Phân tích và giải quyết vấn đề\n\n3. **Kết luận**\n   - Đóng góp của bài tập\n   - Hướng phát triển\n\n**Tài liệu tham khảo:**\n- Sách giáo trình chuyên ngành QNU\n- Tài liệu trên Google Scholar\n- Các bài báo học thuật liên quan`;
@@ -287,7 +287,7 @@ app.post('/api/ai/ocr', upload.single('image'), async (req, res) => {
     let outputText = "";
     try {
       const imagePart = { inlineData: { data: fs.readFileSync(req.file.path).toString("base64"), mimeType: req.file.mimetype } };
-      const result = await genAI.getGenerativeModel({ model: "gemini-2.5-flash" }).generateContent(["Trích xuất text và tóm tắt thành 3 ý chính:", imagePart]);
+      const result = await genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(["Trích xuất text và tóm tắt thành 3 ý chính:", imagePart]);
       outputText = result.response.text();
     } catch(aiErr) {
       outputText = `🤖 *Chế độ Quét Offline*\n- Hệ thống AI Google đang bị giới hạn API Limit.\n- Trích xuất Demo: Đây là một tài liệu ảnh học thuật.\n- Hãy liên kết Thẻ tính phí của Google Cloud để tính năng này hoạt động thật.`;
@@ -373,7 +373,7 @@ Quy tắc của bạn:
 - Câu hỏi người dùng: "${message}"`;
 
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
       const result = await model.generateContent(contextStr);
       res.json({ reply: result.response.text() });
     } catch (aiErr) {
