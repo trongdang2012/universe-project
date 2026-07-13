@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 
 const AiTutorScreen = ({ onBack, user, isFloating = false }) => {
   const [messages, setMessages] = useState([
@@ -78,13 +79,19 @@ const AiTutorScreen = ({ onBack, user, isFloating = false }) => {
     setInputValue('');
     setIsTyping(true);
 
-    // Giả lập độ trễ tự nhiên (0.8 – 1.5s)
-    const delay = 800 + Math.random() * 700;
-    await new Promise(r => setTimeout(r, delay));
-
-    const reply = getDemoReply(userMsg);
-    setMessages(prev => [...prev, { id: Date.now(), isBot: true, text: reply }]);
-    setIsTyping(false);
+    try {
+      const res = await axios.post('/api/ai/chat', {
+        message: userMsg,
+        userId: user?.id
+      });
+      setMessages(prev => [...prev, { id: Date.now(), isBot: true, text: res.data.reply }]);
+    } catch (err) {
+      console.warn("UniBot chuyển sang Offline Mock Mode");
+      const reply = getDemoReply(userMsg);
+      setMessages(prev => [...prev, { id: Date.now(), isBot: true, text: reply }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   // Chế độ floating (embedded trong nút nổi) - không có header và back button riêng
