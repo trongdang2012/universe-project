@@ -2901,14 +2901,7 @@ const GoogleClassroomSyncButton = ({ userId, onSyncSuccess, showAlert }) => {
         {isSyncing ? "Đang đồng bộ..." : "Đăng nhập Google"}
       </button>
 
-      <button
-        onClick={handleSyncMock}
-        disabled={isSyncing}
-        className="bg-green-600 flex items-center justify-center gap-2 text-white px-4 py-2 rounded-xl font-bold text-xs shadow-sm hover:bg-green-700 transition active-scale"
-        title="Đồng bộ nhanh với dữ liệu bài tập giả lập để chạy thử tính năng"
-      >
-        <span>⚡</span> {isSyncing ? "Đang đồng bộ..." : "Đồng bộ Demo"}
-      </button>
+
 
       {/* Popup thông báo thành công */}
       {syncResult && (
