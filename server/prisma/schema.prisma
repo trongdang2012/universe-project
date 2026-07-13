@@ -75,6 +75,7 @@ model User {
   carpoolRequests  CarpoolRequest[]  @relation("PassengerRequests")
   carpoolOffers    CarpoolOffer[]    @relation("DriverOffers")
   reportsSubmitted Report[]          @relation("Reporter")
+  grades           Grade[]
 }
 
 // ============================================
@@ -454,4 +455,23 @@ model Report {
   createdAt   DateTime @default(now())
 
   reporter    User     @relation("Reporter", fields: [reporterId], references: [id], onDelete: Cascade)
+}
+
+model Grade {
+  id          Int      @id @default(autoincrement())
+  stt         String?
+  subjectId   String   // mã học phần (ma_hp)
+  subject     String   // tên môn (ten_mon)
+  credits     Int      @default(0) // số tín chỉ
+  grade10     Float?   // điểm hệ 10
+  grade4      Float?   // điểm hệ 4
+  gradeLetter String? // điểm chữ
+  result      String?  // kết quả (Dat / Khong dat)
+  semester    String   // học kỳ
+  hasGrade    Boolean  @default(false)
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@unique([userId, subjectId])
 }

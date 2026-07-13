@@ -1,0 +1,7 @@
+version: "2"
+authtoken: 3DFfvewX3dVjW63sEZwuCbaaaC3_2tPDz4wyHH2k413VSJa34
+tunnels:
+  app:
+    proto: http
+    addr: 5000
+    domain: flashbulb-chemicals-partition.ngrok-free.dev

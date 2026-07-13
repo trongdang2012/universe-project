@@ -18,8 +18,11 @@ const AdminScreen = ({ user, onLogout }) => {
 
   // Setup axios instance cho Admin, đính kèm headers
   const adminAxios = axios.create({
-    baseURL: '/api/admin',
-    headers: { 'admin-id': user?.id }
+    baseURL: (import.meta.env.VITE_API_URL || 'http://localhost:5000') + '/api/admin',
+    headers: { 
+      'admin-id': user?.id,
+      'ngrok-skip-browser-warning': '69420'
+    }
   });
 
   useEffect(() => {
