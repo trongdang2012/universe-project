@@ -2664,6 +2664,30 @@ function App() {
                   </div>
                 </div>
               </div>
+              {/* ĐỔI MẬT KHẨU */}
+              <div className={`border-t pt-4 mt-2 ${panicMode ? 'border-gray-700' : ''}`}>
+                <p className="text-sm font-bold mb-3">🔒 Đổi Mật Khẩu</p>
+                <div className="space-y-3">
+                  <div><label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu hiện tại</label><input type="password" id="pw_current" placeholder="Nhập mật khẩu hiện tại" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div><label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu mới</label><input type="password" id="pw_new" placeholder="Ít nhất 3 ký tự" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+                    <div><label className="text-xs font-bold text-gray-500 mb-1 block">Xác nhận mật khẩu</label><input type="password" id="pw_confirm" placeholder="Nhập lại mật khẩu mới" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+                  </div>
+                  <button type="button" onClick={async () => {
+                    const cur = document.getElementById('pw_current').value;
+                    const nw = document.getElementById('pw_new').value;
+                    const cf = document.getElementById('pw_confirm').value;
+                    if (!cur || !nw) return showAlert('Vui lòng điền đầy đủ mật khẩu!', 'warning');
+                    if (nw !== cf) return showAlert('Mật khẩu mới không khớp!', 'error');
+                    if (nw.length < 3) return showAlert('Mật khẩu mới phải có ít nhất 3 ký tự!', 'warning');
+                    try {
+                      const r = await axios.post('/api/auth/change-password', { userId: user.id, currentPassword: cur, newPassword: nw });
+                      if (r.data.success) { showAlert('Đổi mật khẩu thành công! 🎉', 'success'); document.getElementById('pw_current').value = ''; document.getElementById('pw_new').value = ''; document.getElementById('pw_confirm').value = ''; }
+                      else { showAlert(r.data.message || 'Đổi mật khẩu thất bại!', 'error'); }
+                    } catch (err) { showAlert('Lỗi kết nối máy chủ!', 'error'); }
+                  }} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-lg transition flex items-center justify-center gap-2">🔑 Đổi Mật Khẩu</button>
+                </div>
+              </div>
               <button type="submit" disabled={isUploading} className={`w-full ${isUploading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white font-bold py-3 rounded-lg mt-4 shadow-md transition`}>
                 {isUploading ? "Đang xử lý ảnh..." : "Lưu Hồ Sơ"}
               </button>

@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const cors = require('cors');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -1147,6 +1147,26 @@ app.post('/api/auth/login', async (req, res) => {
   } catch (err) { res.json({ success: false }); }
 });
 app.post('/api/auth/update-coins', async (req, res) => { try { const updatedUser = await prisma.user.update({ where: { username: req.body.username }, data: { coins: req.body.coins } }); res.json({ success: true, user: updatedUser }); } catch (err) {} });
+app.post('/api/auth/change-password', async (req, res) => {
+  try {
+    const { userId, currentPassword, newPassword } = req.body;
+    if (!userId || !currentPassword || !newPassword) return res.json({ success: false, message: 'Vui lòng điền đầy đủ thông tin!' });
+    if (newPassword.length < 3) return res.json({ success: false, message: 'Mật khẩu mới phải có ít nhất 3 ký tự!' });
+    const user = await prisma.user.findUnique({ where: { id: parseInt(userId) } });
+    if (!user) return res.json({ success: false, message: 'Không tìm thấy người dùng!' });
+    const isHashed = user.password.startsWith('$2b') || user.password.startsWith('$2a');
+    let isValid = false;
+    if (isHashed) {
+      isValid = await bcrypt.compare(currentPassword, user.password);
+    } else {
+      isValid = user.password === currentPassword;
+    }
+    if (!isValid) return res.json({ success: false, message: 'Mật khẩu hiện tại không đúng!' });
+    const hashedNew = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({ where: { id: user.id }, data: { password: hashedNew } });
+    res.json({ success: true, message: 'Đổi mật khẩu thành công!' });
+  } catch (err) { res.json({ success: false, message: 'Lỗi hệ thống!' }); }
+});
 app.get('/api/notifications/:userId', async (req, res) => { try { const notifs = await prisma.notification.findMany({ where: { userId: parseInt(req.params.userId) }, include: { sourceUser: { select: { fullName: true, username: true, avatarUrl: true } } }, orderBy: { createdAt: 'desc' } }); res.json(notifs); } catch (err) {} });
 
 // API Admin
