@@ -148,7 +148,7 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
         items.push({
           id: `exam-${e.id}`,
           type: 'exam',
-          subject: `🚨 THI: ${e.subject}`,
+          subject: `THI: ${e.subject}`,
           task: `Phòng: ${e.room || 'chưa rõ'}`,
           time: e.examTime || '',
           sortTime: e.examTime || '00:00',
@@ -276,21 +276,21 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case 'class': return <Icons.BookOpen className="w-4 h-4 text-indigo-500" />;
-      case 'exam': return <Icons.AlertTriangle className="w-4 h-4 text-red-500" />;
-      case 'task': return <Icons.CheckSquare className="w-4 h-4 text-amber-500" />;
-      case 'free': return '🌴';
-      default: return <Icons.Zap className="w-4 h-4 text-gray-500" />;
+      case 'class': return <Icons.BookOpen className="w-3.5 h-3.5" />;
+      case 'exam': return <Icons.AlertTriangle className="w-3.5 h-3.5" />;
+      case 'task': return <Icons.CheckSquare className="w-3.5 h-3.5" />;
+      case 'free': return <Icons.Sun className="w-3.5 h-3.5" />;
+      default: return <Icons.Zap className="w-3.5 h-3.5" />;
     }
   };
 
-  const getTypeBorderColor = (type) => {
+  const getTypeColor = (type) => {
     switch (type) {
-      case 'class': return 'border-l-indigo-500';
-      case 'exam': return 'border-l-red-500';
-      case 'task': return 'border-l-amber-500';
-      case 'free': return 'border-l-green-500';
-      default: return 'border-l-gray-300';
+      case 'class': return { dot: 'bg-zinc-800', text: 'text-zinc-700', border: 'border-zinc-200', bg: 'bg-zinc-50/60' };
+      case 'exam': return { dot: 'bg-red-500', text: 'text-red-600', border: 'border-red-200/60', bg: 'bg-red-50/40' };
+      case 'task': return { dot: 'bg-amber-500', text: 'text-amber-600', border: 'border-amber-200/60', bg: 'bg-amber-50/40' };
+      case 'free': return { dot: 'bg-emerald-500', text: 'text-emerald-600', border: 'border-emerald-200/60', bg: 'bg-emerald-50/40' };
+      default: return { dot: 'bg-zinc-400', text: 'text-zinc-500', border: 'border-zinc-100', bg: 'bg-zinc-50/40' };
     }
   };
 
@@ -363,47 +363,51 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
     });
   };
 
+  const dayOptions = ["Hôm nay", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
+
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <style>{`
         @keyframes popOut {
           0% { transform: scale(1); opacity: 1; }
-          50% { transform: scale(1.3) translateY(-10px); opacity: 0.8; }
-          100% { transform: scale(1) translateY(-20px); opacity: 0; }
+          50% { transform: scale(1.2) translateY(-8px); opacity: 0.7; }
+          100% { transform: scale(1) translateY(-16px); opacity: 0; }
         }
         .celebrate-anim::after {
-          content: "🎉 +1";
+          content: "✓ Done";
           position: absolute;
-          right: -20px;
-          top: -10px;
-          color: #f59e0b;
-          font-weight: bold;
-          font-size: 14px;
-          animation: popOut 1s ease-out forwards;
+          right: -16px;
+          top: -8px;
+          color: #18181b;
+          font-weight: 600;
+          font-size: 11px;
+          letter-spacing: 0.02em;
+          animation: popOut 0.8s ease-out forwards;
           pointer-events: none;
         }
       `}</style>
 
-      {/* HEADER TABS - Pill design */}
-      <div className="flex justify-between items-center bg-white p-2 rounded-2xl border border-gray-100 shadow-sm">
-        <div className="flex gap-1.5 w-full sm:w-auto">
+      {/* ─── HEADER TABS ─── */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-0.5 bg-zinc-100 p-0.5 rounded-lg">
           <button 
             onClick={() => setActiveTab('smart')} 
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${activeTab === 'smart' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-[13px] font-medium transition-all duration-200 ${activeTab === 'smart' ? 'bg-white text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]' : 'text-zinc-500 hover:text-zinc-700'}`}
           >
-            <Icons.Zap className="w-4 h-4" />
-            Lịch Học & Task
+            <Icons.Zap className="w-3.5 h-3.5" />
+            Lịch & Công việc
           </button>
           <button 
             onClick={() => setActiveTab('marks')} 
-            className={`flex-1 sm:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 ${activeTab === 'marks' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/10' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}
+            className={`flex items-center gap-1.5 px-4 py-2 rounded-md text-[13px] font-medium transition-all duration-200 ${activeTab === 'marks' ? 'bg-white text-zinc-900 shadow-[0_1px_3px_rgba(0,0,0,0.08)]' : 'text-zinc-500 hover:text-zinc-700'}`}
           >
-            <Icons.Award className="w-4 h-4" />
-            Kết Quả Học Tập
+            <Icons.Award className="w-3.5 h-3.5" />
+            Kết quả học tập
           </button>
         </div>
-        <button onClick={onBack} className="hidden sm:flex items-center gap-1.5 text-xs text-gray-500 hover:text-indigo-600 font-bold px-3 py-2 rounded-xl hover:bg-slate-50 transition">
-          ✕ Đóng
+        <button onClick={onBack} className="hidden sm:flex items-center gap-1 text-[12px] text-zinc-400 hover:text-zinc-600 font-medium px-2.5 py-1.5 rounded-md hover:bg-zinc-50 transition-colors">
+          <Icons.X className="w-3.5 h-3.5" />
+          Đóng
         </button>
       </div>
 
@@ -411,56 +415,52 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
         {activeTab === 'smart' && (
           <motion.div 
             key="smart-tab"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             className="space-y-4"
           >
-            {/* 1. THANH TIẾN ĐỘ TUẦN */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 p-6 rounded-3xl text-white shadow-xl shadow-indigo-500/10">
-              <div className="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-              <div className="flex items-center gap-4 mb-5">
-                <div className="w-12 h-12 bg-white/15 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20 shadow-inner">
-                  <Icons.Zap className="w-6 h-6 text-yellow-300" />
-                </div>
+            {/* ─── 1. PROGRESS OVERVIEW ─── */}
+            <div className="bg-zinc-900 rounded-xl p-6 text-white">
+              <div className="flex items-start justify-between mb-6">
                 <div>
-                  <h4 className="font-black text-xl tracking-tight">Lịch Học Thông Minh</h4>
-                  <p className="text-indigo-100 text-xs">AI đồng hành và tối ưu hóa lộ trình cá nhân của bạn.</p>
+                  <h3 className="text-[15px] font-semibold tracking-tight text-white/90">Tiến độ tuần này</h3>
+                  <p className="text-[12px] text-zinc-400 mt-0.5 leading-relaxed">
+                    {progress.total === 0 ? 'Chưa có mục tiêu nào trong tuần.' 
+                      : `Hoàn thành ${progress.done}/${progress.total} mục tiêu`}
+                  </p>
+                </div>
+                <div className="text-right">
+                  <span className="text-[28px] font-semibold tracking-tight tabular-nums">{progress.percent}<span className="text-[16px] text-zinc-500 font-normal">%</span></span>
                 </div>
               </div>
-
-              <div className="bg-white/10 p-5 rounded-2xl border border-white/10 backdrop-blur-lg">
-                <div className="flex justify-between items-end mb-2.5">
-                  <h5 className="font-bold text-[14px]">Tiến độ tuần này</h5>
-                  <span className="font-black text-2xl text-yellow-300">{progress.percent}%</span>
-                </div>
-                <div className="h-3.5 w-full bg-black/15 rounded-full overflow-hidden shadow-inner p-0.5 border border-white/5">
-                  <div 
-                    className={`h-full rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(253,224,71,0.5)] ${progress.percent === 100 ? 'bg-gradient-to-r from-emerald-400 to-teal-400' : 'bg-gradient-to-r from-yellow-300 to-amber-300'}`} 
-                    style={{ width: `${progress.percent}%` }}
-                  ></div>
-                </div>
-                <p className="text-[12px] mt-2.5 text-indigo-100 font-medium">
-                  {progress.total === 0 ? 'Chưa có công việc hoặc môn thi nào trong tuần.' 
-                    : `Đã hoàn thành ${progress.done}/${progress.total} mục tiêu tuần. ${progress.percent >= 100 ? 'Quá đỉnh! 🎉' : progress.percent >= 80 ? 'Xuất sắc! 🔥' : progress.percent >= 50 ? 'Cố lên nhé 🚀' : 'Bắt đầu thôi nào 💪'}`}
+              <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
+                <div 
+                  className={`h-full rounded-full transition-all duration-700 ease-out ${progress.percent >= 100 ? 'bg-emerald-400' : 'bg-white'}`} 
+                  style={{ width: `${progress.percent}%` }}
+                ></div>
+              </div>
+              {progress.total > 0 && (
+                <p className="text-[11px] text-zinc-500 mt-3 font-medium">
+                  {progress.percent >= 100 ? 'Hoàn thành xuất sắc tuần này.' : progress.percent >= 80 ? 'Gần hoàn thành — cố gắng thêm.' : progress.percent >= 50 ? 'Nửa chặng đường.' : 'Bắt đầu thôi.'}
                 </p>
-              </div>
+              )}
             </div>
 
-            {/* 2. LỊCH THI */}
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="font-black text-[15px] text-slate-800 flex items-center gap-2">
-                  <span className="bg-rose-50 text-rose-500 w-9 h-9 rounded-xl flex items-center justify-center border border-rose-100"><Icons.Edit className="w-4 h-4" /></span>
-                  Lịch thi sắp tới
-                  {upcomingExams.length > 0 && <span className="text-[10px] bg-rose-100 text-rose-600 font-black px-2.5 py-0.5 rounded-full">{upcomingExams.length}</span>}
-                </h4>
+            {/* ─── 2. LỊCH THI ─── */}
+            <div className="bg-white rounded-xl border border-zinc-200/70 overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+                  <h4 className="text-[13px] font-semibold text-zinc-800 tracking-tight">Lịch thi sắp tới</h4>
+                  {upcomingExams.length > 0 && <span className="text-[10px] font-medium text-zinc-400 bg-zinc-100 px-1.5 py-0.5 rounded">{upcomingExams.length}</span>}
+                </div>
                 <button 
                   onClick={() => setShowExamForm(!showExamForm)} 
-                  className={`text-xs font-bold px-3.5 py-2 rounded-xl transition-all duration-300 active-scale ${showExamForm ? 'bg-slate-100 text-slate-600' : 'bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-100'}`}
+                  className={`text-[12px] font-medium px-3 py-1.5 rounded-md transition-colors ${showExamForm ? 'bg-zinc-100 text-zinc-600' : 'text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700'}`}
                 >
-                  {showExamForm ? '✕ Hủy' : '+ Thêm lịch thi'}
+                  {showExamForm ? 'Hủy' : '+ Thêm'}
                 </button>
               </div>
 
@@ -471,88 +471,93 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     onSubmit={handleAddExam} 
-                    className="p-4 bg-rose-50/50 rounded-2xl mb-4 border border-rose-100/50 space-y-3 overflow-hidden"
+                    className="px-5 py-4 border-b border-zinc-100 overflow-hidden bg-zinc-50/50"
                   >
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-rose-700 pl-1">Tên môn học</label>
-                        <input type="text" placeholder="Môn thi *" required value={examForm.subject} onChange={e => setExamForm({...examForm, subject: e.target.value})} className="w-full border border-gray-200 p-2.5 rounded-xl outline-none focus:border-rose-400 text-sm bg-white" />
+                      <div>
+                        <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Tên môn học</label>
+                        <input type="text" placeholder="VD: Toán cao cấp" required value={examForm.subject} onChange={e => setExamForm({...examForm, subject: e.target.value})} className="w-full border border-zinc-200 px-3 py-2 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors" />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-rose-700 pl-1">Ngày thi</label>
-                        <input type="date" required value={examForm.examDate} onChange={e => setExamForm({...examForm, examDate: e.target.value})} className="w-full border border-gray-200 p-2.5 rounded-xl outline-none focus:border-rose-400 text-sm bg-white" />
+                      <div>
+                        <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Ngày thi</label>
+                        <input type="date" required value={examForm.examDate} onChange={e => setExamForm({...examForm, examDate: e.target.value})} className="w-full border border-zinc-200 px-3 py-2 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors" />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-rose-700 pl-1">Giờ thi (Không bắt buộc)</label>
-                        <input type="time" value={examForm.examTime} onChange={e => setExamForm({...examForm, examTime: e.target.value})} className="w-full border border-gray-200 p-2.5 rounded-xl outline-none focus:border-rose-400 text-sm bg-white" />
+                      <div>
+                        <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Giờ thi</label>
+                        <input type="time" value={examForm.examTime} onChange={e => setExamForm({...examForm, examTime: e.target.value})} className="w-full border border-zinc-200 px-3 py-2 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors" />
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[11px] font-bold text-rose-700 pl-1">Phòng thi (Không bắt buộc)</label>
-                        <input type="text" placeholder="Ví dụ: A3.204" value={examForm.room} onChange={e => setExamForm({...examForm, room: e.target.value})} className="w-full border border-gray-200 p-2.5 rounded-xl outline-none focus:border-rose-400 text-sm bg-white" />
+                      <div>
+                        <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Phòng thi</label>
+                        <input type="text" placeholder="VD: A3.204" value={examForm.room} onChange={e => setExamForm({...examForm, room: e.target.value})} className="w-full border border-zinc-200 px-3 py-2 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors" />
                       </div>
                     </div>
-                    <div className="flex justify-end pt-2">
-                      <button type="submit" className="btn-gradient-rose font-bold px-6 py-2.5 rounded-xl text-xs active-scale">Lưu Lịch Thi</button>
+                    <div className="flex justify-end pt-3">
+                      <button type="submit" className="bg-zinc-900 text-white font-medium px-4 py-2 rounded-lg text-[12px] hover:bg-zinc-800 transition-colors">Lưu lịch thi</button>
                     </div>
                   </motion.form>
                 )}
               </AnimatePresence>
 
-              {upcomingExams.length === 0 ? (
-                <div className="text-center py-6 border border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
-                  <Icons.FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                  <p className="text-xs font-medium text-slate-400">Bạn chưa có lịch thi nào sắp tới.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {upcomingExams.map(exam => {
-                    const examDate = new Date(exam.examDate);
-                    const today = new Date(); today.setHours(0,0,0,0);
-                    const daysLeft = Math.ceil((examDate - today) / (1000*60*60*24));
-                    const isUrgent = daysLeft <= 3;
-                    
-                    return (
-                      <div key={exam.id} className={`p-4 rounded-2xl border flex items-center gap-4 transition-all duration-300 hover:shadow-sm relative group ${isUrgent ? 'bg-rose-50/80 border-rose-100' : 'bg-slate-50/70 border-slate-100 hover:bg-slate-50'}`}>
-                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 border ${isUrgent ? 'bg-rose-200/50 border-rose-200 text-rose-600' : 'bg-white border-slate-200 text-slate-500'}`}>
-                          {isUrgent ? <Icons.AlertTriangle className="w-5 h-5" /> : <Icons.FileText className="w-5 h-5" />}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-extrabold text-[14px] text-slate-800 truncate">{exam.subject}</p>
-                          <div className="flex flex-wrap gap-1.5 mt-1.5">
-                            <span className="text-[10px] font-bold bg-white px-2 py-0.5 flex items-center gap-1 rounded-lg border border-slate-200 text-slate-600"><Icons.Calendar className="w-3 h-3 text-indigo-500" /> {formatDateVN(exam.examDate)}</span>
-                            {exam.examTime && <span className="text-[10px] font-bold bg-white px-2 py-0.5 flex items-center gap-1 rounded-lg border border-slate-200 text-slate-600"><Icons.Clock className="w-3 h-3 text-indigo-500" /> {exam.examTime}</span>}
-                            {exam.room && <span className="text-[10px] font-bold bg-white px-2 py-0.5 flex items-center gap-1 rounded-lg border border-slate-200 text-slate-600"><Icons.MapPin className="w-3 h-3 text-indigo-500" /> {exam.room}</span>}
-                            <span className={`text-[10px] font-black px-2 py-0.5 rounded-lg ${daysLeft === 0 ? 'bg-rose-600 text-white' : isUrgent ? 'bg-rose-100 text-rose-700' : 'bg-indigo-50 text-indigo-700'}`}>
-                              {daysLeft === 0 ? '🔥 HÔM NAY' : daysLeft === 1 ? '⚡ NGÀY MAI' : `Còn ${daysLeft} ngày`}
-                            </span>
+              <div className="px-5 py-4">
+                {upcomingExams.length === 0 ? (
+                  <div className="text-center py-6">
+                    <p className="text-[12px] text-zinc-400 font-medium">Chưa có lịch thi nào sắp tới.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {upcomingExams.map(exam => {
+                      const examDate = new Date(exam.examDate);
+                      const today = new Date(); today.setHours(0,0,0,0);
+                      const daysLeft = Math.ceil((examDate - today) / (1000*60*60*24));
+                      const isUrgent = daysLeft <= 3;
+                      
+                      return (
+                        <div key={exam.id} className={`flex items-center gap-4 px-4 py-3 rounded-lg border transition-colors relative group ${isUrgent ? 'border-red-200/70 bg-red-50/30' : 'border-zinc-100 bg-zinc-50/30 hover:bg-zinc-50'}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${isUrgent ? 'bg-red-500' : 'bg-zinc-300'}`}></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[13px] font-semibold text-zinc-800 truncate tracking-tight">{exam.subject}</p>
+                            <div className="flex flex-wrap items-center gap-2 mt-1">
+                              <span className="text-[11px] text-zinc-500 font-medium flex items-center gap-1"><Icons.Calendar className="w-3 h-3" />{formatDateVN(exam.examDate)}</span>
+                              {exam.examTime && <span className="text-[11px] text-zinc-500 font-medium flex items-center gap-1"><Icons.Clock className="w-3 h-3" />{exam.examTime}</span>}
+                              {exam.room && <span className="text-[11px] text-zinc-500 font-medium flex items-center gap-1"><Icons.MapPin className="w-3 h-3" />{exam.room}</span>}
+                            </div>
                           </div>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded flex-shrink-0 ${daysLeft === 0 ? 'bg-red-500 text-white' : isUrgent ? 'bg-red-100 text-red-700' : 'bg-zinc-100 text-zinc-600'}`}>
+                            {daysLeft === 0 ? 'Hôm nay' : daysLeft === 1 ? 'Ngày mai' : `${daysLeft} ngày`}
+                          </span>
+                          <button onClick={() => handleDeleteExam(exam.id)} className="opacity-0 group-hover:opacity-100 text-zinc-400 hover:text-red-500 transition-all p-1 rounded">
+                            <Icons.X className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <button onClick={() => handleDeleteExam(exam.id)} className="opacity-0 group-hover:opacity-100 absolute -top-2.5 -right-2.5 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs shadow-md hover:bg-red-600 transition-all duration-300">✕</button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* 3. GỢI Ý NHIỆM VỤ */}
-            <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="font-black text-[15px] text-slate-800 flex items-center gap-2">
-                  <span className="bg-indigo-50 text-indigo-500 w-9 h-9 rounded-xl flex items-center justify-center border border-indigo-100"><Icons.Cpu className="w-4 h-4" /></span>
-                  Gợi ý công việc {suggestDay === 'Hôm nay' ? 'hôm nay' : suggestDay.toLowerCase()}
-                </h4>
+            {/* ─── 3. GỢI Ý CÔNG VIỆC ─── */}
+            <div className="bg-white rounded-xl border border-zinc-200/70 overflow-hidden">
+              <div className="flex items-center justify-between px-5 py-3.5 border-b border-zinc-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-800"></div>
+                  <h4 className="text-[13px] font-semibold text-zinc-800 tracking-tight">
+                    Công việc {suggestDay === 'Hôm nay' ? 'hôm nay' : suggestDay.toLowerCase()}
+                  </h4>
+                </div>
                 <div className="relative">
                   <button 
                     onClick={() => setSuggestDropdownOpen(!suggestDropdownOpen)} 
-                    className="px-3.5 py-2 text-xs rounded-xl font-bold border bg-indigo-600 text-white border-indigo-600 flex items-center gap-2 outline-none shadow-sm hover:bg-indigo-700 transition active-scale"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-medium text-zinc-600 bg-zinc-50 border border-zinc-200 rounded-lg hover:bg-zinc-100 transition-colors"
                   >
-                    <Icons.Calendar className="w-3.5 h-3.5" /> {suggestDay} <span className="text-[8px]">{suggestDropdownOpen ? '▲' : '▼'}</span>
+                    <Icons.Calendar className="w-3 h-3 text-zinc-400" />
+                    {suggestDay}
+                    <Icons.ChevronDown className="w-3 h-3 text-zinc-400" />
                   </button>
                   {suggestDropdownOpen && (
-                    <div className="absolute top-full right-0 mt-1.5 w-40 bg-white border border-gray-100 shadow-xl rounded-2xl z-20 overflow-y-auto max-h-[200px] py-1 animate-slide-up">
+                    <div className="absolute top-full right-0 mt-1 w-36 bg-white border border-zinc-200 shadow-[0_4px_12px_rgba(0,0,0,0.08)] rounded-lg z-20 overflow-y-auto max-h-[200px] py-0.5">
                       {dayOptions.map(day => (
-                        <div key={day} onClick={() => { setSuggestDay(day); setSuggestDropdownOpen(false); }} className={`px-4 py-2.5 text-xs font-bold cursor-pointer transition ${suggestDay === day ? 'bg-indigo-50 text-indigo-700 font-extrabold' : 'text-slate-600 hover:bg-slate-50'}`}>
+                        <div key={day} onClick={() => { setSuggestDay(day); setSuggestDropdownOpen(false); }} className={`px-3 py-2 text-[12px] font-medium cursor-pointer transition-colors ${suggestDay === day ? 'bg-zinc-100 text-zinc-900' : 'text-zinc-600 hover:bg-zinc-50'}`}>
                           {day}
                         </div>
                       ))}
@@ -561,37 +566,40 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
                 </div>
               </div>
 
-              <div className="space-y-3">
+              <div className="divide-y divide-zinc-100">
                 {suggestions.map(item => {
                   const isDone = doneSuggestions.includes(item.id);
                   const canToggle = item.type !== 'free';
+                  const colors = getTypeColor(item.type);
                   
                   return (
                     <div 
                       key={item.id} 
-                      className={`p-4 rounded-2xl flex items-start gap-4 transition-all duration-300 border border-l-4 relative ${getTypeBorderColor(item.type)} ${isDone ? 'bg-slate-50/50 border-slate-100 opacity-60' : 'bg-slate-50/20 border-slate-100 hover:shadow-md hover:bg-white'}`}
+                      className={`flex items-start gap-3.5 px-5 py-3.5 transition-all duration-200 relative ${isDone ? 'opacity-50' : 'hover:bg-zinc-50/60'}`}
                     >
-                      {canToggle && (
+                      {canToggle ? (
                         <div 
                           onClick={() => toggleSuggestionDone(item.id)} 
-                          className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 border-2 cursor-pointer transition-all duration-300 ${isDone ? 'bg-emerald-500 border-emerald-500' : 'border-slate-300 bg-white hover:border-indigo-500'} ${celebratingId === item.id ? 'celebrate-anim' : ''}`}
+                          className={`mt-0.5 w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 border cursor-pointer transition-all duration-200 ${isDone ? 'bg-zinc-800 border-zinc-800' : 'border-zinc-300 bg-white hover:border-zinc-500'} ${celebratingId === item.id ? 'celebrate-anim' : ''}`}
                         >
-                          {isDone && <Icons.Check className="w-3.5 h-3.5 text-white" />}
+                          {isDone && <Icons.Check className="w-3 h-3 text-white" />}
                         </div>
-                      )}
-                      {!canToggle && (
-                        <div className="mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 text-base">
+                      ) : (
+                        <div className={`mt-0.5 w-[18px] h-[18px] rounded flex items-center justify-center flex-shrink-0 ${colors.text}`}>
                           {getTypeIcon(item.type)}
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <p className={`font-black text-[14px] leading-tight mb-1 flex items-center gap-1.5 ${isDone ? 'line-through text-slate-400' : 'text-slate-800'}`}>
-                          {item.subject}
-                        </p>
-                        <p className={`text-[12px] font-medium leading-snug ${isDone ? 'text-slate-400' : 'text-slate-500'}`}>{item.task}</p>
+                        <div className="flex items-center gap-2">
+                          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${colors.dot}`}></span>
+                          <p className={`text-[13px] font-medium tracking-tight leading-tight ${isDone ? 'line-through text-zinc-400' : 'text-zinc-800'}`}>
+                            {item.subject}
+                          </p>
+                        </div>
+                        <p className={`text-[11px] mt-1 ml-3.5 leading-relaxed ${isDone ? 'text-zinc-400' : 'text-zinc-500'}`}>{item.task}</p>
                         {item.time && (
-                          <span className={`text-[10px] font-bold mt-2.5 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border ${isDone ? 'bg-slate-100 border-slate-200 text-slate-400' : 'bg-indigo-50/50 border-indigo-100 text-indigo-600'}`}>
-                            <Icons.Clock className="w-3.5 h-3.5 text-indigo-500" /> {item.time}
+                          <span className={`text-[10px] font-medium mt-2 ml-3.5 inline-flex items-center gap-1 px-2 py-0.5 rounded border ${isDone ? 'bg-zinc-50 border-zinc-100 text-zinc-400' : 'bg-zinc-50 border-zinc-200 text-zinc-500'}`}>
+                            <Icons.Clock className="w-3 h-3" /> {item.time}
                           </span>
                         )}
                       </div>
@@ -606,150 +614,144 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
         {activeTab === 'marks' && (
           <motion.div 
             key="marks-tab"
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -15 }}
-            transition={{ duration: 0.25 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
             className="space-y-4"
           >
-            {/* THỐNG KÊ ĐIỂM SỐ - CARD TIỆN ÍCH */}
+            {/* ─── STATS ROW ─── */}
             <div className="grid grid-cols-3 gap-3">
-              <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 p-4 rounded-2xl text-white shadow-lg border border-indigo-400/20">
-                <span className="text-[10px] text-indigo-100 font-bold uppercase tracking-wider block mb-1">GPA Tích Lũy (4)</span>
-                <span className="text-2xl font-black">{stats.gpa4}</span>
-                <Icons.Award className="w-5 h-5 text-indigo-200/50 absolute right-3 bottom-3" />
+              <div className="bg-white border border-zinc-200/70 rounded-xl px-4 py-4 relative overflow-hidden">
+                <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider block mb-1.5">GPA hệ 4</span>
+                <span className="text-[22px] font-semibold tracking-tight text-zinc-900 tabular-nums">{stats.gpa4}</span>
+                <div className="absolute -right-2 -bottom-2 w-12 h-12 bg-zinc-50 rounded-full"></div>
               </div>
-              <div className="bg-gradient-to-br from-violet-500 to-violet-600 p-4 rounded-2xl text-white shadow-lg border border-violet-400/20">
-                <span className="text-[10px] text-violet-100 font-bold uppercase tracking-wider block mb-1">GPA Hệ 10</span>
-                <span className="text-2xl font-black">{stats.gpa10}</span>
-                <Icons.BookOpen className="w-5 h-5 text-violet-200/50 absolute right-3 bottom-3" />
+              <div className="bg-white border border-zinc-200/70 rounded-xl px-4 py-4 relative overflow-hidden">
+                <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider block mb-1.5">GPA hệ 10</span>
+                <span className="text-[22px] font-semibold tracking-tight text-zinc-900 tabular-nums">{stats.gpa10}</span>
+                <div className="absolute -right-2 -bottom-2 w-12 h-12 bg-zinc-50 rounded-full"></div>
               </div>
-              <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 p-4 rounded-2xl text-white shadow-lg border border-emerald-400/20">
-                <span className="text-[10px] text-emerald-100 font-bold uppercase tracking-wider block mb-1">Tín chỉ tích lũy</span>
-                <span className="text-2xl font-black">{stats.totalCredits} TC</span>
-                <Icons.Check className="w-5 h-5 text-emerald-200/50 absolute right-3 bottom-3" />
+              <div className="bg-white border border-zinc-200/70 rounded-xl px-4 py-4 relative overflow-hidden">
+                <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider block mb-1.5">Tín chỉ</span>
+                <span className="text-[22px] font-semibold tracking-tight text-zinc-900 tabular-nums">{stats.totalCredits}<span className="text-[13px] text-zinc-400 font-normal ml-0.5">TC</span></span>
+                <div className="absolute -right-2 -bottom-2 w-12 h-12 bg-zinc-50 rounded-full"></div>
               </div>
             </div>
 
-            {/* BỘ LỌC ĐIỂM THI VÀ ĐỒNG BỘ */}
-            <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
-              <div className="flex flex-wrap gap-1.5 items-center">
-                <button 
-                  onClick={() => setMarksFilter('ALL')} 
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${marksFilter === 'ALL' ? 'bg-slate-800 text-white' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}`}
-                >
-                  Tất cả ({marks.length})
-                </button>
-                <button 
-                  onClick={() => setMarksFilter('PASSED')} 
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${marksFilter === 'PASSED' ? 'bg-emerald-500 text-white' : 'bg-emerald-50/50 text-emerald-600 hover:bg-emerald-50'}`}
-                >
-                  Đạt môn ({marks.filter(m => m.co_diem && m.result === 'Dat').length})
-                </button>
-                <button 
-                  onClick={() => setMarksFilter('FAILED')} 
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${marksFilter === 'FAILED' ? 'bg-red-500 text-white' : 'bg-red-50/50 text-red-600 hover:bg-red-50'}`}
-                >
-                  Học lại ({marks.filter(m => m.co_diem && m.result === 'Khong dat').length})
-                </button>
+            {/* ─── TOOLBAR ─── */}
+            <div className="bg-white rounded-xl border border-zinc-200/70 px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div className="flex items-center gap-1">
+                {[
+                  { key: 'ALL', label: `Tất cả (${marks.length})` },
+                  { key: 'PASSED', label: `Đạt (${marks.filter(m => m.co_diem && m.result === 'Dat').length})` },
+                  { key: 'FAILED', label: `Học lại (${marks.filter(m => m.co_diem && m.result === 'Khong dat').length})` },
+                ].map(f => (
+                  <button 
+                    key={f.key}
+                    onClick={() => setMarksFilter(f.key)} 
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors ${marksFilter === f.key ? 'bg-zinc-900 text-white' : 'text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700'}`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
               </div>
-
               <div className="flex gap-2 w-full md:w-auto">
-                <div className="relative flex-1 md:w-48">
+                <div className="relative flex-1 md:w-44">
                   <input 
                     type="text" 
-                    placeholder="Tìm môn học..."
+                    placeholder="Tìm môn..."
                     value={searchMarkQuery}
                     onChange={e => setSearchMarkQuery(e.target.value)}
-                    className="w-full border border-slate-200 py-1.5 pl-8 pr-3 rounded-xl outline-none focus:border-indigo-400 text-xs bg-slate-50/50"
+                    className="w-full border border-zinc-200 py-1.5 pl-7 pr-3 rounded-lg outline-none focus:border-zinc-400 text-[12px] bg-white text-zinc-800 transition-colors"
                   />
-                  <Icons.Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
+                  <Icons.Search className="w-3 h-3 text-zinc-400 absolute left-2.5 top-[9px]" />
                 </div>
                 <button 
                   onClick={() => setShowSyncModal(true)} 
-                  className="bg-indigo-50 border border-indigo-200 text-indigo-600 font-bold px-3.5 py-1.5 rounded-xl text-xs hover:bg-indigo-100 transition flex items-center gap-1.5 active-scale flex-shrink-0"
+                  className="flex items-center gap-1.5 text-[11px] font-medium text-zinc-600 bg-zinc-50 border border-zinc-200 px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors flex-shrink-0"
                 >
-                  <Icons.RefreshCw className={`w-3.5 h-3.5 ${isSyncingMarks ? 'animate-spin' : ''}`} />
-                  Đồng bộ điểm QNU
+                  <Icons.RefreshCw className={`w-3 h-3 ${isSyncingMarks ? 'animate-spin' : ''}`} />
+                  Đồng bộ QNU
                 </button>
               </div>
             </div>
 
-            {/* DANH SÁCH BẢNG ĐIỂM CHIA THEO HỌC KỲ */}
+            {/* ─── GRADES TABLE ─── */}
             {isLoadingMarks ? (
-              <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                <Icons.RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mx-auto mb-3" />
-                <p className="text-xs font-bold text-slate-500">Đang tải bảng điểm từ CSDL...</p>
+              <div className="text-center py-16 bg-white rounded-xl border border-zinc-200/70">
+                <Icons.RefreshCw className="w-5 h-5 text-zinc-400 animate-spin mx-auto mb-3" />
+                <p className="text-[12px] text-zinc-400 font-medium">Đang tải bảng điểm...</p>
               </div>
             ) : Object.keys(semesterGroups).length === 0 ? (
-              <div className="text-center py-10 bg-white rounded-2xl border border-dashed border-slate-200 bg-slate-50/30">
-                <Icons.Award className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-                <p className="text-xs font-bold text-slate-500 mb-1">Chưa có dữ liệu điểm học tập.</p>
-                <p className="text-[11px] text-slate-400 mb-3">Nhấn "Đồng bộ điểm QNU" để cào điểm trực tiếp từ cổng đào tạo.</p>
+              <div className="text-center py-16 bg-white rounded-xl border border-dashed border-zinc-200">
+                <Icons.Award className="w-8 h-8 text-zinc-300 mx-auto mb-3" />
+                <p className="text-[13px] font-medium text-zinc-500 mb-1">Chưa có dữ liệu điểm.</p>
+                <p className="text-[11px] text-zinc-400 mb-4 leading-relaxed">Nhấn "Đồng bộ QNU" để lấy điểm từ cổng đào tạo.</p>
                 <button 
                   onClick={() => setShowSyncModal(true)}
-                  className="btn-gradient-indigo px-4 py-2 rounded-xl text-xs font-bold active-scale"
+                  className="bg-zinc-900 text-white font-medium px-4 py-2 rounded-lg text-[12px] hover:bg-zinc-800 transition-colors"
                 >
-                  Kết nối tài khoản QNU
+                  Kết nối tài khoản
                 </button>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {Object.entries(semesterGroups).map(([semesterName, semesterMarks]) => {
                   const filtered = filterMarks(semesterMarks);
                   if (filtered.length === 0) return null;
 
                   return (
-                    <div key={semesterName} className="bg-white rounded-2xl shadow-sm border border-gray-150 overflow-hidden">
-                      <div className="bg-slate-50 px-4 py-3 border-b border-gray-150 flex justify-between items-center">
-                        <span className="font-extrabold text-[13px] text-slate-700">{semesterName}</span>
-                        <span className="text-[10px] font-bold bg-white text-slate-500 border px-2.5 py-0.5 rounded-full">{filtered.length} học phần</span>
+                    <div key={semesterName} className="bg-white rounded-xl border border-zinc-200/70 overflow-hidden">
+                      <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-100">
+                        <span className="text-[12px] font-semibold text-zinc-700 tracking-tight">{semesterName}</span>
+                        <span className="text-[10px] font-medium text-zinc-400">{filtered.length} học phần</span>
                       </div>
                       <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs border-collapse">
+                        <table className="w-full text-left">
                           <thead>
-                            <tr className="border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-wider bg-slate-50/30">
-                              <th className="py-2.5 px-4 font-bold">Mã HP</th>
-                              <th className="py-2.5 px-4 font-bold">Tên học phần</th>
-                              <th className="py-2.5 px-4 font-bold text-center">Tín chỉ</th>
-                              <th className="py-2.5 px-4 font-bold text-center">Hệ 10</th>
-                              <th className="py-2.5 px-4 font-bold text-center">Hệ 4</th>
-                              <th className="py-2.5 px-4 font-bold text-center">Điểm chữ</th>
-                              <th className="py-2.5 px-4 font-bold text-center">Kết quả</th>
+                            <tr className="border-b border-zinc-100">
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Mã HP</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider">Tên học phần</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider text-center">TC</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider text-center">Hệ 10</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider text-center">Hệ 4</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider text-center">Chữ</th>
+                              <th className="py-2.5 px-4 text-[10px] font-medium text-zinc-400 uppercase tracking-wider text-center">KQ</th>
                             </tr>
                           </thead>
                           <tbody>
                             {filtered.map(m => {
                               // Màu sắc dựa trên điểm chữ
-                              let markColor = 'text-slate-700';
-                              let badgeColor = 'bg-slate-100 text-slate-600';
+                              let markColor = 'text-zinc-700';
+                              let badgeStyle = 'bg-zinc-100 text-zinc-600';
                               
                               if (m.gradeLetter === 'F') {
-                                markColor = 'text-red-500 font-extrabold';
-                                badgeColor = 'bg-red-50 text-red-600 border border-red-100';
+                                markColor = 'text-red-600 font-semibold';
+                                badgeStyle = 'bg-red-50 text-red-600';
                               } else if (['D', 'D+'].includes(m.gradeLetter)) {
-                                markColor = 'text-amber-500 font-bold';
-                                badgeColor = 'bg-amber-50 text-amber-600 border border-amber-100';
+                                markColor = 'text-amber-600 font-medium';
+                                badgeStyle = 'bg-amber-50 text-amber-700';
                               } else if (['A', 'A+', 'B+', 'B'].includes(m.gradeLetter)) {
-                                markColor = 'text-emerald-500 font-extrabold';
-                                badgeColor = 'bg-emerald-50 text-emerald-600 border border-emerald-100';
+                                markColor = 'text-emerald-600 font-semibold';
+                                badgeStyle = 'bg-emerald-50 text-emerald-700';
                               }
 
                               return (
-                                <tr key={m.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition">
-                                  <td className="py-3 px-4 font-mono text-[11px] text-slate-400">{m.subjectId}</td>
-                                  <td className="py-3 px-4 font-bold text-slate-800">{m.subject}</td>
-                                  <td className="py-3 px-4 text-center font-bold text-slate-600">{m.credits}</td>
-                                  <td className="py-3 px-4 text-center font-extrabold text-[13px]">{m.grade10 !== null ? m.grade10 : '-'}</td>
-                                  <td className="py-3 px-4 text-center font-bold">{m.grade4 !== null ? m.grade4 : '-'}</td>
-                                  <td className={`py-3 px-4 text-center ${markColor}`}>{m.gradeLetter || '-'}</td>
-                                  <td className="py-3 px-4 text-center">
+                                <tr key={m.id} className="border-b border-zinc-50 hover:bg-zinc-50/50 transition-colors">
+                                  <td className="py-2.5 px-4 font-mono text-[11px] text-zinc-400">{m.subjectId}</td>
+                                  <td className="py-2.5 px-4 text-[12px] font-medium text-zinc-800">{m.subject}</td>
+                                  <td className="py-2.5 px-4 text-[12px] text-center font-medium text-zinc-600 tabular-nums">{m.credits}</td>
+                                  <td className="py-2.5 px-4 text-[13px] text-center font-semibold tabular-nums">{m.grade10 !== null ? m.grade10 : '—'}</td>
+                                  <td className="py-2.5 px-4 text-[12px] text-center font-medium tabular-nums">{m.grade4 !== null ? m.grade4 : '—'}</td>
+                                  <td className={`py-2.5 px-4 text-[12px] text-center ${markColor}`}>{m.gradeLetter || '—'}</td>
+                                  <td className="py-2.5 px-4 text-center">
                                     {m.hasGrade ? (
-                                      <span className={`px-2 py-0.5 rounded-lg text-[10px] font-black uppercase ${badgeColor}`}>
+                                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${badgeStyle}`}>
                                         {m.result === 'Dat' ? 'Đạt' : 'Tạch'}
                                       </span>
                                     ) : (
-                                      <span className="text-[10px] text-slate-300 italic font-bold">Chưa có</span>
+                                      <span className="text-[10px] text-zinc-300 font-medium">—</span>
                                     )}
                                   </td>
                                 </tr>
@@ -767,76 +769,74 @@ const SmartScheduleScreen = ({ onBack, tasks = [], qnuSchedules = [], userId, us
         )}
       </AnimatePresence>
 
-      {/* SYNC MARKS POPUP MODAL */}
+      {/* ─── SYNC MODAL ─── */}
       <AnimatePresence>
         {showSyncModal && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-[2px]"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 15 }}
+              initial={{ scale: 0.95, y: 8 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 15 }}
-              className="bg-white rounded-3xl p-6 w-full max-w-[400px] border border-gray-100 shadow-2xl relative"
+              exit={{ scale: 0.95, y: 8 }}
+              transition={{ duration: 0.15, ease: 'easeOut' }}
+              className="bg-white rounded-xl p-6 w-full max-w-[380px] border border-zinc-200 shadow-[0_8px_30px_rgba(0,0,0,0.12)] relative"
             >
               <button 
                 onClick={() => setShowSyncModal(false)}
-                className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 font-bold p-1 rounded-full hover:bg-slate-100 transition"
+                className="absolute top-4 right-4 text-zinc-400 hover:text-zinc-600 transition-colors p-0.5"
               >
-                ✕
+                <Icons.X className="w-4 h-4" />
               </button>
               
-              <div className="text-center mb-5 mt-2">
-                <div className="w-12 h-12 bg-indigo-50 border border-indigo-100 rounded-2xl flex items-center justify-center text-indigo-500 mx-auto mb-3">
-                  <Icons.Award className="w-6 h-6" />
-                </div>
-                <h4 className="font-black text-lg text-slate-800">Đồng bộ điểm QNU</h4>
-                <p className="text-xs text-slate-500 mt-1">Kết nối với hệ thống đào tạo để cập nhật điểm mới nhất.</p>
+              <div className="mb-5">
+                <h4 className="text-[15px] font-semibold text-zinc-900 tracking-tight">Đồng bộ điểm QNU</h4>
+                <p className="text-[12px] text-zinc-500 mt-1 leading-relaxed">Kết nối với cổng đào tạo để cập nhật điểm mới nhất.</p>
               </div>
 
-              <form onSubmit={handleSyncMarks} className="space-y-4">
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-500 pl-1 uppercase tracking-wider">Mã sinh viên (MSV)</label>
+              <form onSubmit={handleSyncMarks} className="space-y-3">
+                <div>
+                  <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Mã sinh viên</label>
                   <input 
                     type="text" 
                     required 
                     placeholder="Nhập mã sinh viên..."
                     value={qnuCreds.username} 
                     onChange={e => setQnuCreds({ ...qnuCreds, username: e.target.value })}
-                    className="w-full border border-slate-200 p-3 rounded-2xl outline-none focus:border-indigo-500 text-sm bg-slate-50/50 text-slate-800"
+                    className="w-full border border-zinc-200 px-3 py-2.5 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors"
                   />
                 </div>
                 
-                <div className="space-y-1">
-                  <label className="text-[11px] font-bold text-slate-500 pl-1 uppercase tracking-wider">Mật khẩu cổng đào tạo</label>
+                <div>
+                  <label className="text-[11px] font-medium text-zinc-500 mb-1 block">Mật khẩu</label>
                   <input 
                     type="password" 
                     required 
-                    placeholder="Mật khẩu của bạn..."
+                    placeholder="Mật khẩu cổng đào tạo..."
                     value={qnuCreds.password} 
                     onChange={e => setQnuCreds({ ...qnuCreds, password: e.target.value })}
-                    className="w-full border border-slate-200 p-3 rounded-2xl outline-none focus:border-indigo-500 text-sm bg-slate-50/50 text-slate-800"
+                    className="w-full border border-zinc-200 px-3 py-2.5 rounded-lg outline-none focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 text-[13px] bg-white text-zinc-800 transition-colors"
                   />
                 </div>
 
-                <div className="pt-2">
+                <div className="pt-1">
                   <button 
                     type="submit" 
                     disabled={isSyncingMarks}
-                    className="w-full py-3.5 btn-gradient-indigo font-black rounded-2xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 active-scale disabled:opacity-50"
+                    className="w-full py-2.5 bg-zinc-900 text-white font-medium rounded-lg text-[12px] flex items-center justify-center gap-2 hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSyncingMarks ? (
                       <>
-                        <Icons.RefreshCw className="w-4 h-4 animate-spin" />
-                        Đang đồng bộ (mất 15s)...
+                        <Icons.RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        Đang đồng bộ...
                       </>
                     ) : (
                       <>
-                        <Icons.RefreshCw className="w-4 h-4" />
-                        Bắt đầu đồng bộ điểm
+                        <Icons.RefreshCw className="w-3.5 h-3.5" />
+                        Bắt đầu đồng bộ
                       </>
                     )}
                   </button>
