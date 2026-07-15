@@ -1,4 +1,4 @@
-﻿import { fmtUC } from '../utils';
+import { fmtUC } from '../utils';
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { Icons } from '../App';
@@ -380,10 +380,10 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
       {/* MODAL POPUP ĐĂNG BÀI / CHỈNH SỬA SẢN PHẨM */}
       {/* ============================================ */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4" onClick={() => { setShowForm(false); setEditingProduct(null); setFormImages([]); setFormData({ title: '', category: '', condition: '', description: '', price: '', barterFor: '' }); }}>
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-xl animate-scale-up overflow-hidden" style={{ maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
-            <div className="prod-form-header" style={{ padding: '16px 20px', borderBottom: '1px solid #f1f5f9', flexShrink: 0 }}>
-              <h3 className="prod-section-title flex items-center gap-2 m-0"><Icons.Camera className="w-6 h-6 text-indigo-600" /> {editingProduct ? 'Chỉnh sửa sản phẩm' : 'Đăng bài / Pass đồ'}</h3>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => { setShowForm(false); setEditingProduct(null); setFormImages([]); setFormData({ title: '', category: '', condition: '', description: '', price: '', barterFor: '' }); }}>
+          <div className={`rounded-2xl w-full max-w-md overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`} style={{ maxHeight: '92vh', display: 'flex', flexDirection: 'column' }} onClick={e => e.stopPropagation()}>
+            <div className={`prod-form-header border-b ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`} style={{ padding: '14px 18px', flexShrink: 0 }}>
+              <h3 className="prod-section-title flex items-center gap-2 m-0"><Icons.Camera className="w-5 h-5 text-zinc-400" /> {editingProduct ? 'Chỉnh sửa sản phẩm' : 'Đăng bài / Pass đồ'}</h3>
               <button className="prod-form-close" onClick={() => { setShowForm(false); setEditingProduct(null); setFormData({ title: '', category: '', condition: '', description: '', price: '', barterFor: '' }); setFormImages([]); }}>✕</button>
             </div>
 
@@ -556,13 +556,13 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
       {/* ============================================ */}
       <div className="prod-listing-section">
 
-        <div className="flex bg-gray-100 p-1 rounded-xl mb-4 w-full md:w-[400px]">
-          <button className={`flex-1 flex items-center justify-center gap-2 py-2 font-bold text-[14px] transition rounded-lg ${marketTab === 'ALL' ? 'bg-white shadow text-rose-600' : 'text-gray-500 hover:text-gray-700'}`} onClick={() => setMarketTab('ALL')}><Icons.Globe className="w-4 h-4" /> Chợ chung</button>
-          <button className={`flex-1 flex items-center justify-center gap-2 py-2 font-bold text-[14px] transition rounded-lg ${marketTab === 'MINE' ? 'bg-white shadow text-rose-600' : 'text-gray-500 hover:text-gray-700'}`} onClick={() => setMarketTab('MINE')}><Icons.Package className="w-4 h-4" /> Kho cá nhân</button>
+        <div className={`flex p-1 rounded-xl mb-4 w-full md:w-[400px] border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-zinc-100 border-zinc-200'}`}>
+          <button className={`flex-1 flex items-center justify-center gap-2 py-2 font-bold text-[13px] transition rounded-lg ${marketTab === 'ALL' ? (panicMode ? 'bg-zinc-800 text-white' : 'bg-white text-zinc-900 shadow-sm') : (panicMode ? 'text-zinc-500 hover:text-zinc-300' : 'text-zinc-400 hover:text-zinc-700')}`} onClick={() => setMarketTab('ALL')}><Icons.Globe className="w-4 h-4" /> Chợ chung</button>
+          <button className={`flex-1 flex items-center justify-center gap-2 py-2 font-bold text-[13px] transition rounded-lg ${marketTab === 'MINE' ? (panicMode ? 'bg-zinc-800 text-white' : 'bg-white text-zinc-900 shadow-sm') : (panicMode ? 'text-zinc-500 hover:text-zinc-300' : 'text-zinc-400 hover:text-zinc-700')}`} onClick={() => setMarketTab('MINE')}><Icons.Package className="w-4 h-4" /> Kho cá nhân</button>
         </div>
 
         <h3 className="prod-section-title flex items-center gap-2">
-          {marketTab === 'MINE' ? <><Icons.Package className="w-6 h-6 text-indigo-600" /> Kho cá nhân</> : <><Icons.ShoppingBag className="w-6 h-6 text-indigo-600" /> Hàng đang bán</>}
+          {marketTab === 'MINE' ? <><Icons.Package className="w-4 h-4 text-zinc-400" /> Kho cá nhân</> : <><Icons.ShoppingBag className="w-4 h-4 text-zinc-400" /> Hàng đang bán</>}
           <span className="prod-count-badge">{filteredProducts.length} sản phẩm</span>
         </h3>
 
@@ -703,9 +703,9 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
                     <div className="prod-item-action">
                       {product.ownerId === user.id ? (
                         <div className="flex gap-2 w-full mt-2">
-                          <button className="flex-1 py-1 px-2 flex items-center justify-center gap-1.5 rounded-lg bg-gray-100 text-gray-700 font-bold hover:bg-gray-200 text-[13px]" onClick={(e) => { e.stopPropagation(); handleEditProduct(product); }}><Icons.Edit className="w-3.5 h-3.5" /> Tùy chỉnh</button>
+                          <button className={`flex-1 py-1 px-2 flex items-center justify-center gap-1.5 rounded-lg font-bold text-[12px] border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-zinc-200'}`} onClick={(e) => { e.stopPropagation(); handleEditProduct(product); }}><Icons.Edit className="w-3.5 h-3.5" /> Tùy chỉnh</button>
                           {product.tradeProposals?.length > 0 && (
-                            <span className="absolute top-2 right-2 bg-red-500 w-5 h-5 flex items-center justify-center rounded-full text-white text-[10px] shadow font-bold z-10">{product.tradeProposals.length}</span>
+                            <span className="absolute top-2 right-2 bg-zinc-900 w-5 h-5 flex items-center justify-center rounded-full text-white text-[10px] font-bold z-10">{product.tradeProposals.length}</span>
                           )}
                         </div>
                       ) : (
@@ -750,8 +750,7 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
         {/* Load more */}
         {filteredProducts.length > ITEMS_PER_PAGE && (
           <button
-            className="prod-load-more"
-            style={{ padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#334155', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', width: '100%' }}
+            className={`prod-load-more w-full py-3 rounded-xl text-xs font-bold transition-all mt-3 border cursor-pointer ${panicMode ? 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800' : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100'}`}
             onClick={() => setVisibleCount(isShowingAll ? ITEMS_PER_PAGE : filteredProducts.length)}
           >
             {isShowingAll ? 'Thu gọn ⌃' : `Xem tất cả ${filteredProducts.length} sản phẩm ⌄`}
@@ -847,11 +846,11 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
                         <div className="flex justify-between w-full items-start">
                           <div>
                             <strong>{tp.proposer?.fullName || tp.proposer?.username}</strong>
-                            <p className="mt-1 bg-yellow-50 text-yellow-800 p-2 rounded text-[13px] italic">"{tp.proposalText}"</p>
+                            <p className={`mt-1 p-2 rounded text-[12px] italic ${panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-50 text-zinc-600'}`}>"{tp.proposalText}"</p>
                             <span className={`prod-proposal-status mt-2 flex items-center gap-1 w-max ${tp.status.toLowerCase()}`}>{tp.status === 'PENDING' ? <><Icons.Clock className="w-3.5 h-3.5" /> Chờ duyệt</> : tp.status === 'ACCEPTED' ? <><Icons.CheckCircle className="w-3.5 h-3.5" /> Được chấp nhận</> : <><Icons.X className="w-3.5 h-3.5" /> Từ chối</>}</span>
                           </div>
                           {detailProduct.ownerId === user.id && tp.status === 'PENDING' && (
-                            <button onClick={() => handleAcceptProposal(tp.id)} className="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1.5 rounded text-[13px] ml-2 flex-shrink-0 transition flex items-center justify-center gap-1.5"><Icons.CheckCircle className="w-3.5 h-3.5" /> Duyệt</button>
+                            <button onClick={() => handleAcceptProposal(tp.id)} className={`font-bold px-3 py-1.5 rounded-lg text-[12px] ml-2 flex-shrink-0 transition flex items-center justify-center gap-1.5 ${panicMode ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-900 text-white hover:bg-zinc-800'}`}><Icons.CheckCircle className="w-3.5 h-3.5" /> Duyệt</button>
                           )}
                         </div>
                       </div>
@@ -863,16 +862,16 @@ const ProductMarketScreen = ({ user, panicMode, onChat, onOpenProfile, showAlert
               <div className="prod-detail-actions">
                 {detailProduct.ownerId === user.id ? (
                   <div className="flex gap-2 w-full mt-2">
-                    <button className="flex-1 flex items-center justify-center gap-1.5 bg-gray-200 hover:bg-gray-300 text-black font-bold py-3 rounded-xl transition" onClick={() => handleEditProduct(detailProduct)}><Icons.Edit className="w-5 h-5" /> Chỉnh sửa thông tin</button>
-                    <button className="flex-1 flex items-center justify-center gap-1.5 bg-red-100 hover:bg-red-200 text-red-600 font-bold py-3 rounded-xl transition" onClick={() => handleDeleteProduct(detailProduct)}><Icons.Trash className="w-5 h-5" /> Xóa tin đăng</button>
+                    <button className={`flex-1 flex items-center justify-center gap-1.5 font-bold py-3 rounded-xl transition text-[13px] border ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-100 border-zinc-200 text-zinc-800 hover:bg-zinc-200'}`} onClick={() => handleEditProduct(detailProduct)}><Icons.Edit className="w-4 h-4" /> Chỉnh sửa</button>
+                    <button className={`flex-1 flex items-center justify-center gap-1.5 font-bold py-3 rounded-xl transition text-[13px] border ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700'}`} onClick={() => handleDeleteProduct(detailProduct)}><Icons.Trash className="w-4 h-4" /> Xóa tin</button>
                   </div>
                 ) : (
                   <div className="flex gap-2 w-full mt-2">
                     <button className={`flex-[3] prod-detail-action-btn ${detailProduct.tradeType === 'SELL' ? 'buy' : 'trade'} flex items-center justify-center gap-2`} onClick={() => detailProduct.tradeType === 'SELL' ? handleBuy(detailProduct) : handleProposeTrade(detailProduct)}>
-                      <Icons.MessageCircle className="w-5 h-5" /> {detailProduct.tradeType === 'SELL' ? 'Chat hỏi mua' : 'Chat đề nghị trao đổi'}
+                      <Icons.MessageCircle className="w-4 h-4" /> {detailProduct.tradeType === 'SELL' ? 'Chat hỏi mua' : 'Chat đề nghị trao đổi'}
                     </button>
-                    <button className="flex-1 flex items-center justify-center gap-1.5 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 rounded-xl transition" onClick={() => onReport && onReport('MARKET_ITEM', detailProduct.id)}>
-                      <Icons.AlertTriangle className="w-5 h-5" />
+                    <button className={`flex-1 flex items-center justify-center gap-1.5 font-bold py-3 rounded-xl transition border ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100'}`} onClick={() => onReport && onReport('MARKET_ITEM', detailProduct.id)}>
+                      <Icons.AlertTriangle className="w-4 h-4" />
                     </button>
                   </div>
                 )}

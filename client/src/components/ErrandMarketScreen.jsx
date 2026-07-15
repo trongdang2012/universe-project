@@ -518,28 +518,38 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
       {/* MODAL TẠO ĐƠN NHỜ MUA                        */}
       {/* ============================================ */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-scale-up max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="errand-section-title flex items-center gap-2 m-0"><Icons.Edit className="w-5 h-5 text-indigo-600" /> Tạo đơn nhờ mua</h3>
-              <button type="button" onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600">
-                <Icons.X className="w-6 h-6" />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4">
+          <div className={`w-full max-w-md rounded-xl p-6 border shadow-2xl transition-all max-h-[90vh] overflow-y-auto ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 m-0">
+                <Icons.Edit className="w-4 h-4 text-zinc-500" /> Tạo đơn nhờ mua
+              </h3>
+              <button 
+                type="button" 
+                onClick={() => setShowCreateModal(false)} 
+                className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-300' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}
+              >
+                ✕
               </button>
             </div>
             
             {/* Note: NO FORM TAG WRAPPER to avoid collision with App.jsx nested forms. */}
             <div className="errand-form-wrapper" onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(e) }}>
               {/* Category Quick Select */}
-              <div className="errand-category-grid">
+              <div className="errand-category-grid mb-4">
                 {categories.map((cat) => (
                   <button
                     type="button"
                     key={cat.id}
-                    className={`errand-category-btn ${selectedCategory === cat.id ? 'selected' : ''}`}
+                    className={`errand-category-btn flex flex-col items-center justify-center gap-2 p-3 border rounded-lg text-xs font-medium transition-all ${
+                      selectedCategory === cat.id 
+                        ? 'bg-zinc-950 text-white border-zinc-950 dark:bg-zinc-100 dark:text-zinc-950 dark:border-zinc-100' 
+                        : (panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-600 hover:bg-zinc-100')
+                    }`}
                     onClick={() => setSelectedCategory(cat.id)}
                   >
-                    <span className="cat-icon">{cat.icon}</span>
-                    {cat.label}
+                    <span className="cat-icon text-lg">{cat.icon}</span>
+                    <span>{cat.label}</span>
                   </button>
                 ))}
               </div>
@@ -547,12 +557,14 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
               <div className="errand-input-group">
                 {/* Tên món đồ */}
                 <div>
-                  <label className="errand-label">Yêu cầu chi tiết</label>
-                  <div className="errand-input-wrap">
-                    <span className="errand-icon"><Icons.ShoppingBag className="w-5 h-5 text-slate-500" /></span>
+                  <label className="errand-label text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">Yêu cầu chi tiết</label>
+                  <div className="errand-input-wrap relative">
+                    <span className="errand-icon absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
+                      <Icons.ShoppingBag className="w-4 h-4" />
+                    </span>
                     <input
                       type="text"
-                      className="errand-input"
+                      className={`errand-input w-full pl-9 pr-4 py-2 border rounded-lg text-xs outline-none transition-colors ${panicMode ? 'bg-zinc-850 border-zinc-800 text-zinc-200 focus:border-zinc-500' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-950'}`}
                       placeholder="VD: 2 ly Trà sữa Ổi Hồng size L, ít đường..."
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
@@ -562,9 +574,9 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
 
                 {/* Mua tại đâu */}
                 <div>
-                  <label className="errand-label">Mua tại đâu?</label>
+                  <label className="errand-label text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">Mua tại đâu?</label>
                   <LocationAutocomplete 
-                    icon={<Icons.Store className="w-5 h-5 text-slate-500" />} 
+                    icon={<Icons.Store className="w-4 h-4 text-zinc-400" />} 
                     placeholder="VD: Canteen Khu B, Tiệm Photo cổng trường..."
                     value={formData.locationBuy} 
                     onChange={(val) => setFormData({ ...formData, locationBuy: val })} 
@@ -573,9 +585,9 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
 
                 {/* Giao đến đâu */}
                 <div>
-                  <label className="errand-label">Giao đến đâu?</label>
+                  <label className="errand-label text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">Giao đến đâu?</label>
                   <LocationAutocomplete 
-                    icon={<Icons.Building className="w-5 h-5 text-slate-500" />} 
+                    icon={<Icons.Building className="w-4 h-4 text-zinc-400" />} 
                     placeholder="VD: Phòng 302, Tòa A..."
                     value={formData.locationDrop} 
                     onChange={(val) => setFormData({ ...formData, locationDrop: val })} 
@@ -585,8 +597,8 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                 {formData.locationBuy && formData.locationDrop && 
                   CAMPUS_LOCATIONS.some(l => l.name === formData.locationBuy) && 
                   CAMPUS_LOCATIONS.some(l => l.name === formData.locationDrop) && (
-                  <div className="text-sm font-bold text-green-600 bg-green-50 p-2 rounded-lg -mt-2 border border-green-200 flex items-center gap-1.5">
-                    <Icons.MapPin className="w-4 h-4" /> Khoảng cách tự động tính: {getDistanceFromLatLonInKm(
+                  <div className={`text-xs font-semibold p-3 rounded-lg border flex items-center gap-1.5 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300' : 'bg-zinc-50 border-zinc-150 text-zinc-750'}`}>
+                    <Icons.MapPin className="w-3.5 h-3.5 text-zinc-450" /> Khoảng cách tự động tính: {getDistanceFromLatLonInKm(
                       CAMPUS_LOCATIONS.find(l=>l.name===formData.locationBuy).lat,
                       CAMPUS_LOCATIONS.find(l=>l.name===formData.locationBuy).lng,
                       CAMPUS_LOCATIONS.find(l=>l.name===formData.locationDrop).lat,
@@ -596,40 +608,42 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                 )}
 
                 {/* Payment Block */}
-                <div className="errand-payment-block">
-                  <div className="errand-payment-title flex items-center gap-2"><Icons.CreditCard className="w-5 h-5 text-indigo-600" /> Thanh toán</div>
+                <div className={`p-4 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50/50 border-zinc-200'}`}>
+                  <div className="text-xs font-bold flex items-center gap-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                    <Icons.CreditCard className="w-4 h-4 text-zinc-500" /> Chi phí & Tiền công
+                  </div>
                   
-                  <div style={{ marginBottom: 16 }}>
-                    <label className="errand-payment-label flex items-center gap-1.5" style={{ color: '#059669', fontSize: '15px' }}><Icons.DollarSign className="w-4 h-4" /> Tiền công thật (VNĐ) <span style={{ color: '#EF4444', fontSize: '12px' }}>*Shipper thích điều này</span></label>
+                  <div className="mb-3.5">
+                    <label className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">
+                      Tiền công thật (VNĐ) <span className="text-[10px] text-zinc-500 font-normal normal-case">(Trả ngoài bằng Momo/Tiền mặt)</span>
+                    </label>
                     <input
                       type="number"
-                      className="errand-payment-input"
-                      style={{ borderColor: '#10B981', borderLeft: '4px solid #10B981', color: '#047857', fontWeight: 'bold' }}
-                      placeholder="VD: 15000 (Sẽ trả ngoài bằng Momo/Tiền mặt)"
+                      className={`w-full px-3 py-2 border rounded-lg text-xs font-bold outline-none transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-205 focus:border-zinc-500' : 'bg-white border-zinc-200 text-zinc-950 focus:border-zinc-950'}`}
+                      placeholder="VD: 15000"
                       min="0"
                       value={formData.vndReward}
                       onChange={(e) => setFormData({ ...formData, vndReward: e.target.value })}
                     />
                   </div>
 
-                  <div className="errand-payment-row">
+                  <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="errand-payment-label">Phí nền tảng (UC)</label>
+                      <label className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">Phí nền tảng (UC)</label>
                       <input
                         type="number"
-                        className="errand-payment-input"
+                        className={`w-full px-3 py-2 border rounded-lg text-xs outline-none transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-205 focus:border-zinc-500' : 'bg-white border-zinc-200 text-zinc-950 focus:border-zinc-950'}`}
                         placeholder="1"
                         min="1"
                         value={formData.fee}
                         onChange={(e) => setFormData({ ...formData, fee: e.target.value })}
                       />
-                      <div className="errand-tip-hint" style={{ color: '#64748b' }}>Bắt buộc để ghi sổ cái</div>
                     </div>
                     <div>
-                      <label className="errand-payment-label tip-label flex items-center gap-1.5"><Icons.Flame className="w-4 h-4" /> Tip UC thêm</label>
+                      <label className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1.5 block">Tip UC thêm</label>
                       <input
                         type="number"
-                        className="errand-payment-input tip"
+                        className={`w-full px-3 py-2 border rounded-lg text-xs outline-none transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-205 focus:border-zinc-500' : 'bg-white border-zinc-200 text-zinc-950 focus:border-zinc-950'}`}
                         placeholder="0"
                         min="0"
                         value={formData.tipAmount}
@@ -639,15 +653,23 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                   </div>
                 </div>
 
-                <div className="text-xs text-orange-500 font-medium text-center bg-orange-50 p-2 rounded-lg mb-3 border border-orange-100 flex items-center gap-1.5 justify-center">
-                   <Icons.AlertTriangle className="w-4 h-4" /> Đơn sẽ tự động huỷ và hoàn tiền nếu sau 1 tiếng không có người nhận.
+                <div className={`text-[10px] font-semibold text-center p-3 rounded-lg border flex items-center gap-1.5 justify-center ${panicMode ? 'bg-zinc-800/50 border-zinc-800 text-zinc-400' : 'bg-zinc-50 border-zinc-150 text-zinc-500'}`}>
+                   <Icons.AlertTriangle className="w-3.5 h-3.5 text-zinc-400" /> Đơn sẽ tự động huỷ nếu sau 1 tiếng không có người nhận.
                 </div>
                 <div className="flex gap-2 mt-2">
-                  <button type="button" onClick={() => setShowCreateModal(false)} className="flex-1 py-3 justify-center rounded-xl font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 transition">
+                  <button 
+                    type="button" 
+                    onClick={() => setShowCreateModal(false)} 
+                    className={`flex-1 py-2.5 rounded-lg text-xs font-semibold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                  >
                     Hủy
                   </button>
-                  <button type="button" onClick={handleSubmit} className="flex-1 py-3 flex items-center justify-center rounded-xl font-bold bg-rose-600 text-white hover:bg-rose-700 transition">
-                    <Icons.Send className="w-5 h-5 mr-2" /> Nhờ mua ngay
+                  <button 
+                    type="button" 
+                    onClick={handleSubmit} 
+                    className="flex-1 py-2.5 bg-zinc-950 hover:bg-zinc-900 text-white rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Icons.Send className="w-3.5 h-3.5" /> Tạo đơn
                   </button>
                 </div>
               </div>
@@ -660,81 +682,99 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
       {/* MODAL CHI TIẾT ĐƠN                           */}
       {/* ============================================ */}
       {selectedErrand && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedErrand(null)}>
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl animate-scale-up" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg text-gray-800">Chi tiết đơn hàng</h3>
-              <button type="button" onClick={() => setSelectedErrand(null)} className="text-gray-400 hover:text-gray-600">
-                <Icons.X className="w-6 h-6" />
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4" onClick={() => setSelectedErrand(null)}>
+          <div 
+            className={`w-full max-w-sm rounded-xl p-6 border shadow-2xl transition-all animate-scale-up ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 m-0">Chi tiết đơn hàng</h3>
+              <button 
+                type="button" 
+                onClick={() => setSelectedErrand(null)} 
+                className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-300' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}
+              >
+                ✕
               </button>
             </div>
             
             <div className="mb-4">
-              <div className="font-bold text-gray-800 text-lg">{selectedErrand.title}</div>
-              <div className="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
-                <Icons.Clock className="w-4 h-4" />
+              <div className="font-bold text-sm leading-snug">{selectedErrand.title}</div>
+              <div className="text-xs text-zinc-400 mt-1.5 flex items-center gap-1.5 font-medium">
+                <Icons.Clock className="w-3.5 h-3.5 text-zinc-500" />
                 {new Date(selectedErrand.createdAt).toLocaleString('vi-VN', {
                     hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric'
                 })}
               </div>
             </div>
 
-            <div className="mb-4 flex flex-col gap-3">
-              <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-rose-100 text-rose-500 shrink-0"><Icons.MapPin className="w-3.5 h-3.5" /></div>
+            <div className="mb-4 flex flex-col gap-2.5">
+              <div className={`flex items-start gap-2.5 p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-850' : 'bg-zinc-50/50 border-zinc-150'}`}>
+                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-650 dark:text-zinc-300 shrink-0"><Icons.MapPin className="w-3.5 h-3.5" /></div>
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-0.5">Nơi mua</span>
-                  <span className="text-sm font-semibold text-gray-700 leading-tight">{selectedErrand.locationBuy}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Nơi mua</span>
+                  <span className="text-xs font-semibold leading-tight">{selectedErrand.locationBuy}</span>
                 </div>
               </div>
-              <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-green-100 text-green-500 shrink-0"><Icons.Building className="w-3.5 h-3.5" /></div>
+              <div className={`flex items-start gap-2.5 p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-850' : 'bg-zinc-50/50 border-zinc-150'}`}>
+                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-650 dark:text-zinc-300 shrink-0"><Icons.Building className="w-3.5 h-3.5" /></div>
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-0.5">Giao đến</span>
-                  <span className="text-sm font-semibold text-gray-700 leading-tight">{selectedErrand.locationDrop}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Giao đến</span>
+                  <span className="text-xs font-semibold leading-tight">{selectedErrand.locationDrop}</span>
                 </div>
               </div>
             </div>
 
             {selectedErrand.vndReward > 0 && (
-              <div className="bg-emerald-50 p-3 rounded-xl mb-3 flex items-center gap-3 border border-emerald-100">
-                <div className="w-10 h-10 flex items-center justify-center bg-emerald-100 text-emerald-600 rounded-full shrink-0"><Icons.DollarSign className="w-6 h-6" /></div>
+              <div className={`p-4 rounded-lg mb-3 flex items-center gap-3 border ${panicMode ? 'bg-zinc-850 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
+                <div className="w-8 h-8 flex items-center justify-center bg-zinc-200 dark:bg-zinc-750 text-zinc-700 dark:text-zinc-200 rounded-full shrink-0"><Icons.DollarSign className="w-5 h-5" /></div>
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider font-bold text-emerald-600/70 block mb-0.5">Tiền công nhận ngoài (VNĐ)</div>
-                  <div className="font-bold text-emerald-700 text-xl">{new Intl.NumberFormat('vi-VN').format(selectedErrand.vndReward)} đ</div>
+                  <div className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Tiền công nhận ngoài (VNĐ)</div>
+                  <div className="font-bold text-base leading-none mt-0.5">{new Intl.NumberFormat('vi-VN').format(selectedErrand.vndReward)} đ</div>
                 </div>
               </div>
             )}
 
-            <div className="bg-amber-50 p-3 rounded-xl mb-4 flex justify-between items-center border border-amber-100">
+            <div className={`p-3.5 rounded-lg mb-4 flex justify-between items-center border ${panicMode ? 'bg-zinc-850 border-zinc-800 text-white' : 'bg-zinc-50 border-zinc-200 text-zinc-900'}`}>
                <div>
-                 <span className="text-[11px] uppercase tracking-wider font-bold text-amber-600/70 block mb-0.5">Phí hệ thống (UC)</span>
-                 <span className="font-bold text-amber-700 text-lg">{fmtUC(selectedErrand.fee)} UC</span>
+                 <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Phí hệ thống</span>
+                 <span className="font-bold text-sm">{fmtUC(selectedErrand.fee)} UC</span>
                </div>
                {selectedErrand.tipAmount > 0 && (
                  <div className="text-right">
-                   <span className="text-[11px] uppercase tracking-wider font-bold text-orange-600/70 block mb-0.5">Tip UC thêm</span>
-                   <span className="font-bold text-orange-600 text-lg">+{selectedErrand.tipAmount}</span>
+                   <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Tip UC thêm</span>
+                   <span className="font-bold text-sm">+{selectedErrand.tipAmount} UC</span>
                  </div>
                )}
             </div>
 
-            <div className="flex items-center gap-3 mb-6 p-3 bg-blue-50/50 rounded-xl cursor-pointer hover:bg-blue-50 border border-transparent hover:border-blue-100 transition" onClick={() => { setSelectedErrand(null); onOpenProfile?.(selectedErrand.requester); }}>
-              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-600 shrink-0 border border-blue-200">
+            <div 
+              className={`flex items-center gap-3 mb-5 p-3 rounded-lg cursor-pointer border transition ${panicMode ? 'bg-zinc-850 hover:bg-zinc-800 border-transparent' : 'bg-zinc-50/50 hover:bg-zinc-100 border-zinc-150'}`} 
+              onClick={() => { setSelectedErrand(null); onOpenProfile?.(selectedErrand.requester); }}
+            >
+              <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-750 flex items-center justify-center font-bold text-xs text-zinc-700 dark:text-zinc-200 shrink-0">
                 {selectedErrand.requester?.fullName?.charAt(0) || selectedErrand.requester?.username?.charAt(0) || 'U'}
               </div>
               <div className="truncate">
-                <div className="font-bold text-gray-800 text-sm truncate">{selectedErrand.requester?.fullName || selectedErrand.requester?.username}</div>
-                <div className="text-xs text-blue-600 font-medium">Người yêu cầu</div>
+                <div className="font-bold text-xs truncate">{selectedErrand.requester?.fullName || selectedErrand.requester?.username}</div>
+                <div className="text-[10px] text-zinc-450 font-semibold uppercase tracking-wider">Người yêu cầu</div>
               </div>
             </div>
 
             <div className="flex gap-2">
-              <button type="button" className="flex-1 py-2.5 rounded-xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition flex justify-center items-center gap-1.5" onClick={() => { setSelectedErrand(null); handleChatErrand(selectedErrand); }}>
-                <Icons.MessageCircle className="w-4 h-4" /> Nhắn tin
+              <button 
+                type="button" 
+                className={`flex-1 py-2.5 rounded-lg font-semibold text-xs border transition-colors flex justify-center items-center gap-1.5 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                onClick={() => { setSelectedErrand(null); handleChatErrand(selectedErrand); }}
+              >
+                <Icons.MessageCircle className="w-3.5 h-3.5" /> Nhắn tin
               </button>
-              <button type="button" className="flex-1 py-2.5 rounded-xl font-bold bg-emerald-500 text-white hover:bg-emerald-600 transition flex justify-center items-center gap-1.5 shadow-sm shadow-emerald-200" onClick={() => { setSelectedErrand(null); handleAcceptErrand(selectedErrand); }}>
-                <Icons.CheckCircle className="w-4 h-4" /> Nhận đơn
+              <button 
+                type="button" 
+                className="flex-1 py-2.5 bg-zinc-950 hover:bg-zinc-900 text-white rounded-lg text-xs font-semibold flex justify-center items-center gap-1.5 transition-colors" 
+                onClick={() => { setSelectedErrand(null); handleAcceptErrand(selectedErrand); }}
+              >
+                <Icons.CheckCircle className="w-3.5 h-3.5" /> Nhận đơn
               </button>
             </div>
           </div>
@@ -745,38 +785,44 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
       {/* TAB 2: TÔI CÓ THỂ MUA HỘ (Nhận đơn)          */}
       {/* ============================================ */}
       {activeTab === 'can_help' && (
-        <div style={{ animation: 'errandFadeIn 0.3s' }}>
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 className="errand-section-title flex items-center gap-2"><Icons.Search className="w-5 h-5 text-indigo-600" /> Đơn gần bạn</h3>
-            <button onClick={fetchPendingErrands} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#059669', fontWeight: 'bold' }} className="flex items-center gap-1.5"><Icons.RefreshCw className="w-4 h-4" /> Làm mới</button>
+        <div className="animate-fade-in">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 m-0 text-zinc-900 dark:text-white">
+              <Icons.Search className="w-4 h-4 text-zinc-400" /> Đơn gần bạn
+            </h3>
+            <button 
+              onClick={fetchPendingErrands} 
+              className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${panicMode ? 'text-zinc-400 hover:text-white' : 'text-zinc-500 hover:text-zinc-950'}`}
+            >
+              <Icons.RefreshCw className="w-3.5 h-3.5" /> Làm mới
+            </button>
           </div>
           
           {/* Filters Bar */}
-          <div className="errand-filter-bar">
+          <div className="errand-filter-bar mb-5">
              <input 
                type="text" 
-               className="errand-filter-input" 
+               className={`errand-filter-input text-xs px-3 py-2 border rounded-lg outline-none transition-colors ${panicMode ? 'bg-zinc-850 border-zinc-800 text-zinc-200 focus:border-zinc-700' : 'bg-white border-zinc-205 text-zinc-900 focus:border-zinc-950'}`} 
                placeholder="🔍 Tìm theo món, địa điểm..."
                value={searchQuery}
                onChange={(e) => setSearchQuery(e.target.value)}
              />
              <select 
-               className="errand-filter-select"
+               className={`errand-filter-select text-xs px-3 py-2 border rounded-lg outline-none transition-colors ${panicMode ? 'bg-zinc-850 border-zinc-800 text-zinc-200 focus:border-zinc-700' : 'bg-white border-zinc-205 text-zinc-900 focus:border-zinc-950'}`}
                value={filterDistance}
                onChange={(e) => setFilterDistance(e.target.value)}
              >
-               <option value="">Tất cả khoảng cách</option>
+               <option value="">Khoảng cách</option>
                <option value="<1">Dưới 1km</option>
                <option value="1-3">Từ 1 - 3km</option>
                <option value=">3">Trên 3km</option>
              </select>
              <select 
-               className="errand-filter-select"
+               className={`errand-filter-select text-xs px-3 py-2 border rounded-lg outline-none transition-colors ${panicMode ? 'bg-zinc-850 border-zinc-800 text-zinc-200 focus:border-zinc-700' : 'bg-white border-zinc-205 text-zinc-900 focus:border-zinc-950'}`}
                value={filterPrice}
                onChange={(e) => setFilterPrice(e.target.value)}
              >
-               <option value="">Tất cả mức phí</option>
+               <option value="">Mức phí</option>
                <option value="<10">Dưới 10 UC</option>
                <option value="10-20">10 - 20 UC</option>
                <option value=">20">Trên 20 UC</option>
@@ -785,31 +831,35 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
 
           <div className="errand-card-list">
             {loading ? (
-               <div style={{ textAlign: 'center', padding: 20, color: '#888' }}>Đang tải danh sách đơn...</div>
+               <div className="text-center py-8 text-xs font-semibold text-zinc-400">Đang tải danh sách đơn...</div>
             ) : filteredErrands.length === 0 ? (
-               <div style={{ textAlign: 'center', padding: 20, color: '#888' }}>Không có đơn mua hộ nào!</div>
+               <div className="text-center py-8 text-xs font-semibold text-zinc-400">Không có đơn mua hộ nào!</div>
             ) : (() => {
                const errandsToShow = viewAllPending ? filteredErrands : filteredErrands.slice(0, 5);
                return (
                  <>
-                  {errandsToShow.map((errand) => (
-                    <ErrandCard
-                      key={errand.id}
-                      errand={errand}
-                      onAccept={handleAcceptErrand}
-                      onChat={handleChatErrand}
-                      onOpenProfile={onOpenProfile}
-                      onCardClick={setSelectedErrand}
-                    />
-                  ))}
-                  {filteredErrands.length > 5 && (
-                    <button 
-                      onClick={() => setViewAllPending(!viewAllPending)}
-                      style={{ gridColumn: '1 / -1', padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#10B981', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}
-                    >
-                      {viewAllPending ? 'Thu gọn ⌃' : `Xem tất cả ${filteredErrands.length} đơn chờ nhận ⌄`}
-                    </button>
-                  )}
+                   {errandsToShow.map((errand) => (
+                     <ErrandCard
+                       key={errand.id}
+                       errand={errand}
+                       onAccept={handleAcceptErrand}
+                       onChat={handleChatErrand}
+                       onOpenProfile={onOpenProfile}
+                       onCardClick={setSelectedErrand}
+                     />
+                   ))}
+                   {filteredErrands.length > 5 && (
+                     <button 
+                       onClick={() => setViewAllPending(!viewAllPending)}
+                       className={`w-full py-3 rounded-lg text-xs font-bold transition-all ${
+                         panicMode 
+                           ? 'bg-zinc-850 hover:bg-zinc-800 text-zinc-200' 
+                           : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
+                       }`}
+                     >
+                       {viewAllPending ? 'Thu gọn ⌃' : `Xem tất cả ${filteredErrands.length} đơn chờ nhận ⌄`}
+                     </button>
+                   )}
                  </>
                );
             })()}
@@ -821,23 +871,38 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
       {/* TAB 3: BẢNG CÔNG VIỆC                        */}
       {/* ============================================ */}
       {activeTab === 'job_board' && (
-        <div style={{ marginBottom: 24, animation: 'errandFadeIn 0.3s' }}>
-           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-             <h3 className="errand-section-title flex items-center gap-2"><Icons.FileText className="w-5 h-5 text-indigo-600" /> Bảng công việc</h3>
-             <button onClick={fetchMyErrands} style={{ border: 'none', background: 'transparent', cursor: 'pointer', color: '#059669', fontWeight: 'bold' }} className="flex items-center gap-1.5"><Icons.RefreshCw className="w-4 h-4" /> Làm mới</button>
+        <div className="mb-6 animate-fade-in">
+           <div className="flex justify-between items-center mb-4">
+             <h3 className="text-sm font-bold uppercase tracking-wider flex items-center gap-2 m-0 text-zinc-900 dark:text-white">
+               <Icons.FileText className="w-4 h-4 text-zinc-400" /> Bảng công việc
+             </h3>
+             <button 
+               onClick={fetchMyErrands} 
+               className={`flex items-center gap-1.5 text-xs font-bold transition-colors ${panicMode ? 'text-zinc-400 hover:text-white' : 'text-zinc-500 hover:text-zinc-950'}`}
+             >
+               <Icons.RefreshCw className="w-3.5 h-3.5" /> Làm mới
+             </button>
            </div>
            
-           <div className="errand-main-tabs" style={{ background: 'transparent', borderBottom: '1px solid #e2e8f0', borderRadius: 0 }}>
-             <button type="button"
-               className={`errand-main-tab-btn ${jobTab === 'doing' ? 'active' : ''}`}
-               style={{ borderRadius: '8px 8px 0 0', borderBottom: jobTab === 'doing' ? '3px solid #059669' : 'none', boxShadow: 'none' }}
+           <div className={`flex border-b mb-4 ${panicMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
+             <button 
+               type="button"
+               className={`flex-1 py-2.5 text-center text-xs font-bold transition-all relative ${
+                 jobTab === 'doing' 
+                   ? (panicMode ? 'text-white border-b-2 border-white' : 'text-zinc-950 border-b-2 border-zinc-950') 
+                   : 'text-zinc-400 hover:text-zinc-650'
+               }`}
                onClick={() => setJobTab('doing')}
              >
                Đang chạy ({myRunning.filter(x => x.status !== 'COMPLETED' && x.status !== 'CANCELLED').length})
              </button>
-             <button type="button"
-               className={`errand-main-tab-btn ${jobTab === 'requested' ? 'active' : ''}`}
-               style={{ borderRadius: '8px 8px 0 0', borderBottom: jobTab === 'requested' ? '3px solid #059669' : 'none', boxShadow: 'none' }}
+             <button 
+               type="button"
+               className={`flex-1 py-2.5 text-center text-xs font-bold transition-all relative ${
+                 jobTab === 'requested' 
+                   ? (panicMode ? 'text-white border-b-2 border-white' : 'text-zinc-950 border-b-2 border-zinc-950') 
+                   : 'text-zinc-400 hover:text-zinc-650'
+               }`}
                onClick={() => setJobTab('requested')}
              >
                Đơn đã nhờ ({myRequested.filter(x => x.status !== 'COMPLETED' && x.status !== 'CANCELLED').length})
@@ -856,46 +921,80 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
              const displayedRunning = viewAllDoing ? activeRunning : activeRunning.slice(0, 5);
 
              return (
-               <div className="errand-smart-batch" style={{ marginTop: 16 }}>
+               <div className="errand-smart-batch mt-4">
                  {activeRunning.length > 1 && (
-                   <div className="errand-smart-batch-title flex items-center gap-1.5" style={{ marginBottom: 12 }}>
-                     <Icons.Sparkles className="w-4 h-4 text-yellow-500" /> Lộ trình AI gợi ý: Hãy gộp đơn vào một lần đi để tiện lợi nhất!
+                   <div className="text-xs font-bold flex items-center gap-2 mb-3 text-zinc-900 dark:text-zinc-100">
+                     <Icons.Sparkles className="w-3.5 h-3.5 text-zinc-400 animate-pulse" /> Lộ trình AI gợi ý: Hãy gộp đơn vào một lần đi để tiện lợi nhất!
                    </div>
                  )}
                  <div className="errand-smart-batch-items">
-                   {activeRunning.length === 0 ? <div style={{ color: '#888', textAlign: 'center', padding: 20 }}>Bạn chưa nhận chạy đơn nào.</div> : (
+                   {activeRunning.length === 0 ? (
+                     <div className="text-center py-8 text-xs font-semibold text-zinc-400">Bạn chưa nhận chạy đơn nào.</div>
+                   ) : (
                      <>
                        {displayedRunning.map((item, i) => (
-                         <div key={item.id} className="errand-smart-batch-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                               <span className="batch-num">{i + 1}</span>
-                               <div className="batch-info">
-                                 <div className="batch-title">{item.title}</div>
-                                 <div className="batch-route flex items-center gap-1.5 text-slate-500"><Icons.MapPin className="w-3.5 h-3.5" /> {item.locationBuy} → {item.locationDrop}</div>
+                         <div key={item.id} className={`errand-smart-batch-item flex flex-col p-4 border rounded-xl gap-3 ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                           <div className="flex items-center justify-between gap-4">
+                             <div className="flex gap-3 items-center min-w-0">
+                               <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${panicMode ? 'bg-zinc-850 text-white' : 'bg-zinc-100 text-zinc-900'}`}>{i + 1}</span>
+                               <div className="batch-info min-w-0">
+                                 <div className="batch-title text-xs font-bold truncate text-zinc-900 dark:text-white">{item.title}</div>
+                                 <div className="batch-route flex items-center gap-1 text-[11px] text-zinc-400 mt-0.5 truncate"><Icons.MapPin className="w-3 h-3" /> {item.locationBuy} → {item.locationDrop}</div>
                                </div>
                              </div>
-                             <span className="batch-coin flex items-center gap-1"><Icons.UC className="w-4 h-4 text-slate-400" /> {fmtUC(item.fee + item.tipAmount)} UC</span>
+                             <span className="batch-coin flex items-center gap-1 shrink-0 font-bold text-xs text-zinc-900 dark:text-white">{fmtUC(item.fee + item.tipAmount)} UC</span>
                            </div>
                            
-                           <div style={{ mt: 16, pt: 12, borderTop: '1px dashed #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 12 }}>
-                             <span style={{ fontSize: 13, fontWeight: 'bold', color: item.status === 'COMPLETED' ? '#10B981' : item.status === 'CANCELLED' ? '#EF4444' : item.status === 'DELIVERING' ? '#3B82F6' : '#F59E0B' }}>
-                               Trạng thái: {item.status}
-                               {item.excuseRequested && !item.excused && <span style={{ marginLeft: 6, fontSize: 11, fontStyle: 'italic', color: '#D97706' }}>(Đang xin trễ)</span>}
-                               {item.excused && <span style={{ marginLeft: 6, fontSize: 11, fontStyle: 'italic', color: '#10B981' }}>(Được duyệt trễ)</span>}
-                             </span>
-                             <div style={{ display: 'flex', gap: 8 }}>
-                               <button type="button" onClick={() => handleChatErrand(item, `Chào bạn, mình đang mua đồ "${item.title}" cho bạn đây!`)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', cursor: 'pointer', fontWeight: 'bold' }}>💬 Chat</button>
+                           <div className={`pt-3 border-t border-dashed flex justify-between items-center gap-4 ${panicMode ? 'border-zinc-800' : 'border-zinc-150'}`}>
+                             <div className="flex flex-col gap-0.5 text-[11px] font-bold">
+                               <span className={`${
+                                 item.status === 'DELIVERING' ? 'text-zinc-800 dark:text-zinc-200' : 'text-zinc-500'
+                               }`}>
+                                 {item.status === 'ACCEPTED' ? 'Đã nhận' : item.status === 'DELIVERING' ? 'Đang giao' : item.status}
+                               </span>
+                               {(item.excuseRequested || item.excused) && (
+                                 <span className="text-[10px] text-zinc-400 font-medium font-italic">
+                                   {item.excuseRequested && !item.excused && '(Đang xin trễ)'}
+                                   {item.excused && '(Đã duyệt trễ)'}
+                                 </span>
+                               )}
+                             </div>
+                             <div className="flex gap-1.5">
+                               <button 
+                                 type="button" 
+                                 onClick={() => handleChatErrand(item, `Chào bạn, mình đang mua đồ "${item.title}" cho bạn đây!`)} 
+                                 className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                               >
+                                 Chat
+                               </button>
                                
                                {item.status === 'ACCEPTED' && (
                                  <>
-                                   <button type="button" onClick={() => handleDeliverErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#ECFCCB', color: '#65A30D', border: '1px solid #D9F99D', cursor: 'pointer', fontWeight: 'bold' }}>🚚 Đang giao</button>
+                                   <button 
+                                     type="button" 
+                                     onClick={() => handleDeliverErrand(item)} 
+                                     className="px-3 py-1.5 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 rounded-lg text-[10px] font-bold transition-colors"
+                                   >
+                                     Giao
+                                   </button>
                                    
                                    {!item.excuseRequested && !item.excused && (
-                                     <button type="button" onClick={() => handleExcuseErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#FEF3C7', color: '#D97706', border: '1px solid #FDE68A', cursor: 'pointer', fontWeight: 'bold' }}>⏳ Xin trễ</button>
+                                     <button 
+                                       type="button" 
+                                       onClick={() => handleExcuseErrand(item)} 
+                                       className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-250 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-650 hover:bg-zinc-100'}`}
+                                     >
+                                       Trễ
+                                     </button>
                                    )}
                                    
-                                   <button type="button" onClick={() => handleCancelErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', cursor: 'pointer', fontWeight: 'bold' }}>❌ Hủy</button>
+                                   <button 
+                                     type="button" 
+                                     onClick={() => handleCancelErrand(item)} 
+                                     className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800'}`}
+                                   >
+                                     Hủy
+                                   </button>
                                  </>
                                )}
                              </div>
@@ -905,7 +1004,11 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                        {activeRunning.length > 5 && (
                          <button 
                            onClick={() => setViewAllDoing(!viewAllDoing)}
-                           style={{ padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#334155', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', width: '100%' }}
+                           className={`w-full py-3 rounded-lg text-xs font-bold transition-all ${
+                             panicMode 
+                               ? 'bg-zinc-850 hover:bg-zinc-800 text-zinc-200' 
+                               : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
+                           }`}
                          >
                            {viewAllDoing ? 'Thu gọn ⌃' : `Xem tất cả ${activeRunning.length} việc ⌄`}
                          </button>
@@ -929,60 +1032,104 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
              const displayedRequested = viewAllRequested ? activeRequested : activeRequested.slice(0, 5);
 
              return (
-              <div style={{ marginTop: 16 }}>
+              <div className="mt-4">
                 <div className="errand-smart-batch-items">
-                  {activeRequested.length === 0 ? <div style={{ color: '#888', textAlign: 'center', padding: 20 }}>Bạn chưa tạo đơn nhờ mua nào đang chờ.</div> : (
+                  {activeRequested.length === 0 ? (
+                    <div className="text-center py-8 text-xs font-semibold text-zinc-400">Bạn chưa tạo đơn nhờ mua nào đang chờ.</div>
+                  ) : (
                     <>
                       {displayedRequested.map((item, i) => (
-                        <div key={item.id} className="errand-smart-batch-item" style={{ flexDirection: 'column', alignItems: 'stretch' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                              <span className="batch-num" style={{ background: '#3B82F6' }}>📝</span>
-                              <div className="batch-info">
-                                <div className="batch-title">{item.title}</div>
-                                <div className="batch-route">📍 {item.locationBuy} → {item.locationDrop}</div>
+                        <div key={item.id} className={`errand-smart-batch-item flex flex-col p-4 border rounded-xl gap-3 ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="flex gap-3 items-center min-w-0">
+                              <span className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${panicMode ? 'bg-zinc-850 text-white' : 'bg-zinc-100 text-zinc-900'}`}>📝</span>
+                              <div className="batch-info min-w-0">
+                                <div className="batch-title text-xs font-bold truncate text-zinc-900 dark:text-white">{item.title}</div>
+                                <div className="batch-route text-[11px] text-zinc-400 mt-0.5 truncate">📍 {item.locationBuy} → {item.locationDrop}</div>
                               </div>
                             </div>
-                            <span className="batch-coin" style={{ color: '#3B82F6' }}>Khóa: {fmtUC(item.lockedAmount)} UC</span>
+                            <span className="batch-coin shrink-0 font-bold text-xs text-zinc-500 dark:text-zinc-300">Khóa: {fmtUC(item.lockedAmount)} UC</span>
                           </div>
                           
-                          <div style={{ mt: 16, pt: 12, borderTop: '1px dashed #e5e7eb', display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ fontSize: 13, fontWeight: 'bold', color: item.status === 'COMPLETED' ? '#10B981' : item.status === 'CANCELLED' ? '#EF4444' : item.status==='DELIVERING' ? '#2563EB' : item.status==='ACCEPTED' ? '#059669' : '#8B5CF6' }}>
-                                Trạng thái: {item.status}
+                          <div className={`pt-3 border-t border-dashed flex flex-col gap-3 ${panicMode ? 'border-zinc-800' : 'border-zinc-150'}`}>
+                            <div className="flex justify-between items-center gap-4">
+                              <span className="text-[11px] font-bold text-zinc-700 dark:text-zinc-200">
+                                Trạng thái: {item.status === 'ACCEPTED' ? 'Đã nhận' : item.status === 'DELIVERING' ? 'Đang giao' : item.status}
                                 {item.runner && (
-                                  <span style={{ cursor: 'pointer', marginLeft: 4 }} onClick={() => onOpenProfile?.(item.runner)}>
+                                  <span className="cursor-pointer ml-1 text-zinc-400 font-medium" onClick={() => onOpenProfile?.(item.runner)}>
                                     (Shipper: {item.runner.fullName || item.runner.username})
                                   </span>
                                 )}
                               </span>
-                              <div style={{ display: 'flex', gap: 8 }}>
+                              <div className="flex gap-1.5">
                                 {item.status === 'PENDING' && (
                                     <>
-                                      <button type="button" onClick={() => handleEditErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#FEF3C7', color: '#D97706', border: '1px solid #FDE68A', cursor: 'pointer', fontWeight: 'bold' }}>✏️ Sửa</button>
-                                      <button type="button" onClick={() => handleCancelErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', cursor: 'pointer', fontWeight: 'bold' }}>❌ Hủy</button>
+                                      <button 
+                                        type="button" 
+                                        onClick={() => handleEditErrand(item)} 
+                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                                      >
+                                        Sửa
+                                      </button>
+                                      <button 
+                                        type="button" 
+                                        onClick={() => handleCancelErrand(item)} 
+                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800'}`}
+                                      >
+                                        Hủy
+                                      </button>
                                     </>
                                 )}
                                 {['ACCEPTED', 'DELIVERING'].includes(item.status) && (
                                     <>
-                                      <button type="button" onClick={() => onChat?.(item.runner, `Chào bạn, mình muốn hỏi về đơn "${item.title}"`)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', cursor: 'pointer', fontWeight: 'bold' }}>💬 Chat</button>
+                                      <button 
+                                        type="button" 
+                                        onClick={() => onChat?.(item.runner, `Chào bạn, mình muốn hỏi về đơn "${item.title}"`)} 
+                                        className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                                      >
+                                        Chat
+                                      </button>
                                       
                                       {item.status === 'ACCEPTED' && (
-                                        <button type="button" onClick={() => handleCancelErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#FEE2E2', color: '#DC2626', border: '1px solid #FECACA', cursor: 'pointer', fontWeight: 'bold' }}>❌ Hủy</button>
+                                        <button 
+                                          type="button" 
+                                          onClick={() => handleCancelErrand(item)} 
+                                          className={`px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-550 border-zinc-200 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-800'}`}
+                                        >
+                                          Hủy
+                                        </button>
                                       )}
         
-                                      <button type="button" onClick={() => handleCompleteErrand(item)} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#D1FAE5', color: '#059669', border: '1px solid #A7F3D0', cursor: 'pointer', fontWeight: 'bold' }}>✅ Đã nhận</button>
+                                      <button 
+                                        type="button" 
+                                        onClick={() => handleCompleteErrand(item)} 
+                                        className="px-3 py-1.5 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 rounded-lg text-[10px] font-bold transition-colors"
+                                      >
+                                        Đã nhận
+                                      </button>
                                     </>
                                 )}
                               </div>
                             </div>
     
                             {item.status === 'ACCEPTED' && item.excuseRequested && !item.excused && (
-                              <div style={{ padding: '10px 14px', background: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: 8 }}>
-                                <p style={{ fontSize: 12, fontWeight: 'bold', color: '#DC2626', margin: '0 0 8px 0' }}>⚠️ Shipper xin thông cảm vì trễ giờ (để tránh bị phạt khóa duyệt tự động).</p>
-                                <div style={{ display: 'flex', gap: 8 }}>
-                                  <button type="button" onClick={() => handleResolveExcuse(item, 'ACCEPT')} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#D1FAE5', color: '#059669', border: '1px solid #A7F3D0', cursor: 'pointer', fontWeight: 'bold' }}>✅ Bỏ qua</button>
-                                  <button type="button" onClick={() => handleResolveExcuse(item, 'CANCEL')} style={{ padding: '5px 10px', fontSize: 11, borderRadius: 6, background: '#fff', color: '#374151', border: '1px solid #D1D5DB', cursor: 'pointer', fontWeight: 'bold' }}>❌ Thu hồi</button>
+                              <div className={`p-3 rounded-lg border flex flex-col gap-2 ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                                <p className="text-[10px] font-bold text-zinc-500 dark:text-zinc-400 leading-normal m-0">⚠️ Shipper xin thông cảm vì trễ giờ (tránh bị phạt tự động).</p>
+                                <div className="flex gap-1.5">
+                                  <button 
+                                    type="button" 
+                                    onClick={() => handleResolveExcuse(item, 'ACCEPT')} 
+                                    className="px-3 py-1 bg-zinc-950 hover:bg-zinc-900 dark:bg-white dark:hover:bg-zinc-100 text-white dark:text-zinc-950 rounded-md text-[10px] font-bold transition-colors"
+                                  >
+                                    Bỏ qua
+                                  </button>
+                                  <button 
+                                    type="button" 
+                                    onClick={() => handleResolveExcuse(item, 'CANCEL')} 
+                                    className={`px-3 py-1 rounded-md text-[10px] font-bold border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                                  >
+                                    Thu hồi
+                                  </button>
                                 </div>
                               </div>
                             )}
@@ -992,7 +1139,11 @@ const ErrandMarketScreen = ({ user, panicMode, onGpsPost, onChat, onOpenProfile 
                       {activeRequested.length > 5 && (
                         <button 
                           onClick={() => setViewAllRequested(!viewAllRequested)}
-                          style={{ padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#334155', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px', width: '100%' }}
+                          className={`w-full py-3 rounded-lg text-xs font-bold transition-all ${
+                            panicMode 
+                              ? 'bg-zinc-850 hover:bg-zinc-800 text-zinc-200' 
+                              : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
+                          }`}
                         >
                           {viewAllRequested ? 'Thu gọn ⌃' : `Xem tất cả ${activeRequested.length} đơn nhờ ⌄`}
                         </button>

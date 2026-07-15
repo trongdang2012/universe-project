@@ -1,4 +1,4 @@
-﻿import { fmtUC } from '../utils';
+import { fmtUC } from '../utils';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Icons } from '../App';
@@ -429,18 +429,18 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
         {/* --- Moadl Form: Đăng bán tài liệu --- */}
         {postMode === 'sell' && (
           <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setPostMode(null)}>
-            <div style={{ backgroundColor: '#fff', width: '90%', maxWidth: '500px', borderRadius: '16px', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-              <div style={{ padding: '16px 20px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ fontWeight: 'bold', fontSize: '18px', color: '#1e293b' }}>Đăng tài liệu</h4>
-                <button onClick={() => setPostMode(null)} style={{ fontSize: '20px', color: '#64748b' }}>✕</button>
+            <div className={`w-[90%] max-w-[480px] rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200 shadow-lg'}`} onClick={e => e.stopPropagation()}>
+              <div className={`px-5 py-4 border-b flex justify-between items-center ${panicMode ? 'border-zinc-800' : 'border-zinc-100 bg-zinc-50/50'}`}>
+                <h4 className="font-semibold text-sm text-zinc-900">Đăng tài liệu bán / chia sẻ</h4>
+                <button onClick={() => setPostMode(null)} className="text-zinc-400 hover:text-zinc-600 text-lg">✕</button>
               </div>
-              <form onSubmit={handleSellSubmit} style={{ padding: '20px' }}>
+              <form onSubmit={handleSellSubmit} style={{ padding: '16px 20px' }}>
                 <div className="doc-market-form-fields">
                   {/* Tên tài liệu */}
                   <div>
                     <label className="doc-market-label">Tên tài liệu</label>
                     <div className="doc-market-input-icon-wrap">
-                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.FileText className="w-5 h-5 text-slate-500" /></span>
+                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.FileText className="w-4 h-4" /></span>
                       <input type="text" className="doc-market-input" placeholder="VD: Đề thi Toán Cao cấp A2 - K50" value={sellForm.title} onChange={(e) => setSellForm({ ...sellForm, title: e.target.value })} required />
                     </div>
                   </div>
@@ -461,11 +461,11 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                   <div>
                     <label className="doc-market-label">Tải file lên</label>
                     <div className="doc-market-input-icon-wrap" style={{ display: 'flex', alignItems: 'center' }}>
-                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Paperclip className="w-5 h-5 text-slate-500" /></span>
-                      <input type="file" className="doc-market-input" onChange={handleFileChange} style={{ paddingLeft: 40 }} />
+                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Paperclip className="w-4 h-4" /></span>
+                      <input type="file" className="doc-market-input" onChange={handleFileChange} style={{ paddingLeft: 36 }} />
                     </div>
-                    {isUploading && <div style={{ fontSize: 13, color: '#FF9800', marginTop: 4 }}>Đang tải file lên...</div>}
-                    {sellForm.fileLink && !isUploading && (<div style={{ fontSize: 13, color: '#4CAF50', marginTop: 4 }}>✅ Đã đính kèm file thành công</div>)}
+                    {isUploading && <div style={{ fontSize: 11, color: '#a1a1aa', marginTop: 4 }}>Đang tải file lên...</div>}
+                    {sellForm.fileLink && !isUploading && (<div style={{ fontSize: 11, color: '#18181b', marginTop: 4 }}>✅ Đã đính kèm file thành công</div>)}
                   </div>
 
                   {/* Giảng viên + Môn học */}
@@ -473,14 +473,14 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                     <div>
                       <label className="doc-market-label">Giảng viên</label>
                       <div className="doc-market-input-icon-wrap">
-                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.User className="w-5 h-5 text-slate-500" /></span>
+                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.User className="w-4 h-4" /></span>
                         <input type="text" className="doc-market-input" placeholder="Nguyễn Văn A" value={sellForm.teacher} onChange={(e) => setSellForm({ ...sellForm, teacher: e.target.value })} />
                       </div>
                     </div>
                     <div>
                       <label className="doc-market-label">Môn học</label>
                       <div className="doc-market-input-icon-wrap">
-                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.BookOpen className="w-5 h-5 text-slate-500" /></span>
+                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.BookOpen className="w-4 h-4" /></span>
                         <input type="text" className="doc-market-input" placeholder="Toán Cao cấp A2" value={sellForm.subject} onChange={(e) => setSellForm({ ...sellForm, subject: e.target.value })} />
                       </div>
                     </div>
@@ -490,17 +490,16 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                   <div>
                     <label className="doc-market-label">Giá bán (UC)</label>
                     <div className="doc-market-input-icon-wrap">
-                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.UC className="w-5 h-5 text-slate-500" /></span>
+                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.UC className="w-4 h-4" /></span>
                       <input type="number" className="doc-market-input" placeholder="30" min="1" value={sellForm.price} onChange={(e) => setSellForm({ ...sellForm, price: e.target.value })} required />
                     </div>
                   </div>
 
-                  {/* Add space */}
-                  <div style={{ height: 10 }}></div>
+                  <div style={{ height: 6 }}></div>
 
                   {/* Buttons */}
                   <button type="submit" className="doc-market-btn-primary sell flex items-center justify-center w-full">
-                    <Icons.Send className="w-5 h-5 mr-2" /> Đăng Bán
+                    <Icons.Send className="w-4 h-4" /> Đăng tài liệu
                   </button>
                 </div>
               </form>
@@ -511,18 +510,18 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
         {/* --- Modal Form: Treo thưởng --- */}
         {postMode === 'bounty' && (
           <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={() => setPostMode(null)}>
-            <div style={{ backgroundColor: '#fff', width: '90%', maxWidth: '500px', borderRadius: '16px', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
-              <div style={{ padding: '16px 20px', borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ fontWeight: 'bold', fontSize: '18px', color: '#1e293b' }}>Tìm tài liệu</h4>
-                <button onClick={() => setPostMode(null)} style={{ fontSize: '20px', color: '#64748b' }}>✕</button>
+            <div className={`w-[90%] max-w-[480px] rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200 shadow-lg'}`} onClick={e => e.stopPropagation()}>
+              <div className={`px-5 py-4 border-b flex justify-between items-center ${panicMode ? 'border-zinc-800' : 'border-zinc-100 bg-zinc-50/50'}`}>
+                <h4 className="font-semibold text-sm text-zinc-900">Tìm kiếm tài liệu</h4>
+                <button onClick={() => setPostMode(null)} className="text-zinc-400 hover:text-zinc-600 text-lg">✕</button>
               </div>
-              <form onSubmit={handleBountySubmit} style={{ padding: '20px' }}>
+              <form onSubmit={handleBountySubmit} style={{ padding: '16px 20px' }}>
                 <div className="doc-market-form-fields">
                   {/* Tên tài liệu cần tìm */}
                   <div>
                     <label className="doc-market-label">Tên tài liệu cần tìm</label>
                     <div className="doc-market-input-icon-wrap">
-                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Search className="w-5 h-5 text-slate-500" /></span>
+                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Search className="w-4 h-4" /></span>
                       <input type="text" className="doc-market-input" placeholder="VD: Đề thi Toán Rời rạc - K51" value={bountyForm.title} onChange={(e) => setBountyForm({ ...bountyForm, title: e.target.value })} required />
                     </div>
                   </div>
@@ -532,14 +531,14 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                     <div>
                       <label className="doc-market-label">Môn học</label>
                       <div className="doc-market-input-icon-wrap">
-                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.School className="w-5 h-5 text-slate-500" /></span>
+                        <span className="doc-market-input-icon flex items-center justify-center"><Icons.School className="w-4 h-4" /></span>
                         <input type="text" className="doc-market-input" placeholder="VD: Tài chính Quốc tế" value={bountyForm.subject} onChange={(e) => setBountyForm({ ...bountyForm, subject: e.target.value })} />
                       </div>
                     </div>
                     <div>
                       <label className="doc-market-label">Tên Giảng viên</label>
                       <div className="doc-market-input-icon-wrap">
-                        <span className="doc-market-input-icon"><Icons.User className="w-5 h-5 text-slate-500" /></span>
+                        <span className="doc-market-input-icon"><Icons.User className="w-4 h-4" /></span>
                         <input type="text" className="doc-market-input" placeholder="VD: Thầy Nguyễn Văn B" value={bountyForm.teacher} onChange={(e) => setBountyForm({ ...bountyForm, teacher: e.target.value })} />
                       </div>
                     </div>
@@ -549,16 +548,16 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                   <div>
                     <label className="doc-market-label">Mức thưởng (UC)</label>
                     <div className="doc-market-input-icon-wrap">
-                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Award className="w-5 h-5 text-slate-500" /></span>
+                      <span className="doc-market-input-icon flex items-center justify-center"><Icons.Award className="w-4 h-4" /></span>
                       <input type="number" className="doc-market-input" placeholder="50" min="1" value={bountyForm.reward} onChange={(e) => setBountyForm({ ...bountyForm, reward: e.target.value })} required />
                     </div>
                   </div>
 
-                  <div style={{ height: 10 }}></div>
+                  <div style={{ height: 6 }}></div>
 
                   {/* Button */}
                   <button type="submit" className="doc-market-btn-primary bounty flex items-center justify-center w-full">
-                    <Icons.Search className="w-5 h-5 mr-2" /> Đăng Yêu Cầu Tìm Kiếm
+                    <Icons.Search className="w-4 h-4" /> Treo thưởng tìm kiếm
                   </button>
                 </div>
               </form>
@@ -707,18 +706,11 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
                           onViewDetail={setSelectedDoc}
                         />
                       ))}
-                      {filteredBounties.length > 5 && (
-                        <button
-                          onClick={() => setViewAllBounties(!viewAllBounties)}
-                          style={{ gridColumn: '1 / -1', padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#334155', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}
-                        >
-                          {viewAllBounties ? 'Thu gọn ⌃' : `Xem tất cả ${filteredBounties.length} yêu cầu ⌄`}
-                        </button>
-                      )}
                     </>
                   )}
                 </div>
               )}
+
             </>
           );
         })()}
@@ -728,83 +720,108 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
       {/* MODAL XEM CHI TIẾT TÀI LIỆU                */}
       {/* ============================================ */}
       {selectedDoc && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.65)', zIndex: 9999,
-          display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16
-        }} onClick={() => setSelectedDoc(null)}>
-          <div style={{
-            backgroundColor: 'white', width: '100%', maxWidth: 480,
-            borderRadius: 20, overflow: 'hidden', boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
-          }} onClick={e => e.stopPropagation()}>
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[9999] flex items-center justify-center p-4" 
+          onClick={() => setSelectedDoc(null)}
+        >
+          <div 
+            className={`w-full max-w-md rounded-xl overflow-hidden border shadow-lg transition-all ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}
+            onClick={e => e.stopPropagation()}
+          >
             {/* Header */}
-            <div style={{ padding: '18px 20px', background: 'linear-gradient(135deg,#e11d48,#f43f5e)', color: 'white', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className={`px-5 py-4 border-b flex justify-between items-center ${panicMode ? 'border-zinc-800' : 'border-zinc-100 bg-zinc-50/50'}`}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 2 }}>{selectedDoc.title}</div>
-                <div style={{ fontSize: 12, opacity: 0.85 }}>{selectedDoc.category} • {formatTimeAgo(selectedDoc.createdAt)}</div>
+                <div className="text-sm font-semibold text-zinc-900 leading-tight">{selectedDoc.title}</div>
+                <div className="text-[10px] text-zinc-400 mt-1 uppercase tracking-wider font-semibold">
+                  {selectedDoc.category} • {formatTimeAgo(selectedDoc.createdAt)}
+                </div>
               </div>
-              <button onClick={() => setSelectedDoc(null)} style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', width: 32, height: 32, borderRadius: '50%', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>✕</button>
+              <button 
+                onClick={() => setSelectedDoc(null)} 
+                className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-300' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}
+              >
+                ✕
+              </button>
             </div>
 
             {/* Body */}
-            <div style={{ padding: '20px 22px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>GIẢNG VIÊN</div>
-                  <div style={{ fontWeight: 'bold', fontSize: 14 }}>👨‍🏫 {selectedDoc.lecturer || 'Chưa ghi'}</div>
+            <div className="p-5">
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className={`p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50/50 border-zinc-100'}`}>
+                  <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1">Giảng viên</div>
+                  <div className="text-xs font-medium text-zinc-800">👨‍🏫 {selectedDoc.lecturer || 'Chưa ghi'}</div>
                 </div>
-                <div style={{ background: '#f8fafc', borderRadius: 10, padding: '12px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>MÔN HỌC</div>
-                  <div style={{ fontWeight: 'bold', fontSize: 14 }}>📚 {selectedDoc.subject || 'Chưa ghi'}</div>
+                <div className={`p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50/50 border-zinc-100'}`}>
+                  <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1">Môn học</div>
+                  <div className="text-xs font-medium text-zinc-800">📚 {selectedDoc.subject || 'Chưa ghi'}</div>
                 </div>
-                <div style={{ background: '#fef2f2', borderRadius: 10, padding: '12px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>{selectedDoc.type === 'BOUNTY' ? 'MỨC THƯỞNG' : 'GIÁ BÁN'}</div>
-                  <div style={{ fontWeight: 'bold', fontSize: 16, color: '#e11d48' }}><Icons.UC className="w-5 h-5 inline text-rose-500" /> {fmtUC(selectedDoc.price)} UC</div>
+                <div className={`p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50/50 border-zinc-100'}`}>
+                  <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1">
+                    {selectedDoc.type === 'BOUNTY' ? 'Mức thưởng' : 'Giá bán'}
+                  </div>
+                  <div className="text-sm font-bold text-zinc-950 flex items-center gap-1">
+                    <Icons.UC className="w-3.5 h-3.5 text-zinc-500" /> {fmtUC(selectedDoc.price)} UC
+                  </div>
                 </div>
-                <div style={{ background: '#f0fdf4', borderRadius: 10, padding: '12px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#888', marginBottom: 4 }}>LOẠI</div>
-                  <div style={{ fontWeight: 'bold', fontSize: 14 }}>📄 {selectedDoc.type === 'BOUNTY' ? 'Treo thưởng' : (selectedDoc.isCombo ? '📦 Combo' : selectedDoc.category)}</div>
+                <div className={`p-3 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50/50 border-zinc-100'}`}>
+                  <div className="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider mb-1">Phân loại</div>
+                  <div className="text-xs font-medium text-zinc-800">
+                    📄 {selectedDoc.type === 'BOUNTY' ? 'Treo thưởng' : (selectedDoc.isCombo ? '📦 Combo' : selectedDoc.category)}
+                  </div>
                 </div>
               </div>
 
-              {/* Người bán */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 0', borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', marginBottom: 16, cursor: 'pointer' }} onClick={() => onOpenProfile?.(selectedDoc.author)}>
-                <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#e11d48', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: 16 }}>
-                  {selectedDoc.author?.avatarUrl
-                    ? <img src={selectedDoc.author.avatarUrl} style={{ width: 38, height: 38, borderRadius: '50%', objectFit: 'cover' }} alt="avatar" />
-                    : (selectedDoc.author?.fullName || selectedDoc.author?.username || '?').charAt(0).toUpperCase()}
+              {/* Tác giả */}
+              <div 
+                className={`flex items-center gap-3 p-3 rounded-lg border mb-4 cursor-pointer transition-colors ${panicMode ? 'bg-zinc-850 border-zinc-800 hover:bg-zinc-800' : 'bg-zinc-50/50 border-zinc-100 hover:bg-zinc-100/50'}`}
+                onClick={() => onOpenProfile?.(selectedDoc.author)}
+              >
+                <div className="w-8 h-8 rounded-full bg-zinc-900 text-white flex items-center justify-center font-bold text-xs overflow-hidden">
+                  {selectedDoc.author?.avatarUrl ? (
+                    <img src={selectedDoc.author.avatarUrl} className="w-full h-full object-cover" alt="avatar" />
+                  ) : (
+                    (selectedDoc.author?.fullName || selectedDoc.author?.username || '?').charAt(0).toUpperCase()
+                  )}
                 </div>
                 <div>
-                  <div style={{ fontWeight: 'bold', fontSize: 14 }}>{selectedDoc.author?.fullName || selectedDoc.author?.username}</div>
-                  <div style={{ fontSize: 12, color: '#888' }}>{selectedDoc.type === 'BOUNTY' ? 'Người tìm tài liệu' : 'Người đăng tài liệu'}</div>
+                  <div className="text-xs font-semibold text-zinc-800">{selectedDoc.author?.fullName || selectedDoc.author?.username}</div>
+                  <div className="text-[10px] text-zinc-400 mt-0.5">
+                    {selectedDoc.type === 'BOUNTY' ? 'Người tìm tài liệu' : 'Người đăng tài liệu'}
+                  </div>
                 </div>
               </div>
 
               {/* Buttons */}
-              <div style={{ display: 'flex', gap: 10 }}>
+              <div className="flex gap-2 mt-4">
                 {selectedDoc.authorId !== user.id && (
                   <button
                     onClick={() => {
-                        const msg = selectedDoc.type === 'BOUNTY' 
-                            ? `Chào bạn, mình thấy bạn đang treo thưởng tìm "${selectedDoc.title}". Mình có tài liệu này, trao đổi nhé?`
-                            : `Chào bạn, mình muốn mua tài liệu "${selectedDoc.title}".`;
-                        onChat && onChat(selectedDoc.author, null, msg, 'DOCUMENT');
-                        setSelectedDoc(null); 
+                      const msg = selectedDoc.type === 'BOUNTY' 
+                        ? `Chào bạn, mình thấy bạn đang treo thưởng tìm "${selectedDoc.title}". Mình có tài liệu này, trao đổi nhé?`
+                        : `Chào bạn, mình muốn mua tài liệu "${selectedDoc.title}".`;
+                      onChat && onChat(selectedDoc.author, null, msg, 'DOCUMENT');
+                      setSelectedDoc(null); 
                     }}
-                    style={{ flex: 1, padding: '12px', borderRadius: 12, background: '#f1f5f9', border: 'none', fontWeight: 'bold', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                  >💬 Nhắn tin {selectedDoc.type === 'BOUNTY' ? 'người tìm' : 'người bán'}</button>
+                    className={`flex-1 py-2.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                  >
+                    <Icons.MessageCircle className="w-3.5 h-3.5" /> Chat
+                  </button>
                 )}
                 {selectedDoc.fileUrl && (
                   <button
                     onClick={() => { setPreviewDoc(selectedDoc); setSelectedDoc(null); }}
-                    style={{ padding: '12px', borderRadius: 12, background: '#f1f5f9', border: 'none', fontWeight: 'bold', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}
-                  >👁️ Xem trước</button>
+                    className={`px-3 py-2.5 rounded-lg border text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
+                  >
+                    <Icons.Eye className="w-3.5 h-3.5" /> Xem trước
+                  </button>
                 )}
                 {selectedDoc.authorId !== user.id && selectedDoc.type !== 'BOUNTY' && (
                   <button
                     onClick={() => { handlePurchase(selectedDoc); setSelectedDoc(null); }}
-                    style={{ flex: 1, padding: '12px', borderRadius: 12, background: '#e11d48', color: 'white', border: 'none', fontWeight: 'bold', fontSize: 14, cursor: 'pointer' }}
-                  >🛒 Mua {fmtUC(selectedDoc.price)} UC</button>
+                    className="flex-1 py-2.5 bg-zinc-950 text-white rounded-lg font-semibold text-xs transition-colors hover:bg-zinc-850"
+                  >
+                    🛒 Mua với {fmtUC(selectedDoc.price)} UC
+                  </button>
                 )}
               </div>
             </div>
@@ -814,29 +831,40 @@ const DocumentMarketScreen = ({ user, panicMode, onBuy, onChat, showAlert, showC
 
       {/* --- Preview Modal --- */}
       {previewDoc && (
-        <div style={{
-          position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-          backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999,
-          display: 'flex', alignItems: 'center', justifyContent: 'center'
-        }} onClick={() => setPreviewDoc(null)}>
-          <div style={{
-            backgroundColor: 'white', width: '80%', height: '80%',
-            borderRadius: 12, display: 'flex', flexDirection: 'column',
-            overflow: 'hidden'
-          }} onClick={e => e.stopPropagation()}>
-            <div style={{ padding: 16, borderBottom: '1px solid #eee', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h3 style={{ margin: 0 }}>Bản xem trước: {previewDoc.title}</h3>
-              <button aria-label="Đóng" onClick={() => setPreviewDoc(null)} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }}>×</button>
+        <div 
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999] flex items-center justify-center p-2 sm:p-6" 
+          onClick={() => setPreviewDoc(null)}
+        >
+          <div 
+            className={`w-full max-w-4xl h-[85vh] rounded-xl overflow-hidden border shadow-2xl flex flex-col ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className={`px-5 py-4 border-b flex justify-between items-center ${panicMode ? 'border-zinc-800 bg-zinc-950' : 'border-zinc-100 bg-zinc-50/50'}`}>
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-400"><Icons.FileText className="w-5 h-5" /></span>
+                <span className="text-sm font-semibold text-zinc-900">Bản xem trước: {previewDoc.title}</span>
+              </div>
+              <button 
+                onClick={() => setPreviewDoc(null)} 
+                className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-300' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}
+              >
+                ✕
+              </button>
             </div>
-            <div style={{ flex: 1, backgroundColor: '#f1f1f1' }}>
+            
+            {/* Content iframe */}
+            <div className={`flex-1 overflow-hidden relative ${panicMode ? 'bg-zinc-950' : 'bg-zinc-100'}`}>
               {previewDoc.fileUrl ? (
                 previewDoc.fileUrl.match(/\.(jpeg|jpg|gif|png)$/i) ? (
-                  <img src={previewDoc.fileUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <img src={previewDoc.fileUrl} alt="Preview" className="w-full h-full object-contain" />
                 ) : (
-                  <iframe src={`/api/documents/preview/${previewDoc.id}#toolbar=0`} width="100%" height="100%" style={{ border: 'none' }} title="Preview PDF" />
+                  <iframe src={`/api/documents/preview/${previewDoc.id}#toolbar=0`} width="100%" height="100%" className="border-none" title="Preview PDF" />
                 )
               ) : (
-                <div style={{ padding: 20 }}>Tài liệu này không có file đính kèm.</div>
+                <div className="absolute inset-0 flex items-center justify-center text-xs text-zinc-400 font-medium">
+                  📭 Tài liệu này không có file đính kèm để xem trước.
+                </div>
               )}
             </div>
           </div>

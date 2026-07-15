@@ -308,29 +308,37 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
     <div className={`${panicMode ? 'ride-panic' : ''}`}>
 
       {/* ============================================ */}
-      {/* TOP ACTION TABS (Giống Mua hộ)               */}
+      {/* TOP ACTION TABS                              */}
       {/* ============================================ */}
-      <div className="errand-main-tabs">
+      <div className={`flex border-b mb-4 ${panicMode ? 'border-zinc-800' : 'border-zinc-200'}`}>
         <button
           type="button"
-          className="errand-main-tab-btn"
+          className={`flex-1 py-2.5 text-center text-xs font-bold transition-all border-b-2 ${panicMode ? 'text-white border-white' : 'text-zinc-950 border-zinc-950'}`}
           onClick={() => setShowCreateModal(true)}
         >
-          <Icons.MapPin className="w-4 h-4 inline mr-1" /> Tìm Xế
+          <Icons.MapPin className="w-3.5 h-3.5 inline mr-1" /> Tìm Xế
         </button>
         <button
           type="button"
-          className={`errand-main-tab-btn ${rideTab === 'offer' ? 'active' : ''}`}
+          className={`flex-1 py-2.5 text-center text-xs font-bold transition-all relative ${
+            rideTab === 'offer'
+              ? (panicMode ? 'text-white border-b-2 border-white' : 'text-zinc-950 border-b-2 border-zinc-950')
+              : 'text-zinc-400 hover:text-zinc-600 border-b-2 border-transparent'
+          }`}
           onClick={() => setRideTab('offer')}
         >
-          <Icons.Bike className="w-4 h-4 inline mr-1" /> Nhận Chở
+          <Icons.Bike className="w-3.5 h-3.5 inline mr-1" /> Nhận Chở
         </button>
         <button
           type="button"
-          className={`errand-main-tab-btn ${rideTab === 'manage' ? 'active' : ''}`}
+          className={`flex-1 py-2.5 text-center text-xs font-bold transition-all relative ${
+            rideTab === 'manage'
+              ? (panicMode ? 'text-white border-b-2 border-white' : 'text-zinc-950 border-b-2 border-zinc-950')
+              : 'text-zinc-400 hover:text-zinc-600 border-b-2 border-transparent'
+          }`}
           onClick={() => setRideTab('manage')}
         >
-          <Icons.FileText className="w-4 h-4 inline mr-1" /> Quản Lý
+          <Icons.FileText className="w-3.5 h-3.5 inline mr-1" /> Quản Lý
         </button>
       </div>
 
@@ -338,20 +346,20 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
       {/* MODAL TẠO YÊU CẦU TÌM XẾ                    */}
       {/* ============================================ */}
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl w-full max-w-md p-6 shadow-xl animate-scale-up max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-5">
-              <h3 className="errand-section-title flex items-center gap-2 m-0">
-                <Icons.Bike className="w-5 h-5 text-rose-600" /> Đặt xe ngay
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className={`rounded-2xl w-full max-w-md p-5 border max-h-[90vh] overflow-y-auto ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className={`text-sm font-bold uppercase tracking-wider flex items-center gap-2 m-0 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>
+                <Icons.Bike className="w-4 h-4 text-zinc-400" /> Đặt xe ngay
               </h3>
-              <button type="button" onClick={() => setShowCreateModal(false)} className="text-gray-400 hover:text-gray-600">
-                <Icons.X className="w-6 h-6" />
+              <button type="button" onClick={() => setShowCreateModal(false)} className={`w-7 h-7 rounded-full flex items-center justify-center border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100'}`}>
+                <Icons.X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-4">
               {/* Route */}
-              <div className="ride-route-box relative p-4 bg-gray-50 rounded-xl border border-gray-200">
+              <div className={`ride-route-box relative p-4 rounded-xl border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
                 <div className="ride-route-dots">
                   <div className="dot from"></div>
                   <div className="line"></div>
@@ -361,56 +369,56 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                   <LocationAutocomplete
                     placeholder="Điểm đón (nhập từ khóa...)"
                     value={formData.departure}
-                    className="w-full bg-white border border-gray-200 p-3 pl-8 rounded-lg outline-none text-sm font-medium focus:border-rose-300"
+                    className={`w-full border p-3 pl-8 rounded-lg outline-none text-xs font-medium transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                     onSelect={({ label, lat, lng }) => setFormData(prev => ({ ...prev, departure: label, departureLat: lat, departureLng: lng }))}
                   />
                   <LocationAutocomplete
                     placeholder="Điểm đến (nhập từ khóa...)"
                     value={formData.destination}
-                    className="w-full bg-white border border-gray-200 p-3 pl-8 rounded-lg outline-none text-sm font-medium focus:border-rose-300"
+                    className={`w-full border p-3 pl-8 rounded-lg outline-none text-xs font-medium transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                     onSelect={({ label, lat, lng }) => setFormData(prev => ({ ...prev, destination: label, destinationLat: lat, destinationLng: lng }))}
                   />
                 </div>
                 <button
                   type="button"
-                  className="absolute right-6 top-1/2 -translate-y-1/2 bg-white border shadow-sm w-8 h-8 rounded-full flex items-center justify-center text-rose-500 font-bold hover:bg-rose-50 transition"
+                  className={`absolute right-5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700' : 'bg-white border-zinc-200 text-zinc-500 hover:bg-zinc-50'}`}
                   onClick={handleSwapRoute}
                 >⇅</button>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="errand-label">Ngày khởi hành</label>
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${panicMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Ngày khởi hành</label>
                   <input
                     type="date"
-                    className="errand-payment-input w-full"
+                    className={`w-full p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                   />
                 </div>
                 <div className="col-span-2 sm:col-span-1">
-                  <label className="errand-label">Số điện thoại</label>
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${panicMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Số điện thoại</label>
                   <input
                     type="tel"
-                    className="errand-payment-input w-full"
+                    className={`w-full p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                     placeholder="0912..."
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="errand-label">Khung giờ khởi hành mong muốn</label>
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${panicMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Khung giờ mong muốn</label>
                   <div className="flex items-center gap-2">
                     <input
                       type="time"
-                      className="errand-payment-input flex-1"
+                      className={`flex-1 p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                       value={formData.timeStart}
                       onChange={(e) => setFormData({ ...formData, timeStart: e.target.value })}
                     />
-                    <span className="text-gray-400 font-bold">-</span>
+                    <span className="text-zinc-400 font-bold text-xs">-</span>
                     <input
                       type="time"
-                      className="errand-payment-input flex-1"
+                      className={`flex-1 p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                       value={formData.timeEnd}
                       onChange={(e) => setFormData({ ...formData, timeEnd: e.target.value })}
                     />
@@ -418,25 +426,25 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                 </div>
               </div>
               <div>
-                <label className="errand-label">Ghi chú thêm</label>
+                <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${panicMode ? 'text-zinc-500' : 'text-zinc-400'}`}>Ghi chú thêm</label>
                 <input
                   type="text"
-                  className="errand-payment-input w-full"
+                  className={`w-full p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                   placeholder="VD: mang đồ nhẹ, chỉ đi xe máy..."
                   value={formData.note || ''}
                   onChange={(e) => setFormData({ ...formData, note: e.target.value })}
                 />
               </div>
 
-              <div className="errand-payment-block">
-                <div className="errand-payment-title flex items-center gap-2">
-                  <Icons.CreditCard className="w-5 h-5 text-indigo-600" /> Giá mong muốn
+              <div className={`p-3 rounded-xl border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
+                <div className={`text-[10px] font-bold uppercase tracking-wider mb-2 flex items-center gap-2 ${panicMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                  <Icons.CreditCard className="w-3.5 h-3.5" /> Giá mong muốn
                 </div>
                 <div>
-                  <label className="errand-payment-label">UC</label>
+                  <label className={`block text-[10px] font-bold uppercase tracking-wider mb-1 ${panicMode ? 'text-zinc-500' : 'text-zinc-400'}`}>UC</label>
                   <input
                     type="number"
-                    className="errand-payment-input"
+                    className={`w-full p-2.5 rounded-lg border text-xs font-medium outline-none transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-white' : 'bg-white border-zinc-200 text-zinc-900 focus:border-zinc-900'}`}
                     placeholder="50"
                     min="1"
                     value={formData.fee}
@@ -449,7 +457,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-3 rounded-xl font-bold bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+                  className={`flex-1 py-2.5 rounded-xl font-bold text-xs border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-750' : 'bg-zinc-100 border-zinc-200 text-zinc-700 hover:bg-zinc-200'}`}
                 >
                   Hủy
                 </button>
@@ -457,9 +465,9 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                   type="button"
                   onClick={handlePostRequest}
                   disabled={isLoading}
-                  className="flex-1 py-3 flex items-center justify-center rounded-xl font-bold bg-rose-600 text-white hover:bg-rose-700 transition disabled:bg-gray-400"
+                  className={`flex-1 py-2.5 flex items-center justify-center rounded-xl font-bold text-xs transition disabled:opacity-50 ${panicMode ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-950 text-white hover:bg-zinc-900'}`}
                 >
-                  <Icons.Send className="w-5 h-5 mr-2" />
+                  <Icons.Send className="w-3.5 h-3.5 mr-1.5" />
                   {isLoading ? 'Đang đăng...' : 'Tìm xế ngay!'}
                 </button>
               </div>
@@ -472,32 +480,32 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
       {/* MODAL CHI TIẾT YÊU CẦU (Tài xế xem)          */}
       {/* ============================================ */}
       {selectedRequest && (
-        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4" onClick={() => setSelectedRequest(null)}>
-          <div className="bg-white rounded-2xl w-full max-w-sm p-6 shadow-xl animate-scale-up" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4" onClick={() => setSelectedRequest(null)}>
+          <div className={`rounded-2xl w-full max-w-sm p-5 border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`} onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-lg text-gray-800">Chi tiết yêu cầu</h3>
-              <button type="button" onClick={() => setSelectedRequest(null)} className="text-gray-400 hover:text-gray-600">
-                <Icons.X className="w-6 h-6" />
+              <h3 className={`text-sm font-bold uppercase tracking-wider ${panicMode ? 'text-white' : 'text-zinc-900'}`}>Chi tiết yêu cầu</h3>
+              <button type="button" onClick={() => setSelectedRequest(null)} className={`w-7 h-7 rounded-full flex items-center justify-center border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100'}`}>
+                <Icons.X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="mb-4 flex flex-col gap-3">
-              <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-blue-100 text-blue-500 shrink-0">
-                  <Icons.MapPin className="w-3.5 h-3.5" />
+              <div className={`flex items-start gap-2 p-2.5 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-100'}`}>
+                <div className={`w-5 h-5 flex items-center justify-center rounded-full shrink-0 ${panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-200 text-zinc-600'}`}>
+                  <Icons.MapPin className="w-3 h-3" />
                 </div>
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-0.5">Điểm đón</span>
-                  <span className="text-sm font-semibold text-gray-700">{selectedRequest.departure}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Điểm đón</span>
+                  <span className={`text-xs font-semibold ${panicMode ? 'text-zinc-200' : 'text-zinc-700'}`}>{selectedRequest.departure}</span>
                 </div>
               </div>
-              <div className="flex items-start gap-2 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
-                <div className="w-6 h-6 flex items-center justify-center rounded-full bg-rose-100 text-rose-500 shrink-0">
-                  <Icons.Target className="w-3.5 h-3.5" />
+              <div className={`flex items-start gap-2 p-2.5 rounded-lg border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-100'}`}>
+                <div className={`w-5 h-5 flex items-center justify-center rounded-full shrink-0 ${panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-200 text-zinc-600'}`}>
+                  <Icons.Target className="w-3 h-3" />
                 </div>
                 <div>
-                  <span className="text-[11px] uppercase tracking-wider font-bold text-gray-400 block mb-0.5">Điểm đến</span>
-                  <span className="text-sm font-semibold text-gray-700">{selectedRequest.destination}</span>
+                  <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Điểm đến</span>
+                  <span className={`text-xs font-semibold ${panicMode ? 'text-zinc-200' : 'text-zinc-700'}`}>{selectedRequest.destination}</span>
                 </div>
               </div>
               {selectedRequest.departureDate && (
@@ -534,28 +542,28 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
               )}
             </div>
 
-            <div className="bg-amber-50 p-3 rounded-xl mb-4 flex items-center justify-between border border-amber-100">
+            <div className={`p-3 rounded-xl mb-4 flex items-center justify-between border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-200'}`}>
               <div>
-                <span className="text-[11px] uppercase tracking-wider font-bold text-amber-600/70 block mb-0.5">Giá khách muốn</span>
-                <span className="font-bold text-amber-700 text-lg">{fmtUC(selectedRequest.fee)} UC</span>
+                <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block mb-0.5">Giá khách muốn</span>
+                <span className={`font-bold text-base ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{fmtUC(selectedRequest.fee)} UC</span>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 mb-5 p-3 bg-blue-50/50 rounded-xl border border-transparent">
+            <div className={`flex items-center gap-3 mb-4 p-3 rounded-xl border ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-100'}`}>
               {(() => {
                 const passengerData = selectedRequest.passenger || (selectedRequest.passengerId === user.id ? user : null);
                 return (
                   <>
                     {passengerData?.avatarUrl ? (
-                      <img src={passengerData.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 border-2 border-blue-100" />
+                      <img src={passengerData.avatarUrl} alt="" className={`w-8 h-8 rounded-full object-cover shrink-0 border ${panicMode ? 'border-zinc-700' : 'border-zinc-200'}`} />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center font-bold text-rose-600 shrink-0">
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${panicMode ? 'bg-zinc-800 text-white' : 'bg-zinc-200 text-zinc-700'}`}>
                         {passengerData?.fullName?.[0] || '?'}
                       </div>
                     )}
                     <div>
-                      <div className="font-bold text-gray-800 text-sm">{passengerData?.fullName || passengerData?.username || 'Khách hàng'}</div>
-                      <div className="text-xs text-blue-600 font-medium">Hành khách</div>
+                      <div className={`font-bold text-xs ${panicMode ? 'text-white' : 'text-zinc-800'}`}>{passengerData?.fullName || passengerData?.username || 'Khách hàng'}</div>
+                      <div className="text-[10px] text-zinc-400 font-medium">Hành khách</div>
                     </div>
                   </>
                 );
@@ -569,34 +577,34 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                 <div className="flex gap-2">
                   <button
                     type="button"
-                    className="flex-1 py-2.5 rounded-xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition flex justify-center items-center gap-1.5"
+                    className={`flex-1 py-2 rounded-xl font-bold text-xs border transition flex justify-center items-center gap-1.5 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700 hover:bg-zinc-100'}`}
                     onClick={() => { setSelectedRequest(null); handleChatUser(selectedRequest.passenger, 'Chào bạn, mình đón được nha!'); }}
                   >
-                    <Icons.MessageCircle className="w-4 h-4" /> Nhắn tin
+                    <Icons.MessageCircle className="w-3.5 h-3.5" /> Nhắn tin
                   </button>
                   {alreadyOffered ? (
                     <button
                       type="button"
                       disabled
-                      className="flex-1 py-2.5 rounded-xl font-bold bg-yellow-100 text-yellow-700 flex justify-center items-center gap-1.5 cursor-default"
+                      className={`flex-1 py-2 rounded-xl font-bold text-xs border flex justify-center items-center gap-1.5 cursor-default opacity-50 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-400'}`}
                     >
-                      <Icons.Clock className="w-4 h-4" /> Đã gửi đề nghị
+                      <Icons.Clock className="w-3.5 h-3.5" /> Đã gửi
                     </button>
                   ) : isAccepted ? (
                     <button
                       type="button"
                       disabled
-                      className="flex-1 py-2.5 rounded-xl font-bold bg-gray-100 text-gray-500 flex justify-center items-center gap-1.5 cursor-default"
+                      className={`flex-1 py-2 rounded-xl font-bold text-xs border flex justify-center items-center gap-1.5 cursor-default opacity-50 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400' : 'bg-zinc-100 border-zinc-200 text-zinc-400'}`}
                     >
-                      <Icons.CheckCircle className="w-4 h-4" /> Đã có tài xế
+                      <Icons.CheckCircle className="w-3.5 h-3.5" /> Đã có xế
                     </button>
                   ) : (
                     <button
                       type="button"
-                      className="flex-1 py-2.5 rounded-xl font-bold bg-orange-500 text-white hover:bg-orange-600 transition flex justify-center items-center gap-1.5 shadow-sm"
+                      className={`flex-1 py-2 rounded-xl font-bold text-xs transition flex justify-center items-center gap-1.5 ${panicMode ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-950 text-white hover:bg-zinc-900'}`}
                       onClick={() => { setSelectedRequest(null); handleSendOffer(selectedRequest.id, selectedRequest.fee, true); }}
                     >
-                      <Icons.CheckCircle className="w-4 h-4" /> Nhận chở
+                      <Icons.CheckCircle className="w-3.5 h-3.5" /> Nhận chở
                     </button>
                   )}
                 </div>
@@ -606,15 +614,15 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                 {selectedRequest.status === 'PENDING' && (
                   <button
                     type="button"
-                    className="flex-1 py-2.5 rounded-xl font-bold bg-red-50 text-red-600 hover:bg-red-100 transition flex justify-center items-center gap-1.5"
+                    className={`flex-1 py-2 rounded-xl font-bold text-xs border transition flex justify-center items-center gap-1.5 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-400 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700'}`}
                     onClick={() => handleCancelRide(selectedRequest.id)}
                   >
-                    <Icons.Trash className="w-4 h-4" /> Huỷ yêu cầu
+                    <Icons.Trash className="w-3.5 h-3.5" /> Huỷ
                   </button>
                 )}
                 <button
                   type="button"
-                  className="flex-1 py-2.5 rounded-xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition"
+                  className={`flex-1 py-2 rounded-xl font-bold text-xs border transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-750' : 'bg-zinc-100 border-zinc-200 text-zinc-600 hover:bg-zinc-200'}`}
                   onClick={() => setSelectedRequest(null)}
                 >
                   Đóng
@@ -633,48 +641,48 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
       {rideTab === 'need' && (
         <div className="px-0">
           {myPendingRequests.length > 0 && (
-            <h3 className="font-bold text-gray-700 mb-4 tracking-wide uppercase text-[13px] flex items-center gap-2">
-              <Icons.Target className="w-4 h-4 text-indigo-600" /> Yêu Cầu Của Bạn Đang Chờ Xế
+            <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>
+              <Icons.Target className="w-3.5 h-3.5 text-zinc-400" /> Yêu cầu đang chờ xế
             </h3>
           )}
-          <div className="space-y-4">
+          <div className="space-y-3">
             {myPendingRequests.length === 0 ? (
-              <div className="text-center py-10 opacity-60">
-                <div className="mb-3 flex items-center justify-center text-slate-300"><Icons.Bike className="w-16 h-16" /></div>
-                <div className="font-bold text-gray-500 mb-1">Bạn chưa có yêu cầu nào</div>
-                <div className="text-sm text-gray-400">Nhấn <span className="font-bold text-rose-500">Tìm Xế</span> để đặt xe ngay!</div>
+              <div className="text-center py-8">
+                <div className="mb-3 flex items-center justify-center text-zinc-300"><Icons.Bike className="w-12 h-12" /></div>
+                <div className={`font-bold text-xs mb-1 ${panicMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Bạn chưa có yêu cầu nào</div>
+                <div className="text-[11px] text-zinc-400">Nhấn <span className={`font-bold ${panicMode ? 'text-white' : 'text-zinc-900'}`}>Tìm Xế</span> để đặt xe</div>
               </div>
             ) : (
               myPendingRequests.map(req => (
-                <div key={req.id} className="bg-white rounded-2xl p-4 shadow-sm border border-rose-200 relative overflow-hidden cursor-pointer hover:border-rose-400 transition" onClick={() => setSelectedRequest(req)}>
-                  <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-3 py-1 rounded-bl-lg uppercase tracking-wider">Đang chờ xế</div>
-                  <div className="font-bold text-[15px] mb-2 text-rose-800 pr-16">{req.departure} <span className="text-gray-400 font-normal">→</span> {req.destination}</div>
-                  <div className="text-[13px] text-gray-600 flex items-center gap-4 mb-4 font-medium">
-                    <span className="flex items-center gap-1.5"><Icons.Clock className="w-4 h-4" /> {req.departureTime || 'Càng sớm càng tốt'}</span>
-                    <span className="text-rose-600 flex items-center gap-1.5"><Icons.UC className="w-4 h-4" /> {fmtUC(req.fee)} UC</span>
+                <div key={req.id} className={`rounded-xl p-4 border relative overflow-hidden cursor-pointer transition ${panicMode ? 'bg-zinc-900 border-zinc-800 hover:border-zinc-700' : 'bg-white border-zinc-200 hover:border-zinc-300'}`} onClick={() => setSelectedRequest(req)}>
+                  <div className={`absolute top-0 right-0 text-[9px] font-bold px-2.5 py-1 rounded-bl-lg uppercase tracking-wider ${panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-500'}`}>Chờ xế</div>
+                  <div className={`font-bold text-xs mb-2 pr-14 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{req.departure} <span className="text-zinc-400 font-normal">→</span> {req.destination}</div>
+                  <div className={`text-[11px] flex items-center gap-4 mb-3 font-medium ${panicMode ? 'text-zinc-400' : 'text-zinc-500'}`}>
+                    <span className="flex items-center gap-1"><Icons.Clock className="w-3.5 h-3.5" /> {req.departureTime || 'Sớm nhất'}</span>
+                    <span className={`flex items-center gap-1 font-bold ${panicMode ? 'text-white' : 'text-zinc-900'}`}><Icons.UC className="w-3.5 h-3.5" /> {fmtUC(req.fee)} UC</span>
                   </div>
-                  <div className="bg-gray-50 -mx-4 -mb-4 px-4 py-3 border-t border-gray-100">
-                    <p className="text-[12px] text-gray-500 font-bold uppercase mb-2 ml-1">Tài xế nhận cuốc ({req.offers?.length || 0})</p>
+                  <div className={`-mx-4 -mb-4 px-4 py-3 border-t ${panicMode ? 'bg-zinc-850 border-zinc-800' : 'bg-zinc-50 border-zinc-100'}`}>
+                    <p className="text-[10px] text-zinc-400 font-bold uppercase mb-2">Tài xế nhận cuốc ({req.offers?.length || 0})</p>
                     {(!req.offers || req.offers.length === 0) ? (
-                      <p className="text-sm text-gray-400 italic text-center py-2">Chưa có ai nhận giải cứu...</p>
+                      <p className="text-[11px] text-zinc-400 italic text-center py-2">Chưa có ai nhận...</p>
                     ) : (
                       <div className="space-y-2">
                                         {req.offers.map(offer => (
-                          <div key={offer.id} className="bg-white border border-gray-200 p-2.5 rounded-xl flex items-center justify-between">
+                          <div key={offer.id} className={`border p-2.5 rounded-lg flex items-center justify-between ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
                             <div className="flex items-center gap-2">
                               {offer.driver?.avatarUrl ? (
-                                <img src={offer.driver.avatarUrl} alt="" className="w-10 h-10 rounded-full object-cover border border-gray-200" />
+                                <img src={offer.driver.avatarUrl} alt="" className={`w-8 h-8 rounded-full object-cover border ${panicMode ? 'border-zinc-700' : 'border-zinc-200'}`} />
                               ) : (
-                                <div className="w-10 h-10 bg-rose-100 text-rose-600 rounded-full font-bold flex items-center justify-center text-lg">{offer.driver?.fullName?.[0] || '?'}</div>
+                                <div className={`w-8 h-8 rounded-full font-bold flex items-center justify-center text-xs ${panicMode ? 'bg-zinc-800 text-white' : 'bg-zinc-200 text-zinc-700'}`}>{offer.driver?.fullName?.[0] || '?'}</div>
                               )}
                               <div>
-                                <div className="font-bold text-sm text-gray-800 flex items-center gap-1">{offer.driver?.fullName} <span style={{ fontSize: 10 }} className="text-green-500 flex items-center gap-0.5"><Icons.Star className="w-3 h-3 text-yellow-500" /> 5.0</span></div>
-                                <div className="text-[12px] text-gray-500">Báo giá: <span className="font-bold text-orange-600">{fmtUC(offer.proposedPrice)} UC</span></div>
+                                <div className={`font-bold text-xs flex items-center gap-1 ${panicMode ? 'text-white' : 'text-zinc-800'}`}>{offer.driver?.fullName} <span className="text-[9px] text-zinc-400 flex items-center gap-0.5"><Icons.Star className="w-2.5 h-2.5" /> 5.0</span></div>
+                                <div className="text-[11px] text-zinc-400">Giá: <span className={`font-bold ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{fmtUC(offer.proposedPrice)} UC</span></div>
                               </div>
                             </div>
                             <div className="flex flex-col gap-1 items-end">
-                              <button onClick={(e) => { e.stopPropagation(); handleAcceptOffer(offer.id); }} className="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-1 rounded shadow text-xs transition">ĐẶT TÀI XẾ</button>
-                              <button onClick={(e) => { e.stopPropagation(); handleChatUser(offer.driver, `Chào ${offer.driver?.fullName}, mình báo giá chuyến đi xíu nhé.`); }} className="text-gray-500 hover:text-blue-500 font-medium text-[11px] underline">Chat deal giá</button>
+                              <button onClick={(e) => { e.stopPropagation(); handleAcceptOffer(offer.id); }} className={`font-bold px-3 py-1 rounded-lg text-[10px] transition ${panicMode ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-950 text-white hover:bg-zinc-900'}`}>CHỌN</button>
+                              <button onClick={(e) => { e.stopPropagation(); handleChatUser(offer.driver, `Chào ${offer.driver?.fullName}, mình báo giá chuyến đi xíu nhé.`); }} className="text-zinc-400 hover:text-zinc-600 font-medium text-[10px] underline">Chat</button>
                             </div>
                           </div>
                         ))}
@@ -685,7 +693,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
               ))
             )}
             {activeMyPending.length > 5 && (
-              <button onClick={() => setViewAllMyPending(!viewAllMyPending)} style={{ padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#334155', fontWeight: 'bold', cursor: 'pointer', width: '100%' }}>
+              <button onClick={() => setViewAllMyPending(!viewAllMyPending)} className={`w-full py-3 rounded-lg text-xs font-bold transition ${panicMode ? 'bg-zinc-850 hover:bg-zinc-800 text-zinc-200' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'}`}>
                 {viewAllMyPending ? 'Thu gọn ⌃' : `Xem tất cả ${activeMyPending.length} yêu cầu ⌄`}
               </button>
             )}
@@ -708,9 +716,9 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
 
           <div className="errand-card-list">
             {availableRequests.length === 0 ? (
-              <div className="text-center py-10 opacity-60">
-                <div className="mb-3 flex items-center justify-center text-slate-300"><Icons.Package className="w-16 h-16" /></div>
-                <div className="font-bold text-gray-500">Xung quanh chưa có ai cần chở cả!</div>
+              <div className="text-center py-8">
+                <div className="mb-3 flex items-center justify-center text-zinc-300"><Icons.Package className="w-12 h-12" /></div>
+                <div className={`font-bold text-xs ${panicMode ? 'text-zinc-400' : 'text-zinc-500'}`}>Chưa có ai cần chở!</div>
               </div>
             ) : (
               <>
@@ -791,7 +799,7 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
                 {activeAvailable.length > 5 && (
                   <button
                     onClick={() => setViewAllAvailable(!viewAllAvailable)}
-                    style={{ gridColumn: '1 / -1', padding: '12px', background: '#f1f5f9', border: 'none', borderRadius: '12px', color: '#10B981', fontWeight: 'bold', cursor: 'pointer', marginTop: '10px' }}
+                    className={`w-full py-3 rounded-lg text-xs font-bold transition mt-2 ${panicMode ? 'bg-zinc-850 hover:bg-zinc-800 text-zinc-200' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'}`}
                   >
                     {viewAllAvailable ? 'Thu gọn ⌃' : `Xem tất cả ${activeAvailable.length} tín hiệu ⌄`}
                   </button>
@@ -807,19 +815,19 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
         <div className="px-0">
           <div className="space-y-6">
             <div>
-              <h3 className="font-bold text-rose-800 uppercase tracking-wide text-xs mb-3 flex items-center gap-2">
-                <Icons.MapPin className="w-5 h-5 text-rose-500" /> CHUYẾN ĐI (VAI TRÒ KHÁCH)
+              <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>
+                <Icons.MapPin className="w-3.5 h-3.5 text-zinc-400" /> Chuyến đi (Khách)
               </h3>
               {historyRidesAsPassenger.length === 0 ? (
-                <p className="text-sm text-gray-500 italic">Chưa có dữ liệu</p>
+                <p className="text-[11px] text-zinc-400 italic">Chưa có dữ liệu</p>
               ) : (
                 historyRidesAsPassenger.map(h => (
-                  <div key={`history-req-${h.id}`} onClick={() => { if (h.rawData) setSelectedRequest(h.rawData); }} className={`bg-white p-3 rounded-xl mb-2 flex justify-between items-center shadow-sm border-l-4 cursor-pointer hover:shadow-md ${h.status === 'IN_PROGRESS' ? 'border-orange-500 bg-orange-50' : h.status === 'COMPLETED' ? 'border-green-500' : 'border-gray-300'}`}>
+                  <div key={`history-req-${h.id}`} onClick={() => { if (h.rawData) setSelectedRequest(h.rawData); }} className={`p-3 rounded-xl mb-2 flex justify-between items-center border-l-2 cursor-pointer transition ${panicMode ? 'bg-zinc-900 hover:bg-zinc-850' : 'bg-white hover:bg-zinc-50'} ${h.status === 'IN_PROGRESS' ? (panicMode ? 'border-zinc-400' : 'border-zinc-900') : h.status === 'COMPLETED' ? 'border-zinc-300' : (panicMode ? 'border-zinc-700' : 'border-zinc-200')}`}>
                     <div>
-                      <div className="font-bold text-sm line-clamp-1">{h.title}</div>
-                      <div className="text-[11px] text-gray-500 mt-0.5">Mã: #{h.id} • Xế: {h.targetUser?.fullName || '---'}</div>
-                      <span className={`inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded flex items-center w-max gap-1 select-none ${h.status === 'IN_PROGRESS' ? 'bg-orange-200 text-orange-800' : h.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                        {h.status === 'IN_PROGRESS' ? <><Icons.Clock className="w-3 h-3" /> ĐANG CHẠY</> : h.status}
+                      <div className={`font-bold text-xs line-clamp-1 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{h.title}</div>
+                      <div className="text-[10px] text-zinc-400 mt-0.5">#{h.id} • Xế: {h.targetUser?.fullName || '---'}</div>
+                      <span className={`inline-block mt-1 text-[9px] font-bold px-2 py-0.5 rounded flex items-center w-max gap-1 select-none ${h.status === 'IN_PROGRESS' ? (panicMode ? 'bg-zinc-800 text-white' : 'bg-zinc-900 text-white') : (panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-500')}`}>
+                        {h.status === 'IN_PROGRESS' ? <><Icons.Clock className="w-2.5 h-2.5" /> ĐANG CHẠY</> : h.status}
                       </span>
                     </div>
                   </div>
@@ -828,27 +836,27 @@ const RideMarketScreen = ({ user, panicMode, onChat, showAlert, showConfirm, sho
             </div>
 
             <div>
-              <h3 className="font-bold text-blue-800 uppercase tracking-wide text-xs mb-3 flex items-center gap-2">
-                <Icons.Bike className="w-5 h-5 text-blue-500" /> CHUYẾN CHỞ (VAI TRÒ XẾ)
+              <h3 className={`text-xs font-bold uppercase tracking-wider mb-3 flex items-center gap-2 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>
+                <Icons.Bike className="w-3.5 h-3.5 text-zinc-400" /> Chuyến chở (Xế)
               </h3>
               {historyRidesAsDriver.length === 0 ? (
-                <p className="text-sm text-gray-500 italic">Chưa có dữ liệu</p>
+                <p className="text-[11px] text-zinc-400 italic">Chưa có dữ liệu</p>
               ) : (
                 historyRidesAsDriver.map(h => (
-                  <div key={`history-off-${h.id}`} onClick={() => { if (h.rawData) setSelectedRequest(h.rawData); }} className={`bg-white p-3 rounded-xl mb-2 shadow-sm border-l-4 cursor-pointer hover:shadow-md ${h.status === 'IN_PROGRESS' ? 'border-blue-500 bg-blue-50' : h.status === 'COMPLETED' ? 'border-green-500' : 'border-gray-300'}`}>
+                  <div key={`history-off-${h.id}`} onClick={() => { if (h.rawData) setSelectedRequest(h.rawData); }} className={`p-3 rounded-xl mb-2 border-l-2 cursor-pointer transition ${panicMode ? 'bg-zinc-900 hover:bg-zinc-850' : 'bg-white hover:bg-zinc-50'} ${h.status === 'IN_PROGRESS' ? (panicMode ? 'border-zinc-400' : 'border-zinc-900') : h.status === 'COMPLETED' ? 'border-zinc-300' : (panicMode ? 'border-zinc-700' : 'border-zinc-200')}`}>
                     <div className="flex justify-between items-center">
                       <div>
-                        <div className="font-bold text-sm line-clamp-1">{h.title}</div>
-                        <div className="text-[11px] text-gray-500 mt-0.5">Mã: #{h.id} • Khách: {h.targetUser?.fullName || '---'}</div>
+                        <div className={`font-bold text-xs line-clamp-1 ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{h.title}</div>
+                        <div className="text-[10px] text-zinc-400 mt-0.5">#{h.id} • Khách: {h.targetUser?.fullName || '---'}</div>
                       </div>
                       {h.status === 'IN_PROGRESS' && (
-                        <button onClick={() => handleCompleteRide(h.id)} className="bg-green-500 hover:bg-green-600 text-white font-bold text-xs px-3 py-1.5 rounded-lg shadow-sm whitespace-nowrap transition">
-                          Hoàn thành &gt;&gt;
+                        <button onClick={() => handleCompleteRide(h.id)} className={`font-bold text-[10px] px-3 py-1.5 rounded-lg whitespace-nowrap transition ${panicMode ? 'bg-white text-zinc-900 hover:bg-zinc-100' : 'bg-zinc-950 text-white hover:bg-zinc-900'}`}>
+                          Hoàn thành
                         </button>
                       )}
                     </div>
-                    <span className={`inline-block mt-2 text-[10px] font-bold px-2 py-0.5 rounded flex items-center w-max gap-1 select-none ${h.status === 'IN_PROGRESS' ? 'bg-blue-200 text-blue-800' : h.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {h.status === 'IN_PROGRESS' ? <><Icons.Clock className="w-3 h-3" /> ĐANG VẬN CHUYỂN</> : h.status}
+                    <span className={`inline-block mt-2 text-[9px] font-bold px-2 py-0.5 rounded flex items-center w-max gap-1 select-none ${h.status === 'IN_PROGRESS' ? (panicMode ? 'bg-zinc-800 text-white' : 'bg-zinc-900 text-white') : (panicMode ? 'bg-zinc-800 text-zinc-300' : 'bg-zinc-100 text-zinc-500')}`}>
+                      {h.status === 'IN_PROGRESS' ? <><Icons.Clock className="w-2.5 h-2.5" /> ĐANG VẬN CHUYỂN</> : h.status}
                     </span>
                   </div>
                 ))

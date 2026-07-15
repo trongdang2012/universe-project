@@ -381,9 +381,12 @@ app.post('/api/ai/chat', async (req, res) => {
     let itemsCtx = items.map(i => `- ${i.name} (Tình trạng: ${i.condition}) đang bán giá ${i.price} UC bởi ${i.owner?.fullName || 'Ẩn danh'}`).join('\n');
     if(!itemsCtx) itemsCtx = 'Hiện không có đồ cũ nào đang bán trên chợ.';
 
-    // Fix the date representation to align with our mocked schedule (April 13, 2026 is Monday)
-    // We explicitly say "Thứ Hai, ngày 13/04/2026" so Gemini aligns directly with the mock data timeline
-    const todaySimulated = "Thứ Hai, ngày 13/04/2026"; 
+    // Tính ngày giờ thực tế để truyền cho AI
+    const now = new Date();
+    const vnDayNames = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+    const todayDayName = vnDayNames[now.getDay()];
+    const todayDateStr = `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+    const todaySimulated = `${todayDayName}, ngày ${todayDateStr}`;
 
     const contextStr = `Bạn là UniBot, trợ lý ảo AI thông minh và thân thiện của mạng xã hội sinh viên UniVerse.
 HÔM NAY LÀ: ${todaySimulated}.
@@ -417,21 +420,40 @@ Quy tắc của bạn:
       console.warn("UniBot chuyỒn sang Offline Mock Mode do Google API Error");
       
       const msgLower = message.toLowerCase();
-      let reply = '*(Mình đang phản hồi bằng Offline Demo do AI Core lỗi thẻ thanh toán, nhưng mình vẫn nắm kĩ các thông tin!)*\n\n';
-      if (msgLower.includes('thứ mấy') || msgLower.includes('ngày mấy')) {
-        reply = 'Hôm nay là Thứ Hai, ngày 13/04/2026. Chúc bạn một tuần mới trên UniVerse thật bùng nổ năng lượng nhé!';
-      } else if (msgLower.includes('hôm nay học') || msgLower.includes('môn gì')) {
-        reply = 'Theo lịch học đồng bộ mới nhất, hôm nay (Thứ Hai) bạn có 2 ca học Sáng:\n\n1. **Mạng máy tính (1050197)**\n⏰ Tiết 1-2 (07g00 - 08g40)\n📍 Phòng: 4T.31\n👨‍🏫 GV: Nguyễn Ngọc Dũng\n\n2. **Lập trình ứng dụng Desktop**\n⏰ Tiết 3-5 (09g00 - 11g30)\n📍 Phòng: A1.307\n👨‍🏫 GV: Trần Hoàng Việt\n\nChuẩn bị đầy đủ sách vở nha!';
-      } else if (msgLower.includes('tới hạn') || msgLower.includes('deadline')) {
-        reply = 'Bạn đang có 2 bài tập sắp đến hạn chót (Deadline) cần xử lý:\n\n- **Lập trình ứng dụng Web: Bài tập JS (tt)**\nHạn nộp: 18/04/2026 (Chỉ còn 5 ngày nữa)\n\n- **Mạng máy tính: Bài thực hành số 6**\nHạn nộp: 19/04/2026 (Còn 6 ngày)\n\nCố gắng hoàn thành sớm lên hệ thống Classroom nhé, UniBot tin bạn làm được!';
+      let reply = `Chào bạn! UniBot đây. Hôm nay là ${todaySimulated}. `;
+      if (msgLower.includes('thứ mấy') || msgLower.includes('ngày mấy') || msgLower.includes('hôm nay') && msgLower.includes('ngày')) {
+        reply += `Mình có thể giúp gì cho bạn nè? Bạn muốn xem deadline, tìm chuyến đi ghép, hay lướt đồ cũ chẳng hạn?`;
+      } else if (msgLower.includes('hôm nay học') || msgLower.includes('môn gì') || msgLower.includes('lịch học')) {
+        if (scheduleCtx !== 'Người dùng chưa có dữ liệu lịch học.') {
+          // Lọc lịch học theo thứ hôm nay
+          const todaySchedules = (await prisma.schedule.findMany({ where: { userId: parseInt(userId) } }))
+            .filter(s => s.dayOfWeek === todayDayName);
+          if (todaySchedules.length > 0) {
+            reply = `Theo lịch học đã đồng bộ, hôm nay (${todayDayName}, ${todayDateStr}) bạn có ${todaySchedules.length} môn:\n\n`;
+            todaySchedules.forEach((s, i) => {
+              reply += `${i+1}. **${s.subjectName}**\n⏰ ${s.timeInfo}\n📍 Phòng: ${s.room}\n\n`;
+            });
+            reply += 'Chuẩn bị đầy đủ sách vở nha! 📚';
+          } else {
+            reply = `Hôm nay (${todayDayName}, ${todayDateStr}) bạn không có lịch học nào. Tận hưởng ngày nghỉ đi nha! 🎉`;
+          }
+        } else {
+          reply = `Bạn chưa đồng bộ lịch học từ cổng đào tạo QNU. Hãy vào tab "Lịch & Điểm" để đồng bộ nhé!`;
+        }
+      } else if (msgLower.includes('tới hạn') || msgLower.includes('deadline') || msgLower.includes('bài tập')) {
+        if (taskCtx !== 'Người dùng chưa có dữ liệu bài tập.') {
+          reply = `Đây là các bài tập/deadline của bạn:\n\n${taskCtx}\n\nCố gắng hoàn thành đúng hạn nhé! 💪`;
+        } else {
+          reply = `Bạn hiện chưa có bài tập hay deadline nào. Tuyệt vời, rảnh thì ôn bài thêm nha! ✨`;
+        }
       } else if (msgLower.includes('xe') || msgLower.includes('đi đâu')) {
-        reply += 'Hiện tại trong mục Đi xe chung đang có những nhu cầu sau:\n' + carpoolCtx;
+        reply = 'Hiện tại trong mục Đi xe chung đang có những nhu cầu sau:\n' + carpoolCtx;
       } else if (msgLower.includes('mua') || msgLower.includes('hộ') || msgLower.includes('đơn')) {
-        reply += 'Đây là các đơn giao/nhận nhờ mua hộ đang chờ trên hệ thống:\n' + errandCtx;
+        reply = 'Đây là các đơn giao/nhận nhờ mua hộ đang chờ trên hệ thống:\n' + errandCtx;
       } else if (msgLower.includes('đồ cũ') || msgLower.includes('bán') || msgLower.includes('chợ')) {
-        reply += 'Trên chợ đồ cũ đang rao bán các món sau:\n' + itemsCtx;
+        reply = 'Trên chợ đồ cũ đang rao bán các món sau:\n' + itemsCtx;
       } else {
-        reply += 'Mình sẽ kiểm tra trên hệ thống giúp bạn.\n';
+        reply += 'Mình có thể giúp gì cho bạn nè? Bạn muốn xem deadline, tìm chuyến đi ghép, hay lướt đồ cũ chẳng hạn?';
       }
       res.json({ reply });
     }

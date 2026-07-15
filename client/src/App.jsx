@@ -1393,36 +1393,56 @@ function App() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-indigo-50 font-sans px-4 relative overflow-hidden">
-        <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-[400px] border border-indigo-100 z-10">
-          <div className="text-center mb-6"><h1 className="text-4xl font-black text-indigo-600 flex items-center justify-center gap-2">🚀 UniVerse</h1><p className="text-gray-500 mt-2 text-sm">Hệ sinh thái thông minh cho sinh viên</p></div>
-          <div className="flex bg-indigo-50 rounded-lg p-1 mb-6"><button className={`flex-1 py-2 font-bold text-sm transition rounded ${authMode === 'login' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500'}`} onClick={() => setAuthMode('login')}>Đăng Nhập</button><button className={`flex-1 py-2 font-bold text-sm transition rounded ${authMode === 'register' ? 'bg-indigo-600 text-white shadow' : 'text-gray-500'}`} onClick={() => setAuthMode('register')}>Đăng Ký</button></div>
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50 font-sans px-4 relative overflow-hidden">
+        <div className="bg-white p-8 rounded-xl border border-zinc-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.05)] w-full max-w-[380px] z-10">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 flex items-center justify-center gap-2">
+              UniVerse
+            </h1>
+            <p className="text-zinc-400 mt-1 text-[12px]">Hệ sinh thái thông minh cho sinh viên</p>
+          </div>
+          <div className="flex bg-zinc-100 p-0.5 rounded-lg mb-6">
+            <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'login' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('login')}>Đăng Nhập</button>
+            <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'register' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('register')}>Đăng Ký</button>
+          </div>
           <form onSubmit={handleAuthSubmit} className="space-y-3">
-            {authMode === 'register' && (<><input type="text" placeholder="Họ và Tên" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.fullName} onChange={e => setAuthForm({ ...authForm, fullName: e.target.value })} /><input type="text" placeholder="Lớp / Chuyên ngành" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.major} onChange={e => setAuthForm({ ...authForm, major: e.target.value })} /></>)}
-            <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.username} onChange={e => setAuthForm({ ...authForm, username: e.target.value })} />
+            {authMode === 'register' && (
+              <>
+                <input type="text" placeholder="Họ và Tên" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.fullName} onChange={e => setAuthForm({ ...authForm, fullName: e.target.value })} />
+                <input type="text" placeholder="Lớp / Chuyên ngành" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.major} onChange={e => setAuthForm({ ...authForm, major: e.target.value })} />
+              </>
+            )}
+            <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.username} onChange={e => setAuthForm({ ...authForm, username: e.target.value })} />
             <div className="relative">
-              <input type={showAuthPassword ? "text" : "password"} placeholder="Mật khẩu" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 pr-10 rounded-lg outline-none text-black" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
-              <button type="button" onClick={() => setShowAuthPassword(!showAuthPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
-                {showAuthPassword ? <Icons.EyeOff className="w-5 h-5" /> : <Icons.Eye className="w-5 h-5" />}
+              <input type={showAuthPassword ? "text" : "password"} placeholder="Mật khẩu" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 pr-10 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
+              <button type="button" onClick={() => setShowAuthPassword(!showAuthPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition">
+                {showAuthPassword ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
               </button>
             </div>
-            {authError && <p className="text-red-500 text-sm font-bold text-center">{authError}</p>}
-            <button type="submit" disabled={authLoading} className={`w-full py-3 mt-4 ${authLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-lg font-black text-[15px] uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2`}>{authLoading ? (<><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Đang xử lý...</>) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}</button>
+            {authError && <p className="text-red-500 text-xs font-medium text-center">{authError}</p>}
+            <button type="submit" disabled={authLoading} className="w-full py-2.5 mt-4 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 text-white rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2">
+              {authLoading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Đang xử lý...
+                </>
+              ) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}
+            </button>
           </form>
 
           <div className="relative flex py-4 items-center">
-            <div className="flex-grow border-t border-gray-200"></div>
-            <span className="flex-shrink mx-4 text-gray-400 text-xs font-bold uppercase">Hoặc</span>
-            <div className="flex-grow border-t border-gray-200"></div>
+            <div className="flex-grow border-t border-zinc-200"></div>
+            <span className="flex-shrink mx-3 text-zinc-400 text-[10px] font-semibold uppercase tracking-wider">Hoặc</span>
+            <div className="flex-grow border-t border-zinc-200"></div>
           </div>
 
           <button
             type="button"
             disabled={authLoading}
             onClick={() => handleGoogleLogin()}
-            className="w-full py-3 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 rounded-lg font-black text-[14px] transition flex items-center justify-center gap-2.5 shadow-sm active-scale"
+            className="w-full py-2.5 bg-white hover:bg-zinc-50 border border-zinc-250 text-zinc-700 rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2 active-scale"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-1.14 2.77-2.4 3.61v3h3.84c2.24-2.07 3.61-5.11 3.61-8.46z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.84-3c-1.07.72-2.44 1.16-4.12 1.16-3.17 0-5.85-2.14-6.81-5.02H1.23v3.1A11.973 11.973 0 0 0 12 24z"/>
               <path fill="#FBBC05" d="M5.19 14.23A7.169 7.169 0 0 1 4.8 12c0-.79.13-1.57.39-2.31V6.59H1.23a11.96 11.96 0 0 0 0 10.82l3.96-3.18z"/>
@@ -1487,19 +1507,19 @@ function App() {
   };
 
   return (
-    <div className={`h-screen overflow-hidden ${panicMode ? 'bg-slate-900 text-white' : 'bg-slate-50 text-slate-900'} flex flex-col font-sans`}>
+    <div className={`h-screen overflow-hidden ${panicMode ? 'bg-zinc-950 text-white' : 'bg-zinc-50 text-zinc-900'} flex flex-col font-sans`}>
       {/* ===== HEADER ===== */}
-      <header className={`h-14 w-full fixed top-0 flex items-center justify-between px-4 z-40 shadow-sm ${panicMode ? 'bg-slate-800 border-b border-slate-700' : 'bg-white border-b border-slate-200'}`}>
+      <header className={`h-14 w-full fixed top-0 flex items-center justify-between px-4 z-40 border-b ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
         <div className="flex items-center gap-2 lg:w-[240px]">
           {!showMobileSearch && (
-            <div onClick={() => setActiveTab('campus-feed')} className="w-9 h-9 border-2 border-slate-900 rounded-xl flex items-center justify-center cursor-pointer flex-shrink-0 hover:bg-slate-900 hover:text-white transition-all group">
-              <Icons.Rocket className="w-5 h-5" />
+            <div onClick={() => setActiveTab('campus-feed')} className="w-8 h-8 border border-zinc-200 rounded-lg flex items-center justify-center cursor-pointer flex-shrink-0 hover:bg-zinc-900 hover:text-white hover:border-zinc-900 transition-all group">
+              <Icons.Rocket className="w-4 h-4 text-zinc-600 group-hover:text-white" />
             </div>
           )}
-          {!showMobileSearch && <span onClick={() => setActiveTab('campus-feed')} className="font-black text-[17px] tracking-tight cursor-pointer hidden sm:block select-none" style={{ letterSpacing: '-0.5px' }}>UniVerse</span>}
+          {!showMobileSearch && <span onClick={() => setActiveTab('campus-feed')} className="font-semibold text-[15px] tracking-tight cursor-pointer hidden sm:block select-none text-zinc-900">UniVerse</span>}
           <div className={`relative z-50 flex-1 ${showMobileSearch ? 'block w-full' : 'hidden md:block'}`}>
             <div className="flex items-center gap-2">
-              {showMobileSearch && <button onClick={() => setShowMobileSearch(false)} className="text-slate-500 p-1"><Icons.ChevronRight className="w-5 h-5 rotate-180" /></button>}
+              {showMobileSearch && <button onClick={() => setShowMobileSearch(false)} className="text-zinc-500 p-1"><Icons.ChevronRight className="w-4 h-4 rotate-180" /></button>}
               <div className="relative w-full">
                 <input
                   type="text"
@@ -1510,76 +1530,76 @@ function App() {
                   onBlur={() => { setTimeout(() => setShowRecentSearches(false), 200); }}
                   placeholder="Tìm tên, lớp..."
                   autoFocus={showMobileSearch}
-                  className={`rounded-full pl-9 pr-4 py-2 text-[14px] outline-none w-full md:w-[220px] border transition-all ${panicMode ? 'bg-slate-700 text-white border-slate-600' : 'bg-slate-100 text-slate-900 border-transparent focus:border-indigo-300 focus:bg-white'}`}
+                  className={`rounded-lg pl-8 pr-3 py-1.5 text-[12px] outline-none w-full md:w-[180px] border transition-all ${panicMode ? 'bg-zinc-800 text-white border-zinc-700' : 'bg-zinc-50 text-zinc-900 border-zinc-200 focus:border-zinc-400 focus:bg-white'}`}
                 />
-                <Icons.Search className="w-4 h-4 absolute left-3 top-2.5 text-slate-400" />
+                <Icons.Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-zinc-400" />
               </div>
             </div>
             {showRecentSearches && recentSearches.length > 0 && searchQuery.length === 0 && (
-              <div className={`absolute top-12 left-0 w-full md:w-[300px] border shadow-xl rounded-2xl p-2 z-50 ${panicMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-                <div className="flex justify-between items-center mb-2 px-2">
-                  <span className="font-semibold text-sm text-slate-500">Gần đây</span>
-                  <button onClick={clearRecentSearches} className="text-xs text-indigo-500 hover:text-indigo-700 font-semibold">Xóa tất cả</button>
+              <div className={`absolute top-12 left-0 w-full md:w-[280px] border shadow-lg rounded-xl p-1.5 z-50 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+                <div className="flex justify-between items-center mb-1.5 px-2 pt-1">
+                  <span className="font-semibold text-[11px] text-zinc-400 uppercase tracking-wider">Gần đây</span>
+                  <button onClick={clearRecentSearches} className="text-[11px] text-zinc-500 hover:text-zinc-800 font-medium">Xóa tất cả</button>
                 </div>
                 {recentSearches.map((search, idx) => (
-                  <div key={idx} onClick={() => handleRecentSearchClick(search)} className={`flex items-center gap-3 p-2 rounded-xl cursor-pointer transition ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
-                    <div className="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center flex-shrink-0 text-slate-500"><Icons.Clock className="w-3.5 h-3.5" /></div>
-                    <span className="text-sm font-medium flex-1 truncate">{search}</span>
-                    <button onClick={(e) => { e.stopPropagation(); setRecentSearches(recentSearches.filter(s => s !== search)); localStorage.setItem('universe_recent_searches', JSON.stringify(recentSearches.filter(s => s !== search))); }} className="text-slate-300 hover:text-slate-500 px-2 py-1"><Icons.X className="w-3 h-3" /></button>
+                  <div key={idx} onClick={() => handleRecentSearchClick(search)} className={`flex items-center gap-2.5 p-2 rounded-lg cursor-pointer transition-colors ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}>
+                    <div className="w-6 h-6 rounded bg-zinc-100 flex items-center justify-center flex-shrink-0 text-zinc-555"><Icons.Clock className="w-3 h-3" /></div>
+                    <span className="text-[12px] font-medium flex-1 truncate">{search}</span>
+                    <button onClick={(e) => { e.stopPropagation(); setRecentSearches(recentSearches.filter(s => s !== search)); localStorage.setItem('universe_recent_searches', JSON.stringify(recentSearches.filter(s => s !== search))); }} className="text-zinc-300 hover:text-zinc-500 p-1"><Icons.X className="w-3 h-3" /></button>
                   </div>
                 ))}
               </div>
             )}
             {searchResults.length > 0 && (
-              <div className={`absolute top-12 left-0 w-full md:w-[300px] border shadow-xl rounded-2xl p-2 z-50 ${panicMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
+              <div className={`absolute top-12 left-0 w-full md:w-[280px] border shadow-lg rounded-xl p-1.5 z-50 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
                 {searchResults.map(s => (
-                  <div key={s.id} className={`flex justify-between items-center p-2 rounded-xl ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
+                  <div key={s.id} className={`flex justify-between items-center p-2 rounded-lg ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}>
                     <div className="flex items-center gap-2 cursor-pointer flex-1" onClick={() => { saveRecentSearch(s); openUserProfile(s.id); }}>
-                      <UserAvatar user={s} size="w-9 h-9" />
-                      <div><p className="text-sm font-semibold leading-tight">{s.fullName || s.username}</p><p className="text-[11px] text-slate-500">{s.major || 'Sinh viên'}</p></div>
+                      <UserAvatar user={s} size="w-8 h-8" />
+                      <div><p className="text-[12px] font-medium leading-tight text-zinc-800">{s.fullName || s.username}</p><p className="text-[10px] text-zinc-400">{s.major || 'Sinh viên'}</p></div>
                     </div>
                     {!friends.find(f => f.id === s.id) && !pendingRequests.find(r => r.id === s.id) && (
-                      <button onClick={(e) => { e.stopPropagation(); saveRecentSearch(s); handleAddFriend(s.id); }} className="text-xs bg-indigo-50 px-2.5 py-1.5 rounded-lg font-semibold text-indigo-600 hover:bg-indigo-100">Kết bạn</button>
+                      <button onClick={(e) => { e.stopPropagation(); saveRecentSearch(s); handleAddFriend(s.id); }} className="text-[11px] bg-zinc-900 text-white px-2.5 py-1 rounded-md font-medium hover:bg-zinc-800 transition-colors">Kết bạn</button>
                     )}
                   </div>
                 ))}
               </div>
             )}
           </div>
-          {!showMobileSearch && <button onClick={() => setShowMobileSearch(true)} className="md:hidden w-9 h-9 bg-slate-100 rounded-full flex items-center justify-center"><Icons.Search className="w-4 h-4 text-slate-500" /></button>}
+          {!showMobileSearch && <button onClick={() => setShowMobileSearch(true)} className="md:hidden w-8 h-8 bg-zinc-50 border border-zinc-200 rounded-lg flex items-center justify-center"><Icons.Search className="w-3.5 h-3.5 text-zinc-555" /></button>}
         </div>
 
         {!showMobileSearch && (
-          <div className="flex items-center gap-1.5 justify-end lg:w-[240px]">
+          <div className="flex items-center gap-2 justify-end lg:w-[240px]">
             {/* Chat button */}
             <div className="relative">
-              <button onClick={() => { setShowMessageDropdown(!showMessageDropdown); setShowNotif(false); setShowProfileDropdown(false); }} className={`w-9 h-9 rounded-full flex items-center justify-center transition relative ${panicMode ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-                <Icons.MessageCircle className="w-4.5 h-4.5 w-[18px] h-[18px]" />
+              <button onClick={() => { setShowMessageDropdown(!showMessageDropdown); setShowNotif(false); setShowProfileDropdown(false); }} className={`w-8 h-8 rounded-lg border flex items-center justify-center transition relative ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-650 hover:bg-zinc-100'}`}>
+                <Icons.MessageCircle className="w-4 h-4 text-zinc-600" />
                 {unreadMsgs > 0 && <span className="badge">{unreadMsgs}</span>}
               </button>
               {showMessageDropdown && (
-                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[360px] md:h-auto md:max-h-[80vh] md:mt-2 md:rounded-2xl shadow-2xl md:border p-2 z-50 overflow-y-auto flex flex-col ${panicMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-                  <div className="flex justify-between items-center p-3 border-b md:border-none border-slate-100">
-                    <h4 className="font-bold text-xl">Chat</h4>
-                    <button className="md:hidden w-8 h-8 bg-slate-100 rounded-full font-bold text-slate-600 flex items-center justify-center" onClick={() => setShowMessageDropdown(false)}><Icons.X className="w-4 h-4" /></button>
+                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[320px] md:h-auto md:max-h-[80vh] md:mt-1.5 md:rounded-xl shadow-lg border p-1.5 z-50 overflow-y-auto flex flex-col ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+                  <div className="flex justify-between items-center p-2.5 border-b md:border-none border-zinc-100">
+                    <h4 className="font-semibold text-sm text-zinc-800 tracking-tight">Hộp thư thoại</h4>
+                    <button className="md:hidden w-7 h-7 bg-zinc-50 border border-zinc-200 rounded-lg font-medium text-zinc-600 flex items-center justify-center" onClick={() => setShowMessageDropdown(false)}><Icons.X className="w-3.5 h-3.5" /></button>
                   </div>
-                  <div className="mt-2 flex-1">
-                    {friends.length === 0 ? <p className="p-4 text-center text-slate-400 text-sm">Chưa có bạn bè</p> : friends.map(friend => {
+                  <div className="mt-1 flex-1 space-y-0.5">
+                    {friends.length === 0 ? <p className="p-4 text-center text-zinc-400 text-[12px] font-medium">Chưa có cuộc trò chuyện nào</p> : friends.map(friend => {
                       const lastMsg = friend.latestMessage; const isMe = lastMsg?.senderId === user.id;
                       const status = getActiveStatus(friend.lastActive, friend.showActivity);
                       return (
-                        <div key={friend.id} onClick={() => { openChat(friend); setShowMessageDropdown(false); }} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
-                          <div className="relative">
-                            <UserAvatar user={friend} size="w-11 h-11" />
-                            {status.isOnline && <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>}
+                        <div key={friend.id} onClick={() => { openChat(friend); setShowMessageDropdown(false); }} className={`flex items-center gap-2.5 p-2 rounded-lg cursor-pointer transition-colors ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}>
+                          <div className="relative flex-shrink-0">
+                            <UserAvatar user={friend} size="w-9 h-9" />
+                            {status.isOnline && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-white rounded-full"></div>}
                           </div>
-                          <div className="flex-1 overflow-hidden">
-                            <h4 className={`font-semibold text-[15px] ${!isMe && lastMsg && !lastMsg.isRead ? (panicMode ? 'text-white' : 'text-slate-900') : 'text-slate-500'}`}>{friend.fullName || friend.username}</h4>
-                            <p className={`text-[13px] truncate ${!isMe && lastMsg && !lastMsg.isRead ? 'font-semibold text-indigo-600' : 'text-slate-400'}`}>{lastMsg ? (isMe ? `Bạn: ${lastMsg.content}` : lastMsg.content) : 'Bắt đầu trò chuyện'}</p>
+                          <div className="flex-1 overflow-hidden min-w-0">
+                            <h4 className={`text-[12px] font-semibold truncate ${!isMe && lastMsg && !lastMsg.isRead ? (panicMode ? 'text-white' : 'text-zinc-900') : 'text-zinc-500'}`}>{friend.fullName || friend.username}</h4>
+                            <p className={`text-[11px] truncate ${!isMe && lastMsg && !lastMsg.isRead ? 'font-semibold text-zinc-900' : 'text-zinc-400'}`}>{lastMsg ? (isMe ? `Bạn: ${lastMsg.content}` : lastMsg.content) : 'Bắt đầu trò chuyện'}</p>
                           </div>
-                          <div className="flex flex-col items-end gap-1">
-                            <span className="text-[11px] text-slate-400">{lastMsg ? formatTimeAgo(lastMsg.createdAt) : ''}</span>
-                            {lastMsg && !isMe && !lastMsg.isRead && <span className="w-2.5 h-2.5 bg-indigo-600 rounded-full"></span>}
+                          <div className="flex flex-col items-end gap-0.5 flex-shrink-0">
+                            <span className="text-[10px] text-zinc-400">{lastMsg ? formatTimeAgo(lastMsg.createdAt) : ''}</span>
+                            {lastMsg && !isMe && !lastMsg.isRead && <span className="w-1.5 h-1.5 bg-zinc-800 rounded-full"></span>}
                           </div>
                         </div>
                       )
@@ -1591,78 +1611,80 @@ function App() {
 
             {/* Notification button */}
             <div className="relative">
-              <button onClick={() => { setShowNotif(!showNotif); setShowMessageDropdown(false); setShowProfileDropdown(false); socket.emit('mark_notif_read', user.id); }} className={`w-9 h-9 rounded-full flex items-center justify-center relative transition ${panicMode ? 'bg-slate-700 text-white hover:bg-slate-600' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
-                <Icons.Bell className="w-[18px] h-[18px]" />
+              <button onClick={() => { setShowNotif(!showNotif); setShowMessageDropdown(false); setShowProfileDropdown(false); socket.emit('mark_notif_read', user.id); }} className={`w-8 h-8 rounded-lg border flex items-center justify-center relative transition ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-200 text-zinc-650 hover:bg-zinc-100'}`}>
+                <Icons.Bell className="w-4 h-4 text-zinc-600" />
                 {unreadNotifs > 0 && <span className="badge">{unreadNotifs}</span>}
               </button>
               {showNotif && (
-                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[360px] md:h-auto md:max-h-[80vh] md:mt-2 md:rounded-2xl shadow-2xl md:border p-2 z-50 overflow-y-auto ${panicMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-                  <div className="flex justify-between items-center p-3 border-b md:border-none border-slate-100">
-                    <h4 className="font-bold text-xl">Thông báo</h4>
-                    <button className="md:hidden w-8 h-8 bg-slate-100 rounded-full font-bold text-slate-600 flex items-center justify-center" onClick={() => setShowNotif(false)}><Icons.X className="w-4 h-4" /></button>
+                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[320px] md:h-auto md:max-h-[80vh] md:mt-1.5 md:rounded-xl shadow-lg border p-1.5 z-50 overflow-y-auto ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+                  <div className="flex justify-between items-center p-2.5 border-b md:border-none border-zinc-100">
+                    <h4 className="font-semibold text-sm text-zinc-800 tracking-tight">Thông báo</h4>
+                    <button className="md:hidden w-7 h-7 bg-zinc-50 border border-zinc-200 rounded-lg font-medium text-zinc-600 flex items-center justify-center" onClick={() => setShowNotif(false)}><Icons.X className="w-3.5 h-3.5" /></button>
                   </div>
-                  {notifications.length === 0 ? <p className="p-4 text-center text-slate-400 text-sm">Trống.</p> : notifications.map(n => (
-                    <div key={n.id} onClick={() => handleNotifClick(n)} className={`flex items-start gap-3 p-3 rounded-xl border-b border-slate-100 cursor-pointer ${!n.isRead ? 'bg-indigo-50/40' : 'hover:bg-slate-50'} ${n.type === 'RIDE_MATCH_SUGGESTION' ? '!bg-emerald-50/60 border-emerald-100' : ''} ${panicMode ? 'border-slate-700 hover:bg-slate-700' : ''}`}>
-                      {n.type === 'RIDE_MATCH_SUGGESTION'
-                        ? <div className="w-11 h-11 rounded-full bg-emerald-500 flex items-center justify-center text-xl flex-shrink-0">🚗</div>
-                        : <UserAvatar user={n.sourceUser || { fullName: 'Hệ thống' }} size="w-11 h-11" textSize="text-sm" onClick={(e) => { e.stopPropagation(); if (n.sourceUser) openUserProfile(n.sourceUserId); }} />
-                      }
-                      <div className="flex-1">
+                  <div className="space-y-0.5">
+                    {notifications.length === 0 ? <p className="p-4 text-center text-zinc-400 text-[12px] font-medium">Không có thông báo mới</p> : notifications.map(n => (
+                      <div key={n.id} onClick={() => handleNotifClick(n)} className={`flex items-start gap-2.5 p-2.5 rounded-lg border-b border-zinc-50 cursor-pointer ${!n.isRead ? 'bg-zinc-50/70' : 'hover:bg-zinc-50'} ${n.type === 'RIDE_MATCH_SUGGESTION' ? 'bg-zinc-50 border-zinc-200' : ''} ${panicMode ? 'border-zinc-700 hover:bg-zinc-700' : ''}`}>
                         {n.type === 'RIDE_MATCH_SUGGESTION'
-                          ? <p className="text-[13px] leading-snug font-medium text-emerald-800">{n.content}</p>
-                          : <p className="text-[14px] leading-snug"><span className="font-semibold">{n.sourceUser?.fullName || n.sourceUser?.username || 'Hệ thống'}</span> {n.content}</p>
+                          ? <div className="w-8 h-8 rounded bg-zinc-100 flex items-center justify-center text-sm flex-shrink-0">🚗</div>
+                          : <UserAvatar user={n.sourceUser || { fullName: 'Hệ thống' }} size="w-8 h-8" textSize="text-[10px]" onClick={(e) => { e.stopPropagation(); if (n.sourceUser) openUserProfile(n.sourceUserId); }} />
                         }
-                        <p className="text-[11px] font-semibold mt-1 ${n.type === 'RIDE_MATCH_SUGGESTION' ? 'text-emerald-600' : 'text-indigo-600'}">{formatTimeAgo(n.createdAt)}</p>
-                        {n.type === 'RIDE_MATCH_SUGGESTION' && (
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleNotifClick(n); }}
-                            className="mt-2 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-lg hover:bg-emerald-600 transition"
-                          >
-                            Xem chuyến ngay →
-                          </button>
-                        )}
-                        {n.type === 'SOCIAL' && n.content.includes('gửi lời mời') && n.sourceUserId && (
-                          <div className="flex gap-2 mt-2">
-                            <button onClick={(e) => { e.stopPropagation(); handleAcceptFriend(pendingRequests.find(r => r.id === n.sourceUserId)?.reqId); }} className="bg-indigo-600 text-white px-3 py-1 rounded-lg text-xs font-semibold hover:bg-indigo-700">Chấp nhận</button>
-                          </div>
-                        )}
+                        <div className="flex-1 min-w-0">
+                          {n.type === 'RIDE_MATCH_SUGGESTION'
+                            ? <p className="text-[12px] leading-snug font-medium text-zinc-800">{n.content}</p>
+                            : <p className="text-[12px] leading-snug text-zinc-750"><span className="font-semibold text-zinc-900">{n.sourceUser?.fullName || n.sourceUser?.username || 'Hệ thống'}</span> {n.content}</p>
+                          }
+                          <p className="text-[10px] text-zinc-400 mt-0.5">{formatTimeAgo(n.createdAt)}</p>
+                          {n.type === 'RIDE_MATCH_SUGGESTION' && (
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleNotifClick(n); }}
+                              className="mt-1.5 px-2.5 py-1 bg-zinc-900 text-white text-[11px] font-medium rounded hover:bg-zinc-800 transition-colors"
+                            >
+                              Xem chuyến đi
+                            </button>
+                          )}
+                          {n.type === 'SOCIAL' && n.content.includes('gửi lời mời') && n.sourceUserId && (
+                            <div className="flex gap-1.5 mt-1.5">
+                              <button onClick={(e) => { e.stopPropagation(); handleAcceptFriend(pendingRequests.find(r => r.id === n.sourceUserId)?.reqId); }} className="bg-zinc-900 text-white px-2.5 py-1 rounded text-[11px] font-medium hover:bg-zinc-800 transition-colors">Chấp nhận</button>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
             {/* Wallet badge */}
-            <div onClick={handleOpenWallet} className="flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-850 px-3.5 py-1.5 rounded-full border border-amber-200 text-xs sm:text-sm font-bold shadow-sm hover:shadow transition cursor-pointer select-none active:scale-95">
+            <div onClick={handleOpenWallet} className="flex items-center gap-1 bg-zinc-50 hover:bg-zinc-100 text-zinc-800 px-3 py-1.5 rounded-lg border border-zinc-200 text-[12px] font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.02)] transition cursor-pointer select-none active:scale-95">
               <span>🪙</span>
               <span>{coins} UC</span>
             </div>
 
             {/* Profile button - desktop */}
             <div className="relative hidden md:block">
-              <div onClick={() => { setShowProfileDropdown(!showProfileDropdown); setShowNotif(false); setShowMessageDropdown(false); }} className="cursor-pointer hover:opacity-80 transition relative">
-                <UserAvatar user={user} size="w-9 h-9" />
-                <span className="absolute bottom-0 right-0 bg-slate-100 border border-slate-200 rounded-full w-4 h-4 flex items-center justify-center text-slate-600">
-                  <Icons.ChevronDown className="w-2.5 h-2.5" />
+              <div onClick={() => { setShowProfileDropdown(!showProfileDropdown); setShowNotif(false); setShowMessageDropdown(false); }} className="cursor-pointer hover:opacity-90 transition relative">
+                <UserAvatar user={user} size="w-8 h-8" />
+                <span className="absolute -bottom-0.5 -right-0.5 bg-white border border-zinc-200 rounded-md w-3.5 h-3.5 flex items-center justify-center text-zinc-555">
+                  <Icons.ChevronDown className="w-2 h-2" />
                 </span>
               </div>
               {showProfileDropdown && (
-                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[260px] md:h-auto md:mt-2 md:rounded-2xl shadow-2xl md:border p-3 z-50 ${panicMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'}`}>
-                  <div onClick={() => { openUserProfile(user.id); setShowProfileDropdown(false); }} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer hover:bg-slate-50 shadow-sm border border-slate-100 mb-3 ${panicMode ? 'border-slate-700 hover:bg-slate-700' : ''}`}>
-                    <UserAvatar user={user} size="w-11 h-11" textSize="text-xl" />
-                    <div><h4 className="font-semibold text-[15px] leading-tight">{user.fullName || user.username}</h4><p className="text-[12px] text-slate-400">Xem trang cá nhân</p></div>
+                <div className={`fixed top-14 left-0 w-full h-[calc(100vh-56px)] md:absolute md:top-full md:right-0 md:left-auto md:w-[220px] md:h-auto md:mt-1.5 md:rounded-xl shadow-lg border p-2 z-50 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+                  <div onClick={() => { openUserProfile(user.id); setShowProfileDropdown(false); }} className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer hover:bg-zinc-50 border border-zinc-100 mb-2 ${panicMode ? 'border-zinc-700 hover:bg-zinc-700' : ''}`}>
+                    <UserAvatar user={user} size="w-9 h-9" textSize="text-md" />
+                    <div className="min-w-0"><h4 className="font-semibold text-[13px] leading-tight truncate">{user.fullName || user.username}</h4><p className="text-[11px] text-zinc-400">Trang cá nhân</p></div>
                   </div>
 
-                  <hr className="my-2 border-slate-100" />
-                  <div onClick={() => setPanicMode(!panicMode)} className={`p-2.5 flex items-center gap-3 font-semibold cursor-pointer rounded-xl text-[14px] ${panicMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-50 text-slate-700'}`}>
-                    <Icons.Zap className="w-4 h-4" /> {panicMode ? "Tắt Panic Mode" : "Bật Panic Mode"}
+                  <hr className="my-1.5 border-zinc-100" />
+                  <div onClick={() => setPanicMode(!panicMode)} className={`p-2 flex items-center gap-2 font-medium cursor-pointer rounded-lg text-[12px] ${panicMode ? 'hover:bg-zinc-700 text-white' : 'hover:bg-zinc-50 text-zinc-650'}`}>
+                    <Icons.Zap className="w-3.5 h-3.5 text-zinc-400" /> {panicMode ? "Tắt Panic Mode" : "Bật Panic Mode"}
                   </div>
-                  <div onClick={() => { setShowProfileEditModal(true); setShowProfileDropdown(false); }} className={`p-2.5 flex items-center gap-3 font-semibold cursor-pointer rounded-xl text-[14px] ${panicMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-50 text-slate-700'}`}>
-                    <Icons.Settings className="w-4 h-4" /> Chỉnh sửa hồ sơ
+                  <div onClick={() => { setShowProfileEditModal(true); setShowProfileDropdown(false); }} className={`p-2 flex items-center gap-2 font-medium cursor-pointer rounded-lg text-[12px] ${panicMode ? 'hover:bg-zinc-700 text-white' : 'hover:bg-zinc-50 text-zinc-650'}`}>
+                    <Icons.Settings className="w-3.5 h-3.5 text-zinc-400" /> Chỉnh sửa hồ sơ
                   </div>
-                  <div onClick={handleLogout} className={`p-2.5 flex items-center gap-3 font-semibold cursor-pointer rounded-xl text-[14px] text-red-500 ${panicMode ? 'hover:bg-red-900/30' : 'hover:bg-red-50'}`}>
-                    <Icons.LogOut className="w-4 h-4" /> Đăng xuất
+                  <div onClick={handleLogout} className={`p-2 flex items-center gap-2 font-medium cursor-pointer rounded-lg text-[12px] text-red-600 ${panicMode ? 'hover:bg-red-900/30' : 'hover:bg-red-55/70'}`}>
+                    <Icons.LogOut className="w-3.5 h-3.5 text-red-550" /> Đăng xuất
                   </div>
                 </div>
               )}
@@ -1674,28 +1696,28 @@ function App() {
       {/* ===== MAIN LAYOUT: 3 CỘT ===== */}
       <div className="flex mt-14 h-[calc(100vh-3.5rem)] w-full">
         {/* CỘT TRÁI - Sidebar Navigation (20%) */}
-        <aside className={`w-[220px] xl:w-[240px] flex-shrink-0 p-3 hidden md:flex flex-col overflow-y-auto hover-scrollbar border-r ${panicMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100'}`}>
+        <aside className={`w-[220px] xl:w-[240px] flex-shrink-0 p-3 hidden md:flex flex-col overflow-y-auto hover-scrollbar border-r ${panicMode ? 'bg-zinc-950 border-zinc-800' : 'bg-white border-zinc-200/80'}`}>
           {/* User avatar small */}
-          <div onClick={() => openUserProfile(user.id)} className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer mb-3 ${panicMode ? 'hover:bg-slate-800' : 'hover:bg-slate-50'}`}>
-            <UserAvatar user={user} size="w-9 h-9" />
-            <span className="font-semibold text-[14px] truncate">{user.fullName || user.username}</span>
+          <div onClick={() => openUserProfile(user.id)} className={`flex items-center gap-2.5 p-2.5 rounded-lg cursor-pointer mb-2 transition-colors ${panicMode ? 'hover:bg-zinc-805' : 'hover:bg-zinc-50'}`}>
+            <UserAvatar user={user} size="w-8 h-8" />
+            <span className="font-semibold text-[13px] truncate text-zinc-800">{user.fullName || user.username}</span>
           </div>
           {/* Navigation items */}
           {MENU_ITEMS.map(item => (
-            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center gap-3 w-full text-left p-3 rounded-xl transition ${activeTab === item.id ? 'bg-indigo-50 text-indigo-700 font-bold' : (panicMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50 font-medium')}`}>
-              <div className={`${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'}`}>
+            <button key={item.id} onClick={() => setActiveTab(item.id)} className={`flex items-center gap-2.5 w-full text-left p-2.5 rounded-lg transition-colors ${activeTab === item.id ? 'bg-zinc-100 text-zinc-900 font-semibold' : (panicMode ? 'text-zinc-300 hover:bg-zinc-800' : 'text-zinc-650 hover:bg-zinc-50/60 font-medium')}`}>
+              <div className={`${activeTab === item.id ? 'text-zinc-900' : 'text-zinc-400'}`}>
                 {item.icon}
               </div>
-              <span className="text-[15px]">{item.label}</span>
+              <span className="text-[13px]">{item.label}</span>
             </button>
           ))}
-          <hr className={`my-3 ${panicMode ? 'border-slate-700' : 'border-slate-100'}`} />
-          <p className="text-slate-400 text-[11px] font-bold px-3 mb-2 uppercase tracking-wider">PHÍM TẮT</p>
-          <button onClick={handleCheckIn} className={`flex items-center gap-3 w-full text-left p-3 rounded-xl transition ${panicMode ? 'text-slate-300 hover:bg-slate-800' : 'text-slate-600 hover:bg-slate-50 font-medium'}`}>
-            <div className="text-slate-400">
-              <Icons.MapPin className="w-5 h-5" />
+          <hr className={`my-3.5 ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`} />
+          <p className="text-zinc-400 text-[10px] font-bold px-2.5 mb-2 uppercase tracking-wider">PHÍM TẮT</p>
+          <button onClick={handleCheckIn} className={`flex items-center gap-2.5 w-full text-left p-2.5 rounded-lg transition-colors ${panicMode ? 'text-zinc-305 hover:bg-zinc-800' : 'text-zinc-650 hover:bg-zinc-50/60 font-medium'}`}>
+            <div className="text-zinc-400">
+              <Icons.MapPin className="w-4 h-4" />
             </div>
-            <span className="text-[15px]">Check-in tại Lớp</span>
+            <span className="text-[13px]">Check-in tại Lớp</span>
           </button>
         </aside>
 
@@ -1703,26 +1725,26 @@ function App() {
           <div className="w-full max-w-[620px]">
 
             {activeTab === 'campus-feed' && (
-              <div className="space-y-3 pt-2 sm:pt-0">
+              <div className="space-y-3.5 pt-2 sm:pt-0">
                 {/* Form Đăng bài */}
-                <div className={`p-4 rounded-2xl shadow-sm ${panicMode ? 'bg-slate-800' : 'bg-white'}`}>
+                <div className={`p-4 rounded-xl border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200/70'}`}>
                   <form onSubmit={handleAddPost}>
                     <div className="flex gap-3 mb-3">
-                      <UserAvatar user={user} />
-                      <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} placeholder={`${user.fullName || user.username} ơi, bạn đang nghĩ gì thế?`} className={`flex-1 rounded-2xl px-4 py-3 outline-none text-[14px] resize-none border ${panicMode ? 'bg-slate-700 text-white border-slate-600' : 'bg-slate-50 text-slate-900 border-transparent focus:border-indigo-200 focus:bg-white'} transition`} rows="1"></textarea>
+                      <UserAvatar user={user} size="w-9 h-9" />
+                      <textarea value={newPostContent} onChange={e => setNewPostContent(e.target.value)} placeholder={`${user.fullName || user.username} ơi, bạn đang nghĩ gì thế?`} className={`flex-1 rounded-xl px-3.5 py-2.5 outline-none text-[13px] resize-none border ${panicMode ? 'bg-zinc-800 text-white border-zinc-700' : 'bg-zinc-50 text-zinc-900 border-zinc-200 focus:border-zinc-400 focus:bg-white'} transition`} rows="1"></textarea>
                     </div>
                     {newPostImage && (
-                      <div className="relative mb-3 w-28 h-28">
-                        <img src={newPostImage} className="w-full h-full object-cover rounded-xl border border-slate-200" alt="upload" />
-                        <button type="button" onClick={() => { setNewPostImage(null); setNewPostImageFile(null); }} className="absolute -top-2 -right-2 bg-slate-800 text-white rounded-full w-5 h-5 flex items-center justify-center"><Icons.X className="w-3 h-3" /></button>
+                      <div className="relative mb-3 w-24 h-24">
+                        <img src={newPostImage} className="w-full h-full object-cover rounded-lg border border-zinc-200" alt="upload" />
+                        <button type="button" onClick={() => { setNewPostImage(null); setNewPostImageFile(null); }} className="absolute -top-1.5 -right-1.5 bg-zinc-900 text-white rounded-full w-4 h-4 flex items-center justify-center text-[10px]">✕</button>
                       </div>
                     )}
-                    <div className="flex justify-between items-center border-t border-slate-100 pt-3">
-                      <label className="cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition text-slate-500">
-                        <Icons.Image className="w-5 h-5" />
+                    <div className="flex justify-between items-center border-t border-zinc-100 pt-3">
+                      <label className="cursor-pointer hover:bg-zinc-55 p-1.5 rounded transition text-zinc-450">
+                        <Icons.ImageIcon className="w-4 h-4 text-zinc-400" />
                         <input type="file" accept="image/*" className="hidden" onChange={(e) => { if (e.target.files[0]) { setNewPostImageFile(e.target.files[0]); setNewPostImage(URL.createObjectURL(e.target.files[0])); } }} />
                       </label>
-                      <button type="submit" disabled={!newPostContent.trim() && !newPostImage} className="bg-indigo-600 disabled:bg-indigo-300 text-white px-6 py-2 rounded-xl font-semibold text-sm hover:bg-indigo-700 transition">Đăng bài</button>
+                      <button type="submit" disabled={!newPostContent.trim() && !newPostImage} className="bg-zinc-900 disabled:opacity-50 text-white px-4 py-1.5 rounded-lg font-medium text-xs hover:bg-zinc-800 transition-colors">Đăng bài</button>
                     </div>
                   </form>
                 </div>
@@ -1734,32 +1756,32 @@ function App() {
                   const uniqueReactions = [...new Set(post.reactions?.map(r => r.type) || [])];
 
                   return (
-                    <div id={`post-${post.id}`} key={post.id} className={`rounded-2xl shadow-sm mb-3 ${panicMode ? 'bg-slate-800' : 'bg-white'}`}>
+                    <div id={`post-${post.id}`} key={post.id} className={`rounded-xl border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.02)]'}`}>
                       <div className="p-4">
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => openUserProfile(post.user.id)}>
-                            <UserAvatar user={post.user} />
+                            <UserAvatar user={post.user} size="w-9 h-9" />
                             <div>
-                              <p className={`font-semibold text-[14px] hover:underline leading-tight ${panicMode ? 'text-white' : 'text-slate-900'}`}>{post.user.fullName || post.user.username}</p>
-                              <p className="text-[11px] text-slate-400">{formatTimeAgo(post.createdAt)} {post.user.major ? `⬢ ${post.user.major}` : ''}</p>
+                              <p className={`font-semibold text-[13px] hover:underline leading-tight ${panicMode ? 'text-white' : 'text-zinc-900'}`}>{post.user.fullName || post.user.username}</p>
+                              <p className="text-[10px] text-zinc-400 mt-0.5">{formatTimeAgo(post.createdAt)} {post.user.major ? `⬢ ${post.user.major}` : ''}</p>
                             </div>
                           </div>
                           <div className="relative">
-                            <button onClick={(e) => { e.stopPropagation(); setOpenPostMenu(openPostMenu === post.id ? null : post.id); }} className={`text-slate-400 hover:bg-slate-100 w-8 h-8 rounded-full flex items-center justify-center ${panicMode ? 'hover:bg-slate-700' : ''}`}><Icons.MoreHorizontal className="w-4 h-4" /></button>
+                            <button onClick={(e) => { e.stopPropagation(); setOpenPostMenu(openPostMenu === post.id ? null : post.id); }} className={`text-zinc-400 hover:bg-zinc-50 w-7 h-7 rounded-lg flex items-center justify-center ${panicMode ? 'hover:bg-zinc-800' : ''}`}><Icons.ChevronDown className="w-3.5 h-3.5" /></button>
                             {openPostMenu === post.id && (
                               <>
                                 <div className="fixed inset-0 z-[9]" onClick={() => setOpenPostMenu(null)} />
-                                <div className={`absolute right-0 mt-1 w-36 border shadow-xl rounded-xl z-10 overflow-hidden ${panicMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-white border-slate-200 text-slate-700'}`}>
+                                <div className={`absolute right-0 mt-1 w-32 border shadow-md rounded-lg z-10 overflow-hidden ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-zinc-700'}`}>
                                   {isOwner ? (
                                     <>
-                                      <div onClick={() => { setEditingPostId(post.id); setEditPostContent(post.content); setOpenPostMenu(null); }} className={`p-2.5 cursor-pointer text-sm flex items-center gap-2 ${panicMode ? 'hover:bg-slate-600' : 'hover:bg-slate-50'}`}><Icons.Edit className="w-3.5 h-3.5" /> Chỉnh sửa</div>
-                                      <div onClick={() => { handleHidePost(post.id); setOpenPostMenu(null); }} className={`p-2.5 cursor-pointer text-sm flex items-center gap-2 ${panicMode ? 'hover:bg-slate-600' : 'hover:bg-slate-50'}`}><Icons.Eye className="w-3.5 h-3.5" /> {post.isHidden ? 'Bỏ ẩn' : 'Ẩn bài'}</div>
-                                      <div onClick={() => { handleDeletePost(post.id); setOpenPostMenu(null); }} className={`p-2.5 cursor-pointer hover:bg-red-50 text-red-500 text-sm flex items-center gap-2`}><Icons.Trash className="w-3.5 h-3.5" /> Xóa bài</div>
+                                      <div onClick={() => { setEditingPostId(post.id); setEditPostContent(post.content); setOpenPostMenu(null); }} className={`p-2 cursor-pointer text-[12px] font-medium flex items-center gap-1.5 ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}><Icons.Edit className="w-3 h-3 text-zinc-450" /> Chỉnh sửa</div>
+                                      <div onClick={() => { handleHidePost(post.id); setOpenPostMenu(null); }} className={`p-2 cursor-pointer text-[12px] font-medium flex items-center gap-1.5 ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}><Icons.Eye className="w-3 h-3 text-zinc-450" /> {post.isHidden ? 'Bỏ ẩn' : 'Ẩn bài'}</div>
+                                      <div onClick={() => { handleDeletePost(post.id); setOpenPostMenu(null); }} className={`p-2 cursor-pointer hover:bg-red-50 text-red-500 text-[12px] font-medium flex items-center gap-1.5`}><Icons.Trash className="w-3 h-3" /> Xóa bài</div>
                                     </>
                                   ) : (
                                     <>
-                                      <div onClick={() => { handleHidePost(post.id); setOpenPostMenu(null); }} className={`p-2.5 cursor-pointer text-sm flex items-center gap-2 ${panicMode ? 'hover:bg-slate-600' : 'hover:bg-slate-50'}`}><Icons.Eye className="w-3.5 h-3.5" /> Ẩn bài viết</div>
-                                      <div onClick={() => { handleReport('POST', post.id); }} className={`p-2.5 cursor-pointer text-sm flex items-center gap-2 text-red-500 hover:bg-red-50`}><Icons.AlertTriangle className="w-3.5 h-3.5" /> Báo cáo vi phạm</div>
+                                      <div onClick={() => { handleHidePost(post.id); setOpenPostMenu(null); }} className={`p-2 cursor-pointer text-[12px] font-medium flex items-center gap-1.5 ${panicMode ? 'hover:bg-zinc-700' : 'hover:bg-zinc-50'}`}><Icons.Eye className="w-3 h-3 text-zinc-450" /> Ẩn bài viết</div>
+                                      <div onClick={() => { handleReport('POST', post.id); }} className={`p-2 cursor-pointer text-[12px] font-medium flex items-center gap-1.5 text-red-500 hover:bg-red-50`}><Icons.AlertTriangle className="w-3 h-3" /> Báo cáo</div>
                                     </>
                                   )}
                                 </div>
@@ -1770,25 +1792,25 @@ function App() {
 
                         {editingPostId === post.id ? (
                           <div className="mb-3">
-                            <textarea value={editPostContent} onChange={e => setEditPostContent(e.target.value)} className={`w-full border p-2 rounded-xl outline-none text-sm ${panicMode ? 'bg-slate-700 border-slate-600 text-white focus:border-indigo-400' : 'bg-slate-50 text-slate-900 border-slate-200 focus:border-indigo-400'}`} rows="3" />
+                            <textarea value={editPostContent} onChange={e => setEditPostContent(e.target.value)} className={`w-full border p-2.5 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white focus:border-zinc-500' : 'bg-zinc-50 text-zinc-900 border-zinc-200 focus:border-zinc-400'}`} rows="3" />
                             <div className="flex justify-end gap-2 mt-2">
-                              <button onClick={() => setEditingPostId(null)} className="px-3 py-1.5 bg-slate-100 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-200">Hủy</button>
-                              <button onClick={() => handleEditPostSubmit(post.id)} className="px-3 py-1.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700">Lưu</button>
+                              <button onClick={() => setEditingPostId(null)} className="px-3 py-1 bg-zinc-100 rounded-md text-[12px] font-medium text-zinc-600 hover:bg-zinc-200">Hủy</button>
+                              <button onClick={() => handleEditPostSubmit(post.id)} className="px-3 py-1 bg-zinc-900 text-white rounded-md text-[12px] font-medium hover:bg-zinc-800">Lưu</button>
                             </div>
                           </div>
                         ) : (
                           <div>
-                            <p className={`text-[14px] whitespace-pre-wrap mb-3 leading-relaxed ${panicMode ? 'text-slate-200' : 'text-slate-800'}`}>{renderContentWithLinks(post.content)}</p>
-                            {post.imageUrl && <img src={post.imageUrl} className="w-full rounded-2xl border border-slate-100 mb-3 cursor-pointer" alt="post" onClick={() => setViewingImage(post.imageUrl)} />}
+                            <p className={`text-[13px] whitespace-pre-wrap mb-3 leading-relaxed ${panicMode ? 'text-zinc-200' : 'text-zinc-800'}`}>{renderContentWithLinks(post.content)}</p>
+                            {post.imageUrl && <img src={post.imageUrl} className="w-full rounded-lg border border-zinc-100 mb-3 cursor-pointer" alt="post" onClick={() => setViewingImage(post.imageUrl)} />}
                           </div>
                         )}
 
                         {(post.reactions?.length > 0 || post.comments?.length > 0) && (
-                          <div className="flex justify-between items-center text-[12px] text-slate-400 mb-2 px-1">
-                            <span className="flex items-center gap-1.5">
+                          <div className="flex justify-between items-center text-[11px] text-zinc-450 mb-2 px-1">
+                            <span className="flex items-center gap-1">
                               {post.reactions?.length > 0 && (
                                 <>
-                                  <div className="flex -space-x-0.5">{uniqueReactions.slice(0, 3).map((rType, i) => <span key={i} className="z-10 text-slate-600">{REACTION_ICONS[rType]}</span>)}</div>
+                                  <div className="flex -space-x-0.5">{uniqueReactions.slice(0, 3).map((rType, i) => <span key={i} className="z-10 text-zinc-400">{REACTION_ICONS[rType]}</span>)}</div>
                                   <span>{post.reactions.length}</span>
                                 </>
                               )}
@@ -1796,45 +1818,45 @@ function App() {
                             <span className="cursor-pointer hover:underline" onClick={() => setExpandedComments({ ...expandedComments, [post.id]: true })}>{post.comments?.length > 0 ? `${post.comments?.length} bình luận` : ''}</span>
                           </div>
                         )}
-                        <hr className={`my-2 ${panicMode ? 'border-slate-700' : 'border-slate-100'}`} />
+                        <hr className={`my-2 ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`} />
 
                         <div className="flex gap-1">
                           <div className="relative group/react flex items-center" onMouseLeave={() => setActiveReactionPopup(null)}>
-                            <button onMouseEnter={() => setActiveReactionPopup(post.id)} onClick={(e) => handleReactPost(e, post.id, myReaction ? myReaction.type : 'LIKE')} className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold transition ${myReaction ? 'text-indigo-600 bg-indigo-50' : `text-slate-500 ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}`}>
-                              {myReaction ? REACTION_ICONS[myReaction.type] : <Icons.ThumbsUp className="w-4 h-4" />}
-                              <span className="text-[12px] hidden sm:inline">{myReaction ? 'Đã thích' : 'Thích'}</span>
+                            <button onMouseEnter={() => setActiveReactionPopup(post.id)} onClick={(e) => handleReactPost(e, post.id, myReaction ? myReaction.type : 'LIKE')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-colors ${myReaction ? 'text-zinc-900 bg-zinc-100' : `text-zinc-550 ${panicMode ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50'}`}`}>
+                              {myReaction ? REACTION_ICONS[myReaction.type] : <Icons.ThumbsUp className="w-3.5 h-3.5" />}
+                              <span className="hidden sm:inline">{myReaction ? 'Đã thích' : 'Thích'}</span>
                             </button>
-                            <div className="absolute bottom-full left-0 hidden group-hover/react:flex z-50 pb-2">
-                              <div className={`reaction-bar flex flex-row items-center gap-1.5 p-1.5 rounded-full shadow-xl bg-white border ${panicMode ? 'bg-slate-700 border-slate-600' : 'border-slate-100'}`}>
+                            <div className="absolute bottom-full left-0 hidden group-hover/react:flex z-50 pb-1.5">
+                              <div className={`reaction-bar flex flex-row items-center gap-1 p-1 rounded-full shadow-lg bg-white border ${panicMode ? 'bg-zinc-800 border-zinc-700' : 'border-zinc-200'}`}>
                                 {Object.keys(REACTION_ICONS).map(key => (
-                                  <button key={key} onClick={(e) => handleReactPost(e, post.id, key)} className={`w-9 h-9 flex flex-row items-center justify-center rounded-full hover:scale-125 transition-transform origin-bottom p-1.5 ${panicMode ? 'hover:bg-slate-600 text-white' : 'hover:bg-slate-50 text-slate-700'}`}>{REACTION_ICONS[key]}</button>
+                                  <button key={key} onClick={(e) => handleReactPost(e, post.id, key)} className={`w-8 h-8 flex flex-row items-center justify-center rounded-full hover:scale-115 transition-transform origin-bottom p-1.5 ${panicMode ? 'hover:bg-zinc-700 text-white' : 'hover:bg-zinc-50 text-zinc-700'}`}>{REACTION_ICONS[key]}</button>
                                 ))}
                               </div>
                             </div>
                           </div>
-                          <button onClick={() => setExpandedComments({ ...expandedComments, [post.id]: !showComments })} className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-slate-500 transition ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
-                            <Icons.MessageCircle className="w-4 h-4" /><span className="text-[12px] hidden sm:inline">Bình luận</span>
+                          <button onClick={() => setExpandedComments({ ...expandedComments, [post.id]: !showComments })} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-zinc-550 transition-colors ${panicMode ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50'}`}>
+                            <Icons.MessageCircle className="w-3.5 h-3.5" /><span className="hidden sm:inline">Bình luận</span>
                           </button>
-                          <button onClick={() => setShareModalData(post)} className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-slate-500 transition ${panicMode ? 'hover:bg-slate-700' : 'hover:bg-slate-50'}`}>
-                            <Icons.Share className="w-4 h-4" /><span className="text-[12px] hidden sm:inline">Chia sẻ</span>
+                          <button onClick={() => setShareModalData(post)} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold text-zinc-550 transition-colors ${panicMode ? 'hover:bg-zinc-800' : 'hover:bg-zinc-50'}`}>
+                            <Icons.Share className="w-3.5 h-3.5" /><span className="hidden sm:inline">Chia sẻ</span>
                           </button>
                         </div>
                       </div>
 
                       {showComments && (
-                        <div className={`pt-2 px-4 pb-4 border-t ${panicMode ? 'border-slate-700' : 'border-slate-100'}`}>
+                        <div className={`pt-2 px-4 pb-4 border-t ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
                           {renderComments(post.comments || [], post.id)}
-                          <div className="mt-2">
+                          <div className="mt-2.5">
                             {replyingTo[post.id] && (
-                              <div className="text-xs font-semibold text-indigo-600 bg-indigo-50 p-2 rounded-lg flex justify-between items-center w-fit mb-2">
-                                Đang trả lời... <button onClick={() => setReplyingTo({ ...replyingTo, [post.id]: null })} className="text-slate-400 hover:text-red-500 ml-3"><Icons.X className="w-3 h-3" /></button>
+                              <div className="text-[11px] font-semibold text-zinc-800 bg-zinc-100 px-2.5 py-1 rounded flex justify-between items-center w-fit mb-2">
+                                Đang trả lời... <button onClick={() => setReplyingTo({ ...replyingTo, [post.id]: null })} className="text-zinc-400 hover:text-red-500 ml-2.5"><Icons.X className="w-3 h-3" /></button>
                               </div>
                             )}
                             <form onSubmit={(e) => handleCommentSubmit(e, post.id)} className="flex gap-2 items-center">
-                              <UserAvatar user={user} size="w-8 h-8" textSize="text-xs" />
-                              <div className={`flex-1 flex rounded-2xl overflow-hidden items-center pr-2 border ${panicMode ? 'bg-slate-700 border-slate-600' : 'bg-slate-50 border-slate-200'}`}>
-                                <input id={`comment-input-${post.id}`} type="text" value={newCommentTexts[post.id] || ""} onChange={e => setNewCommentTexts({ ...newCommentTexts, [post.id]: e.target.value })} placeholder="Viết bình luận..." className={`flex-1 bg-transparent px-3 py-2 outline-none text-[13px] ${panicMode ? 'text-white' : 'text-slate-800'}`} />
-                                <button type="submit" disabled={!newCommentTexts[post.id]?.trim()} className="text-indigo-600 px-2 hover:scale-110 disabled:text-slate-300 transition"><Icons.Send className="w-4 h-4" /></button>
+                              <UserAvatar user={user} size="w-7 h-7" textSize="text-[10px]" />
+                              <div className={`flex-1 flex rounded-lg overflow-hidden items-center pr-2 border ${panicMode ? 'bg-zinc-800 border-zinc-700' : 'bg-zinc-55/40 border-zinc-200'}`}>
+                                <input id={`comment-input-${post.id}`} type="text" value={newCommentTexts[post.id] || ""} onChange={e => setNewCommentTexts({ ...newCommentTexts, [post.id]: e.target.value })} placeholder="Viết bình luận..." className={`flex-1 bg-transparent px-3 py-1.5 outline-none text-[12px] ${panicMode ? 'text-white' : 'text-zinc-800'}`} />
+                                <button type="submit" disabled={!newCommentTexts[post.id]?.trim()} className="text-zinc-800 px-2 disabled:text-zinc-300 transition-colors"><Icons.Send className="w-3.5 h-3.5" /></button>
                               </div>
                             </form>
                           </div>
@@ -1848,52 +1870,52 @@ function App() {
 
             {activeTab === 'user-profile' && viewingProfile && (
               <div className="space-y-4 pt-2 sm:pt-0">
-                <div className={`sm:rounded-xl shadow-sm sm:border overflow-hidden bg-white mb-4`}>
-                  <div className="h-40 sm:h-60 w-full bg-gray-300 relative cursor-pointer" onClick={() => viewingProfile.coverUrl && setViewingImage(viewingProfile.coverUrl)}>
-                    {viewingProfile.coverUrl ? <img src={viewingProfile.coverUrl} className="w-full h-full object-cover" alt="cover" /> : <div className="w-full h-full bg-gradient-to-r from-indigo-300 to-indigo-600"></div>}
+                <div className={`sm:rounded-xl border overflow-hidden ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200/70 shadow-[0_1px_2px_rgba(0,0,0,0.02)]'} mb-4`}>
+                  <div className="h-40 sm:h-48 w-full bg-zinc-100 relative cursor-pointer" onClick={() => viewingProfile.coverUrl && setViewingImage(viewingProfile.coverUrl)}>
+                    {viewingProfile.coverUrl ? <img src={viewingProfile.coverUrl} className="w-full h-full object-cover" alt="cover" /> : <div className="w-full h-full bg-zinc-100"></div>}
                   </div>
                   <div className="px-4 sm:px-6 pb-6 relative">
-                    <div className="absolute -top-16 sm:-top-20 border-4 border-white w-32 h-32 sm:w-40 sm:h-40 rounded-full shadow-md bg-white overflow-hidden">
-                      <UserAvatar user={viewingProfile} size="w-full h-full" textSize="text-5xl sm:text-6xl" onClick={() => viewingProfile.avatarUrl && setViewingImage(viewingProfile.avatarUrl)} />
+                    <div className="absolute -top-12 border-2 border-white w-24 h-24 rounded-full shadow-sm bg-white overflow-hidden">
+                      <UserAvatar user={viewingProfile} size="w-full h-full" textSize="text-3xl" onClick={() => viewingProfile.avatarUrl && setViewingImage(viewingProfile.avatarUrl)} />
                     </div>
 
-                    <div className="pt-20 sm:pt-24 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+                    <div className="pt-16 flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3">
                       <div>
-                        <h2 className="text-2xl sm:text-3xl font-black text-black">{viewingProfile.fullName || viewingProfile.username}</h2>
-                        {viewingProfile.showMajor && <p className="text-gray-500 font-bold mt-1 text-[14px] sm:text-[15px]"><Icons.BookOpen className="w-4 h-4 mr-1 cursor-pointer inline-block" /> Lớp: {viewingProfile.major || 'Đang cập nhật'}</p>}
+                        <h2 className="text-xl font-semibold tracking-tight text-zinc-900">{viewingProfile.fullName || viewingProfile.username}</h2>
+                        {viewingProfile.showMajor && <p className="text-zinc-500 font-medium mt-1 text-[12px] flex items-center gap-1"><Icons.BookOpen className="w-3.5 h-3.5" /> Lớp: {viewingProfile.major || 'Đang cập nhật'}</p>}
                       </div>
                       <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                         {viewingProfile.id !== user.id && (
                           <>
                             {/* Nút Kết bạn / Trạng thái bạn bè */}
                             {friends.find(f => f.id === viewingProfile.id) ? (
-                              <button className="bg-gray-200 text-gray-600 px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center cursor-default">
-                                <Icons.Check className="w-5 h-5 text-indigo-600" /> Bạn bè
+                              <button className="bg-zinc-150/70 border border-zinc-200 text-zinc-700 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center cursor-default">
+                                <Icons.Check className="w-4 h-4 text-zinc-800" /> Bạn bè
                               </button>
                             ) : sentRequests.find(r => r.id === viewingProfile.id) ? (
-                              <button className="bg-gray-100 text-gray-500 px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center cursor-default">
-                                <Icons.Clock className="w-5 h-5" /> Đã gửi lời mời
+                              <button className="bg-zinc-50 border border-zinc-150 text-zinc-500 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center cursor-default">
+                                <Icons.Clock className="w-4 h-4" /> Đã gửi lời mời
                               </button>
                             ) : pendingRequests.find(r => r.id === viewingProfile.id) ? (
-                              <button onClick={() => handleAcceptFriend(pendingRequests.find(r => r.id === viewingProfile.id).reqId)} className="bg-indigo-600 text-white px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center hover:bg-indigo-700 animate-pulse">
+                              <button onClick={() => handleAcceptFriend(pendingRequests.find(r => r.id === viewingProfile.id).reqId)} className="bg-zinc-900 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center hover:bg-zinc-800 transition-colors">
                                 Chấp nhận kết bạn
                               </button>
                             ) : (
-                              <button onClick={() => handleAddFriend(viewingProfile.id)} className="bg-indigo-600 text-white px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center hover:bg-indigo-700">
-                                <Icons.Plus className="w-5 h-5" /> Kết bạn
+                              <button onClick={() => handleAddFriend(viewingProfile.id)} className="bg-zinc-900 text-white px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center hover:bg-zinc-800 transition-colors">
+                                <Icons.Plus className="w-4 h-4" /> Kết bạn
                               </button>
                             )}
 
                             {/* Nút Nhắn tin - Luôn hiển thị cho người khác */}
-                            <button onClick={() => openChat(viewingProfile)} className="bg-gray-200 text-black px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center hover:bg-gray-300 transition">
-                              <Icons.MessageCircle className="w-[18px] h-[18px]" /> Nhắn tin
+                            <button onClick={() => openChat(viewingProfile)} className="bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center transition-colors">
+                              <Icons.MessageCircle className="w-4 h-4 text-zinc-700" /> Nhắn tin
                             </button>
                           </>
                         )}
 
                         {viewingProfile.id === user.id && (
-                          <button onClick={() => setShowProfileEditModal(true)} className="bg-gray-200 hover:bg-gray-300 text-black px-4 py-2 rounded-md font-bold flex gap-2 items-center flex-1 justify-center transition">
-                            <Icons.Edit className="w-4 h-4 mr-1" /> Chỉnh sửa hồ sơ
+                          <button onClick={() => setShowProfileEditModal(true)} className="bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800 px-3.5 py-1.5 rounded-lg text-xs font-semibold flex gap-1.5 items-center flex-1 justify-center transition-colors">
+                            <Icons.Edit className="w-3.5 h-3.5 mr-1" /> Chỉnh sửa hồ sơ
                           </button>
                         )}
                       </div>
@@ -2038,48 +2060,48 @@ function App() {
             )}
 
             {activeTab === 'study-manager' && (
-              <div className={studySubView ? "" : "space-y-4 pt-2 sm:pt-0"}>
+              <div className={studySubView ? "" : "space-y-3.5 pt-2 sm:pt-0"}>
 
                 {/* === SUB-VIEW: XEM THỜI KHÓA BIỂU === */}
                 {studySubView === 'schedule' ? (
                   <div className="space-y-4">
-                    <button onClick={() => setStudySubView(null)} className="flex items-center gap-2 font-bold text-indigo-600 hover:text-indigo-700 mb-2 text-[15px]">
-                      <span className="text-xl">❮</span> Quay lại Quản lý học tập
+                    <button onClick={() => setStudySubView(null)} className="flex items-center gap-1.5 font-semibold text-zinc-800 hover:text-zinc-900 mb-2 text-[13px]">
+                      ❮ Quay lại Quản lý học tập
                     </button>
 
                     {/* TAB CHUYỂN ĐỔI */}
-                    <div className={`flex gap-1 p-1.5 sm:rounded-2xl ${panicMode ? 'bg-slate-800' : 'bg-gray-100'} overflow-hidden shadow-inner`}>
-                      <button onClick={() => setScheduleTab('qnu')} className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${scheduleTab === 'qnu' ? 'bg-white shadow text-rose-600' : 'text-gray-500 hover:text-gray-700'}`}>
-                        <Icons.Calendar className="w-4 h-4" /> Lịch học QNU
+                    <div className={`flex gap-1 p-1 rounded-lg ${panicMode ? 'bg-zinc-850' : 'bg-zinc-100'} overflow-hidden`}>
+                      <button onClick={() => setScheduleTab('qnu')} className={`flex-1 py-2 rounded-md font-medium text-[13px] transition-all flex items-center justify-center gap-1.5 ${scheduleTab === 'qnu' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-700'}`}>
+                        <Icons.Calendar className="w-3.5 h-3.5" /> Lịch học QNU
                       </button>
-                      <button onClick={() => setScheduleTab('smart')} className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 ${scheduleTab === 'smart' ? 'bg-white shadow text-rose-600' : 'text-gray-500 hover:text-gray-700'}`}>
-                        <Icons.Zap className="w-4 h-4" /> Lịch Thông Minh
+                      <button onClick={() => setScheduleTab('smart')} className={`flex-1 py-2 rounded-md font-medium text-[13px] transition-all flex items-center justify-center gap-1.5 ${scheduleTab === 'smart' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-700'}`}>
+                        <Icons.Zap className="w-3.5 h-3.5" /> Lịch Thông Minh
                       </button>
                     </div>
 
                     {/* NỘI DUNG TAB: LỊCH HỌC QNU */}
                     {scheduleTab === 'qnu' && (
-                      <div className={`p-5 sm:rounded-2xl shadow-sm border relative ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-                        <div className="absolute top-0 left-0 w-2 h-full bg-indigo-500 rounded-l-2xl"></div>
-                        <div className="flex justify-between items-center mb-4 pl-3">
-                          <h4 className="font-bold text-lg flex items-center gap-2"><Icons.Calendar className="w-5 h-5 text-indigo-500" /> Lịch học QNU - {qnuFilterDay === "Hôm nay" ? "Hôm nay" : qnuFilterDay}</h4>
-                          <button onClick={() => setShowQnuLogin(!showQnuLogin)} className="text-sm bg-indigo-50 text-indigo-700 font-bold px-3 py-1.5 rounded-lg hover:bg-indigo-100 transition flex items-center gap-1.5">
-                            {qnuSchedules.length > 0 ? <><Icons.RefreshCw className="w-3.5 h-3.5" /> Đồng bộ lại</> : <><Icons.Link className="w-3.5 h-3.5" /> Kết nối QNU</>}
+                      <div className={`p-5 rounded-xl border relative ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200/70 text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.02)]'}`}>
+                        <div className="absolute top-0 left-0 w-1.5 h-full bg-zinc-800 rounded-l-xl"></div>
+                        <div className="flex justify-between items-center mb-4 pl-1">
+                          <h4 className="font-semibold text-[14px] flex items-center gap-2"><Icons.Calendar className="w-4 h-4 text-zinc-800" /> Lịch học QNU - {qnuFilterDay === "Hôm nay" ? "Hôm nay" : qnuFilterDay}</h4>
+                          <button onClick={() => setShowQnuLogin(!showQnuLogin)} className="text-[12px] bg-zinc-50 border border-zinc-200 text-zinc-700 font-semibold px-3 py-1.5 rounded-lg hover:bg-zinc-100 transition-colors flex items-center gap-1.5">
+                            {qnuSchedules.length > 0 ? <><Icons.RefreshCw className="w-3 h-3" /> Đồng bộ lại</> : <><Icons.Link className="w-3 h-3" /> Kết nối QNU</>}
                           </button>
                         </div>
 
                         {showQnuLogin && (
-                          <div className={`mb-4 p-4 rounded-xl border ${panicMode ? 'bg-slate-700 border-gray-600' : 'bg-indigo-50 border-indigo-200'}`}>
-                            <h5 className="font-bold mb-2 text-sm">Nhập tài khoản Đăng ký tín chỉ QNU</h5>
+                          <div className={`mb-4 p-4 rounded-lg border ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-zinc-50 border-zinc-200/70 text-zinc-900'}`}>
+                            <h5 className="font-semibold mb-2.5 text-[12px] text-zinc-650">Tài khoản Đăng ký tín chỉ QNU</h5>
                             <form onSubmit={handleQnuSync} className="flex flex-col sm:flex-row gap-2">
-                              <input type="text" placeholder="Mã sinh viên" required value={qnuForm.username} onChange={e => setQnuForm({ ...qnuForm, username: e.target.value })} className={`flex-1 border p-2.5 rounded-lg outline-none text-sm ${panicMode ? 'bg-slate-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-black'}`} />
-                              <input type="password" placeholder="Mật khẩu" required value={qnuForm.password} onChange={e => setQnuForm({ ...qnuForm, password: e.target.value })} className={`flex-1 border p-2.5 rounded-lg outline-none text-sm ${panicMode ? 'bg-slate-600 border-gray-500 text-white' : 'bg-white border-gray-300 text-black'}`} />
-                              <button type="submit" disabled={isSyncingQnu} className="bg-indigo-600 text-white font-bold px-4 py-2 rounded-lg text-sm disabled:bg-indigo-300 transition w-full sm:w-auto">
-                                {isSyncingQnu ? "Đang đồng bộ..." : "Đồng bộ TKB"}
+                              <input type="text" placeholder="Mã sinh viên" required value={qnuForm.username} onChange={e => setQnuForm({ ...qnuForm, username: e.target.value })} className={`flex-1 border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-705 border-zinc-600 text-white' : 'bg-white border-zinc-200 text-black focus:border-zinc-400'}`} />
+                              <input type="password" placeholder="Mật khẩu" required value={qnuForm.password} onChange={e => setQnuForm({ ...qnuForm, password: e.target.value })} className={`flex-1 border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-705 border-zinc-600 text-white' : 'bg-white border-zinc-200 text-black focus:border-zinc-400'}`} />
+                              <button type="submit" disabled={isSyncingQnu} className="bg-zinc-900 text-white font-medium px-4 py-2 rounded-lg text-[12px] disabled:bg-zinc-300 transition-colors w-full sm:w-auto">
+                                {isSyncingQnu ? "Đang đồng bộ..." : "Đồng bộ"}
                               </button>
                             </form>
-                            {isSyncingQnu && <p className="text-indigo-600 text-[13px] font-bold mt-3 animate-pulse"><Icons.Clock className="w-4 h-4 inline mr-1" /> Quá trình đồng bộ có thể mất ít phút, vui lòng đợi...</p>}
-                            {qnuSyncError && <p className="text-red-500 text-xs font-bold mt-2">{qnuSyncError}</p>}
+                            {isSyncingQnu && <p className="text-zinc-600 text-[11px] font-medium mt-3 animate-pulse"><Icons.Clock className="w-3.5 h-3.5 inline mr-1 text-zinc-400" /> Quá trình đồng bộ đang chạy, vui lòng đợi...</p>}
+                            {qnuSyncError && <p className="text-red-500 text-xs font-semibold mt-2">{qnuSyncError}</p>}
                           </div>
                         )}
 
@@ -2088,51 +2110,50 @@ function App() {
                           const dayNames = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
                           const currentDayStr = dayNames[today.getDay()];
                           const targetDayStr = qnuFilterDay === "Hôm nay" ? currentDayStr : qnuFilterDay;
-                          const parseVnDate = (dateStr) => { if (!dateStr) return null; const parts = dateStr.split('/'); if (parts.length === 3) return new Date(parts[2], parts[1] - 1, parts[0]); return null; };
                           const todaysClasses = qnuSchedules.filter(s => {
                             if (s.dayOfWeek !== targetDayStr) return false;
-                            return true; // Hiển thị tất cả lịch của thứ này, không check startDate/endDate tĩnh nữa vì user có thể xem lịch cũ
+                            return true;
                           });
                           const dayOptions = ["Hôm nay", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"];
                           return (
                             <>
-                              <div className="flex justify-between items-center mb-4 pl-3">
+                              <div className="flex justify-between items-center mb-4 pl-1">
                                 <div className="flex gap-2 relative">
-                                  <button onClick={() => setQnuDropdownOpen(!qnuDropdownOpen)} className="px-5 py-2.5 text-[14px] rounded-xl font-bold border transition bg-indigo-600 text-white border-indigo-600 shadow-md flex items-center gap-2 outline-none hover:bg-indigo-700">
-                                    <Icons.Calendar className="w-4 h-4" /> {qnuFilterDay} <span className="text-[10px]">{qnuDropdownOpen ? '▲' : '▼'}</span>
+                                  <button onClick={() => setQnuDropdownOpen(!qnuDropdownOpen)} className="px-3.5 py-1.5 text-[12px] rounded-lg font-semibold border transition bg-zinc-900 text-white border-zinc-900 shadow-sm flex items-center gap-1.5 outline-none hover:bg-zinc-800">
+                                    <Icons.Calendar className="w-3.5 h-3.5" /> {qnuFilterDay} <Icons.ChevronDown className="w-3 h-3" />
                                   </button>
                                   {qnuDropdownOpen && (
-                                    <div className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 shadow-xl rounded-xl z-20 overflow-y-auto max-h-[148px] custom-scrollbar">
+                                    <div className="absolute top-full left-0 mt-1 w-40 bg-white border border-zinc-200 shadow-lg rounded-lg z-20 overflow-y-auto max-h-[148px] custom-scrollbar py-0.5">
                                       {dayOptions.map(day => (
-                                        <div key={day} onClick={() => { setQnuFilterDay(day); setQnuDropdownOpen(false); }} className={`px-4 py-2.5 text-sm cursor-pointer transition flex items-center gap-2 ${qnuFilterDay === day ? 'bg-indigo-50 text-indigo-700 font-bold border-l-4 border-indigo-500' : 'text-gray-700 hover:bg-gray-100 border-l-4 border-transparent hover:border-gray-200'}`}>
+                                        <div key={day} onClick={() => { setQnuFilterDay(day); setQnuDropdownOpen(false); }} className={`px-3.5 py-2 text-[12px] font-medium cursor-pointer transition flex items-center gap-2 ${qnuFilterDay === day ? 'bg-zinc-100 text-zinc-900 font-semibold' : 'text-zinc-650 hover:bg-zinc-50'}`}>
                                           {day}
                                         </div>
                                       ))}
                                     </div>
                                   )}
                                 </div>
-                                <div className="flex gap-1 bg-gray-100 p-1 rounded-lg">
-                                  <button onClick={() => setQnuViewMode('list')} className={`p-1.5 rounded-md transition ${qnuViewMode === 'list' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}>
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                                <div className="flex gap-1 bg-zinc-100 p-0.5 rounded-lg">
+                                  <button onClick={() => setQnuViewMode('list')} className={`p-1.5 rounded-md transition ${qnuViewMode === 'list' ? 'bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-zinc-900' : 'text-zinc-500 hover:text-zinc-700'}`}>
+                                    <Icons.FileText className="w-3.5 h-3.5" />
                                   </button>
-                                  <button onClick={() => setQnuViewMode('grid')} className={`p-1.5 rounded-md transition ${qnuViewMode === 'grid' ? 'bg-white shadow text-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}>
-                                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                                  <button onClick={() => setQnuViewMode('grid')} className={`p-1.5 rounded-md transition ${qnuViewMode === 'grid' ? 'bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] text-zinc-900' : 'text-zinc-500 hover:text-zinc-700'}`}>
+                                    <Icons.ImageIcon className="w-3.5 h-3.5" />
                                   </button>
                                 </div>
                               </div>
                               {qnuViewMode === 'grid' ? (
-                                <div className="overflow-x-auto pb-4 custom-scrollbar mx-3">
-                                  <table className="w-full border-collapse min-w-[800px] text-sm bg-white border border-gray-200">
+                                <div className="overflow-x-auto pb-2 custom-scrollbar mx-1">
+                                  <table className="w-full border-collapse min-w-[720px] text-[12px] bg-white border border-zinc-200 rounded-lg overflow-hidden">
                                     <thead>
-                                      <tr>
-                                        <th className="border border-gray-200 p-2 bg-slate-50 text-slate-700 w-[120px]">Ca học</th>
-                                        {dayOptions.slice(1).map(d => <th key={d} className="border border-gray-200 p-2 bg-indigo-50 text-indigo-800 font-bold">{d === "Chủ Nhật" ? d : d.replace("Thứ", "T.")}</th>)}
+                                      <tr className="border-b border-zinc-200">
+                                        <th className="border-r border-zinc-200 p-2 bg-zinc-50 text-zinc-600 font-medium w-[100px] text-center">Ca học</th>
+                                        {dayOptions.slice(1).map(d => <th key={d} className="border-r border-zinc-200 p-2 bg-zinc-50 text-zinc-800 font-semibold text-center">{d === "Chủ Nhật" ? d : d.replace("Thứ", "T.")}</th>)}
                                       </tr>
                                     </thead>
                                     <tbody>
                                       {[{ name: 'Sáng (1-5)', min: 1, max: 5 }, { name: 'Chiều (6-10)', min: 6, max: 10 }, { name: 'Tối (11-15)', min: 11, max: 15 }].map(session => (
-                                        <tr key={session.name}>
-                                          <td className="border border-gray-200 p-2 font-bold text-center bg-slate-50 text-gray-700">{session.name}</td>
+                                        <tr key={session.name} className="border-b border-zinc-150">
+                                          <td className="border-r border-zinc-200 p-2 font-medium text-center bg-zinc-50 text-zinc-500">{session.name}</td>
                                           {dayOptions.slice(1).map(day => {
                                             const cellClasses = qnuSchedules.filter(c => {
                                               if (c.dayOfWeek !== day) return false;
@@ -2140,12 +2161,12 @@ function App() {
                                               return start >= session.min && start <= session.max;
                                             });
                                             return (
-                                              <td key={day} className="border border-gray-200 p-1.5 align-top bg-white hover:bg-gray-50 transition w-[130px]">
+                                              <td key={day} className="border-r border-zinc-200 p-1.5 align-top bg-white hover:bg-zinc-50/50 transition-colors w-[120px]">
                                                 {cellClasses.map(cls => (
-                                                  <div key={cls.id} className="mb-2 p-2 bg-indigo-50 border border-indigo-200 rounded-lg shadow-sm">
-                                                    <div className="font-bold text-[13px] text-indigo-700 leading-snug mb-1">{cls.subjectName}</div>
-                                                    <div className="text-[11px] text-gray-600 flex items-center gap-1 mb-0.5 whitespace-nowrap"><Icons.Clock className="w-3 h-3 text-rose-500" /> {formatQnuTime(cls.timeInfo)}</div>
-                                                    <div className="text-[11px] text-gray-600 flex items-center gap-1"><Icons.MapPin className="w-3 h-3 text-rose-500" /> {cls.room}</div>
+                                                  <div key={cls.id} className="mb-2 p-2 bg-zinc-50 border border-zinc-200 rounded shadow-sm">
+                                                    <div className="font-semibold text-[11px] text-zinc-800 leading-snug mb-0.5 truncate">{cls.subjectName}</div>
+                                                    <div className="text-[10px] text-zinc-500 flex items-center gap-1 mb-0.5 truncate"><Icons.Clock className="w-3 h-3 text-zinc-400" /> {formatQnuTime(cls.timeInfo)}</div>
+                                                    <div className="text-[10px] text-zinc-500 flex items-center gap-1 truncate"><Icons.MapPin className="w-3 h-3 text-zinc-400" /> {cls.room}</div>
                                                   </div>
                                                 ))}
                                               </td>
@@ -2158,16 +2179,16 @@ function App() {
                                 </div>
                               ) : (
                                 todaysClasses.length === 0 ? (
-                                  <p className="text-sm text-gray-500 pl-3 mb-2 font-bold">Trống trải. Không có môn học nào vào {targetDayStr.toLowerCase()}.</p>
+                                  <p className="text-[12px] text-zinc-400 pl-1 mb-2 font-medium">Không có môn học nào vào {targetDayStr.toLowerCase()}.</p>
                                 ) : (
-                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-3">
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-1">
                                     {todaysClasses.map(s => (
-                                      <div key={s.id} className={`p-4 rounded-xl border border-l-4 border-l-indigo-400 ${panicMode ? 'bg-slate-700 border-gray-600' : 'bg-white border-gray-200 hover:shadow-md transition'}`}>
-                                        <p className="font-black text-[15px] text-gray-800 leading-tight mb-1 flex items-center gap-1.5"><Icons.BookOpen className="w-4 h-4 text-indigo-500" /> {s.subjectName}</p>
-                                        <p className="text-[12px] text-gray-500 font-medium mb-2 flex items-center gap-1 ml-0.5"><Icons.User className="w-3.5 h-3.5" /> {s.teacher || 'Chưa cập nhật'}</p>
-                                        <div className="flex gap-2 text-[12px] text-gray-700 font-bold mt-1">
-                                          <span className={`px-2.5 py-1 rounded-lg shadow-sm border flex items-center gap-1 ${panicMode ? 'bg-slate-800 text-gray-200 border-gray-600' : 'bg-gray-50 border-gray-200'}`}><Icons.Clock className="w-3 h-3 text-rose-500" /> {formatQnuTime(s.timeInfo)}</span>
-                                          <span className={`px-2.5 py-1 rounded-lg shadow-sm border flex items-center gap-1 ${panicMode ? 'bg-slate-800 text-gray-200 border-gray-600' : 'bg-gray-50 border-gray-200'}`}><Icons.MapPin className="w-3 h-3 text-rose-500" /> {s.room}</span>
+                                      <div key={s.id} className={`p-4 rounded-lg border border-l-4 border-l-zinc-700 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200/70 hover:shadow-sm transition'}`}>
+                                        <p className="font-semibold text-[13px] text-zinc-800 leading-tight mb-1 flex items-center gap-1.5"><Icons.BookOpen className="w-3.5 h-3.5 text-zinc-500" /> {s.subjectName}</p>
+                                        <p className="text-[11px] text-zinc-400 font-medium mb-2.5 flex items-center gap-1"><Icons.User className="w-3 h-3 text-zinc-300" /> {s.teacher || 'Chưa cập nhật'}</p>
+                                        <div className="flex gap-1.5 text-[11px] text-zinc-650 mt-1">
+                                          <span className={`px-2 py-0.5 rounded border flex items-center gap-1 ${panicMode ? 'bg-zinc-800 text-zinc-200 border-zinc-700' : 'bg-zinc-50 border-zinc-200'}`}><Icons.Clock className="w-3 h-3 text-zinc-400" /> {formatQnuTime(s.timeInfo)}</span>
+                                          <span className={`px-2 py-0.5 rounded border flex items-center gap-1 ${panicMode ? 'bg-zinc-800 text-zinc-200 border-zinc-700' : 'bg-zinc-50 border-zinc-200'}`}><Icons.MapPin className="w-3 h-3 text-zinc-400" /> {s.room}</span>
                                         </div>
                                       </div>
                                     ))}
@@ -2188,56 +2209,55 @@ function App() {
 
                 ) : studySubView === 'classroom' ? (
                   <div className="space-y-4">
-                    <button onClick={() => setStudySubView(null)} className="flex items-center gap-2 font-bold text-indigo-600 hover:text-indigo-700 mb-2 text-[15px]">
-                      <span className="text-xl">❮</span> Quay lại Quản lý học tập
+                    <button onClick={() => setStudySubView(null)} className="flex items-center gap-1.5 font-semibold text-zinc-800 hover:text-zinc-900 mb-2 text-[13px]">
+                      ❮ Quay lại Quản lý học tập
                     </button>
 
                     {/* 2. KIỂM TRA BÀI TẬP TRÊN GOOGLE CLASSROOM */}
-                    <div className={`p-5 sm:rounded-2xl shadow-sm border relative overflow-hidden ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-                      <div className="absolute top-0 left-0 w-2 h-full bg-green-500"></div>
-                      <div className="flex justify-between items-center mb-4 pl-3">
+                    <div className={`p-5 rounded-xl border relative overflow-hidden ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200/70 text-zinc-900 shadow-sm'}`}>
+                      <div className="absolute top-0 left-0 w-1.5 h-full bg-zinc-800 rounded-l-xl"></div>
+                      <div className="flex justify-between items-center mb-4 pl-1">
                         <div>
-                          <h4 className="font-bold text-lg flex items-center gap-2"><Icons.School className="w-6 h-6" /> Kiểm tra bài tập trên Google Classroom</h4>
-                          <p className="text-[13px] text-gray-500 mt-1 pl-0.5">Đăng nhập tài khoản Google để đồng bộ bài tập từ Classroom</p>
+                          <h4 className="font-semibold text-[14px] flex items-center gap-2"><Icons.School className="w-4.5 h-4.5 text-zinc-650" /> Kiểm tra bài tập Google Classroom</h4>
+                          <p className="text-[12px] text-zinc-500 mt-1">Đăng nhập Google để đồng bộ bài tập</p>
                         </div>
                         <GoogleClassroomSyncButton userId={user.id} onSyncSuccess={fetchData} showAlert={showAlert} />
                       </div>
 
                       {/* FORM THÊM BÀI TẬP THỦ CÔNG */}
-                      <div className={`pl-3 pt-3 border-t ${panicMode ? 'border-gray-700' : 'border-gray-100'}`}>
-                        <form onSubmit={handleAddTask} className="flex flex-col sm:flex-row gap-3">
-                          <input type="text" placeholder="Tên bài tập..." value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} required className={`flex-1 border p-2.5 rounded-xl outline-none focus:border-indigo-500 text-sm ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-black'}`} />
-                          <input type="date" value={newTaskDate} onChange={e => setNewTaskDate(e.target.value)} required className={`w-full sm:w-40 border p-2.5 rounded-xl outline-none focus:border-indigo-500 text-sm ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-black'}`} />
-                          <button type="submit" className="bg-indigo-600 text-white font-bold px-6 py-2.5 rounded-xl hover:bg-indigo-700 transition text-sm">+ Thêm bài tập</button>
+                      <div className={`pl-1 pt-3 border-t ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                        <form onSubmit={handleAddTask} className="flex flex-col sm:flex-row gap-2">
+                          <input type="text" placeholder="Tên bài tập..." value={newTaskTitle} onChange={e => setNewTaskTitle(e.target.value)} required className={`flex-1 border px-3 py-2 rounded-lg outline-none focus:border-zinc-400 text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-black'}`} />
+                          <input type="date" value={newTaskDate} onChange={e => setNewTaskDate(e.target.value)} required className={`w-full sm:w-36 border px-3 py-2 rounded-lg outline-none focus:border-zinc-400 text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-white border-zinc-200 text-black'}`} />
+                          <button type="submit" className="bg-zinc-900 text-white font-medium px-4 py-2 rounded-lg hover:bg-zinc-800 transition-colors text-[12px]">+ Thêm bài tập</button>
                         </form>
                       </div>
                     </div>
 
                     {/* 3. DANH SÁCH BÀI TẬP */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {filteredTasks.length === 0 ? <p className="text-center col-span-full py-4 text-gray-400 font-bold">Không tìm thấy bài tập nào.</p> : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                      {filteredTasks.length === 0 ? <p className="text-center col-span-full py-6 text-zinc-400 text-[12px] font-medium">Không tìm thấy bài tập nào.</p> : (
                         <>
                           {filteredTasks.filter(t => {
-                              // So sánh theo chuỗi YYYY-MM-DD để tránh lỗi múi giờ
                               const dueDateStr = t.dueDate ? t.dueDate.slice(0,10) : '';
-                              const todayStr = new Date().toLocaleDateString('sv-SE'); // yyyy-mm-dd format
+                              const todayStr = new Date().toLocaleDateString('sv-SE');
                               return dueDateStr >= todayStr;
                             }).map(t => (
-                            <div key={t.id} className={`p-5 rounded-2xl shadow-sm border border-l-4 ${t.isLMS ? 'border-l-green-500' : 'border-l-indigo-500'} flex flex-col justify-between ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+                            <div key={t.id} className={`p-4 rounded-xl border border-l-4 ${t.isLMS ? 'border-l-zinc-500' : 'border-l-zinc-800'} flex flex-col justify-between ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200/70 shadow-sm'}`}>
                               <div>
                                 <div className="flex justify-between items-start mb-2">
                                   <div className="flex-1 pr-2">
-                                    {t.isLMS && <span className="text-[10px] font-black bg-green-100 text-green-700 px-1.5 py-0.5 rounded mb-1 inline-block">📚 Classroom</span>}
-                                    <h4 className={`font-bold text-[16px] leading-tight ${panicMode ? 'text-white' : 'text-gray-800'}`}>{t.title}</h4>
+                                    {t.isLMS && <span className="text-[9px] font-bold bg-zinc-100 text-zinc-650 px-1.5 py-0.5 rounded mb-1 inline-block">📚 Classroom</span>}
+                                    <h4 className={`font-semibold text-[13px] leading-tight truncate ${panicMode ? 'text-white' : 'text-zinc-850'}`}>{t.title}</h4>
                                   </div>
-                                  <button onClick={() => handleDeleteTask(t.id)} className="text-slate-400 hover:text-red-500 transition flex-shrink-0"><Icons.Trash className="w-5 h-5 opacity-80" /></button>
+                                  <button onClick={() => handleDeleteTask(t.id)} className="text-zinc-400 hover:text-red-500 transition-colors flex-shrink-0"><Icons.Trash className="w-4 h-4 opacity-80" /></button>
                                 </div>
-                                <p className="text-sm text-gray-500 font-medium pb-2 border-b border-gray-100 mb-2 flex items-center gap-1.5"><Icons.Clock className="w-4 h-4 opacity-80" /> Hạn chót: {formatTaskDate(t.dueDate)}</p>
+                                <p className="text-[11px] text-zinc-500 font-medium pb-2 border-b border-zinc-50 mb-2 flex items-center gap-1"><Icons.Clock className="w-3.5 h-3.5 opacity-80" /> Hạn chót: {formatTaskDate(t.dueDate)}</p>
                               </div>
                               {!t.draftResult ? (
-                                <button onClick={() => showAlert('Tính năng Draft-to-Action (AI) đang được phát triển và sẽ sớm ra mắt! 🚀\nStay tuned!', 'info')} disabled={isDraftingId === t.id} className={`mt-2 w-full py-2.5 rounded-xl text-sm font-bold transition flex items-center justify-center ${panicMode ? 'bg-slate-700 text-indigo-400 hover:bg-indigo-600 hover:text-white' : 'bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white'}`}>{isDraftingId === t.id ? <><Icons.Clock className="w-4 h-4 animate-spin mr-1.5" /> Đang xử lý...</> : <><Icons.Zap className="w-4 h-4 mr-1.5" /> Draft-to-Action (AI)</>}</button>
+                                <button onClick={() => showAlert('Tính năng Draft-to-Action (AI) đang được phát triển và sẽ sớm ra mắt! 🚀\nStay tuned!', 'info')} disabled={isDraftingId === t.id} className={`mt-2 w-full py-1.5 rounded-lg text-[11px] font-medium transition flex items-center justify-center ${panicMode ? 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-150/70 text-zinc-800 hover:bg-zinc-900 hover:text-white'}`}>{isDraftingId === t.id ? <><Icons.Clock className="w-3.5 h-3.5 animate-spin mr-1.5" /> Đang xử lý...</> : <><Icons.Zap className="w-3.5 h-3.5 mr-1.5" /> Draft-to-Action (AI)</>}</button>
                               ) : (
-                                <div className={`mt-2 p-3 rounded-xl border text-[13px] font-mono whitespace-pre-wrap max-h-40 overflow-y-auto ${panicMode ? 'bg-slate-700 border-gray-600 text-gray-200' : 'bg-indigo-50 border-indigo-100 text-gray-700'}`}>{t.draftResult}</div>
+                                <div className={`mt-2 p-3 rounded-lg border text-[11px] font-mono whitespace-pre-wrap max-h-36 overflow-y-auto ${panicMode ? 'bg-zinc-850 border-zinc-750 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>{t.draftResult}</div>
                               )}
                             </div>
                           ))}
@@ -2250,35 +2270,34 @@ function App() {
                   /* === TRANG CHÍNH QUẢN LÝ HỌC TẬP === */
                   <>
                     {/* 1. THANH TÌM KIẾM */}
-                    <div className={`p-4 sm:rounded-2xl shadow-sm border ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-                      <input type="text" placeholder="🔍 Tìm kiếm bài tập, môn học, lịch hôm nay..." value={taskSearchQuery} onChange={(e) => setTaskSearchQuery(e.target.value)} className={`w-full border p-3 rounded-xl outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-gray-50 border-gray-300 text-black'}`} />
+                    <div className={`p-4 rounded-xl border ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200/70 shadow-sm'}`}>
+                      <input type="text" placeholder="Tìm kiếm bài tập, môn học, lịch hôm nay..." value={taskSearchQuery} onChange={(e) => setTaskSearchQuery(e.target.value)} className={`w-full border px-3.5 py-2.5 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-700 text-white' : 'bg-zinc-50 border-zinc-200 text-black focus:border-zinc-400 focus:bg-white'}`} />
                     </div>
 
                     {/* 2. THANH KIỂM TRA BÀI TẬP CLASSROOM */}
-                    <div onClick={() => setStudySubView('classroom')} className={`p-5 sm:rounded-2xl shadow-sm border cursor-pointer hover:shadow-md transition flex items-center justify-between group ${panicMode ? 'bg-slate-800 border-gray-700 hover:bg-slate-700' : 'bg-white border-gray-200 hover:bg-green-50'}`}>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 flex items-center justify-center text-slate-500"><Icons.School className="w-6 h-6" /></div>
+                    {/* 2. THANH KIỂM TRA BÀI TẬP CLASSROOM */}
+                    <div onClick={() => setStudySubView('classroom')} className={`p-4 rounded-xl border cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] transition flex items-center justify-between group ${panicMode ? 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-white' : 'bg-white border-zinc-200/70 hover:bg-zinc-50'}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500"><Icons.School className="w-4.5 h-4.5" /></div>
                         <div>
-                          <h4 className={`font-bold text-[16px] ${panicMode ? 'text-white' : 'text-gray-800'}`}>Kiểm tra bài tập trên Google Classroom</h4>
-                          <p className="text-[13px] text-gray-500">Đăng nhập tài khoản Google để đồng bộ bài tập từ Classroom</p>
+                          <h4 className={`font-semibold text-[13px] ${panicMode ? 'text-white' : 'text-zinc-850'}`}>Kiểm tra bài tập trên Google Classroom</h4>
+                          <p className="text-[11px] text-zinc-450 mt-0.5">Đăng nhập tài khoản Google để đồng bộ bài tập từ Classroom</p>
                         </div>
                       </div>
-                      <span className="text-gray-400 group-hover:text-green-500 text-xl font-bold transition">❯</span>
+                      <span className="text-zinc-450 group-hover:text-zinc-800 text-xs font-semibold transition-colors">❯</span>
                     </div>
 
                     {/* 4. THANH XEM THỜI KHÓA BIỂU */}
-                    <div onClick={() => setStudySubView('schedule')} className={`p-5 sm:rounded-2xl shadow-sm border cursor-pointer hover:shadow-md transition flex items-center justify-between group ${panicMode ? 'bg-slate-800 border-gray-700 hover:bg-slate-700' : 'bg-white border-gray-200 hover:bg-blue-50'}`}>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 flex items-center justify-center text-slate-500"><Icons.Calendar className="w-6 h-6" /></div>
+                    <div onClick={() => setStudySubView('schedule')} className={`p-4 rounded-xl border cursor-pointer hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] transition flex items-center justify-between group ${panicMode ? 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800 text-white' : 'bg-white border-zinc-200/70 hover:bg-zinc-50'}`}>
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-lg bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-500"><Icons.Calendar className="w-4.5 h-4.5" /></div>
                         <div>
-                          <h4 className={`font-bold text-[16px] ${panicMode ? 'text-white' : 'text-gray-800'}`}>Xem thời khóa biểu</h4>
-                          <p className="text-[13px] text-gray-500">Lịch học QNU & Lịch học thông minh</p>
+                          <h4 className={`font-semibold text-[13px] ${panicMode ? 'text-white' : 'text-zinc-850'}`}>Xem thời khóa biểu</h4>
+                          <p className="text-[11px] text-zinc-450 mt-0.5">Lịch học QNU & Lịch học thông minh</p>
                         </div>
                       </div>
-                      <span className="text-gray-400 group-hover:text-blue-500 text-xl font-bold transition">❯</span>
+                      <span className="text-zinc-450 group-hover:text-zinc-800 text-xs font-semibold transition-colors">❯</span>
                     </div>
-
-
                   </>
                 )}
               </div>
@@ -2286,20 +2305,20 @@ function App() {
 
             {activeTab === 'market' && (
               <div className="space-y-4 pt-2 sm:pt-0">
-                <div className={`p-4 sm:p-6 sm:rounded-3xl shadow-sm border ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+                <div className={`p-4 sm:p-5 rounded-xl border ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200/70 shadow-sm'}`}>
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className={`text-2xl font-black flex items-center gap-2 ${panicMode ? 'text-white' : 'text-gray-800'}`}><Icons.ShoppingBag className="w-7 h-7" /> Chợ Sinh Viên</h3>
+                    <h3 className={`text-md font-semibold flex items-center gap-1.5 ${panicMode ? 'text-white' : 'text-zinc-900'}`}><Icons.ShoppingBag className="w-4 h-4 text-zinc-700" /> Chợ Sinh Viên</h3>
                     {/* Hamburger menu - mobile only */}
                     <div className="relative sm:hidden">
-                      <button onClick={() => setShowMarketMenu(!showMarketMenu)} className={`w-10 h-10 rounded-xl flex items-center justify-center transition ${showMarketMenu ? 'bg-indigo-600 text-white' : (panicMode ? 'bg-slate-700 text-gray-300 hover:bg-slate-600' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}`}>
-                        <Icons.Menu className="w-5 h-5" />
+                      <button onClick={() => setShowMarketMenu(!showMarketMenu)} className={`w-8 h-8 rounded-lg border flex items-center justify-center transition-colors ${showMarketMenu ? 'bg-zinc-900 text-white border-zinc-900' : (panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-650 hover:bg-zinc-100')}`}>
+                        <Icons.Menu className="w-4 h-4" />
                       </button>
                       {showMarketMenu && (
                         <>
                           <div className="fixed inset-0 z-[9]" onClick={() => setShowMarketMenu(false)} />
-                          <div className={`absolute right-0 mt-2 w-52 rounded-xl shadow-2xl border z-10 overflow-hidden ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`} style={{ animation: 'popIn 0.18s cubic-bezier(.34,1.56,.64,1)' }}>
+                          <div className={`absolute right-0 mt-1.5 w-44 rounded-lg shadow-lg border z-10 overflow-hidden ${panicMode ? 'bg-zinc-800 border-zinc-700' : 'bg-white border-zinc-200'}`} style={{ animation: 'popIn 0.15s ease-out' }}>
                             {MARKET_TABS.map(t => (
-                              <button key={t.id} onClick={() => { setMarketTab(t.id); setShowMarketMenu(false); }} className={`w-full flex items-center gap-3 px-4 py-3 text-[13px] font-bold transition ${marketTab === t.id ? (panicMode ? 'bg-indigo-600/20 text-indigo-400 border-l-4 border-indigo-500' : 'bg-indigo-50 text-indigo-600 border-l-4 border-indigo-500') : (panicMode ? 'text-gray-300 hover:bg-slate-700 border-l-4 border-transparent' : 'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent')}`}>
+                              <button key={t.id} onClick={() => { setMarketTab(t.id); setShowMarketMenu(false); }} className={`w-full flex items-center gap-2 px-3 py-2 text-[12px] font-medium transition-colors ${marketTab === t.id ? 'bg-zinc-100 text-zinc-900 font-semibold border-l-2 border-zinc-900' : (panicMode ? 'text-zinc-300 hover:bg-zinc-700 border-l-2 border-transparent' : 'text-zinc-650 hover:bg-zinc-50 border-l-2 border-transparent')}`}>
                                 {t.icon}
                                 {t.label}
                               </button>
@@ -2311,9 +2330,9 @@ function App() {
                   </div>
 
                   {/* Desktop tabs - hidden on mobile */}
-                  <div className="hidden sm:flex gap-2 mb-6 overflow-x-auto pb-2 scrollbar-hide">
+                  <div className="hidden sm:flex gap-1.5 mb-5 overflow-x-auto pb-1.5 scrollbar-hide">
                     {MARKET_TABS.map(t => (
-                      <button key={t.id} onClick={() => setMarketTab(t.id)} className={`px-4 py-2 rounded-full font-bold text-sm whitespace-nowrap transition flex items-center gap-1.5 ${marketTab === t.id ? 'bg-indigo-600 text-white' : (panicMode ? 'bg-slate-700 text-gray-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}`}>
+                      <button key={t.id} onClick={() => setMarketTab(t.id)} className={`px-3 py-1.5 rounded-lg font-medium text-[12px] whitespace-nowrap transition-colors flex items-center gap-1.5 ${marketTab === t.id ? 'bg-zinc-900 text-white' : (panicMode ? 'bg-zinc-800 text-zinc-350' : 'bg-zinc-50 border border-zinc-200 text-zinc-655 hover:bg-zinc-100')}`}>
                         {t.icon}
                         {t.label}
                       </button>
@@ -2321,45 +2340,45 @@ function App() {
                   </div>
 
                   {/* Mobile: show active tab pill */}
-                  <div className="flex sm:hidden mb-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-600 text-white text-[12px] font-bold">
+                  <div className="flex sm:hidden mb-3">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-zinc-900 text-white text-[11px] font-medium">
                       {MARKET_TABS.find(t => t.id === marketTab)?.icon}
                       {MARKET_TABS.find(t => t.id === marketTab)?.label}
                     </span>
                   </div>
 
-                  <div className={`border border-dashed p-4 sm:p-5 rounded-2xl mb-6 ${panicMode ? 'bg-slate-700 border-gray-600' : 'bg-indigo-50 border-indigo-200'}`}>
+                  <div className={`border border-dashed p-4 rounded-xl mb-4 ${panicMode ? 'bg-zinc-850 border-zinc-750' : 'bg-zinc-50/50 border-zinc-200'}`}>
                     {marketTab !== 'ERRAND' ? (
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         {marketTab === 'NOTES' && (<DocumentMarketScreen key={marketRefreshKey} user={user} panicMode={panicMode} onBuy={handleBuyItem} onChat={handleMarketChat} onOpenProfile={openUserProfile} {...popupProps} />)}
                         {marketTab === 'PRODUCT' && (<ProductMarketScreen user={user} panicMode={panicMode} onChat={handleMarketChat} onOpenProfile={openUserProfile} {...popupProps} />)}
                         {marketTab === 'RIDE' && (<RideMarketScreen user={user} panicMode={panicMode} onGpsPost={handleMarketGPSPost} onChat={handleMarketChat} onOpenProfile={openUserProfile} {...popupProps} />)}
                         {marketTab === 'PERSONAL' && (<PersonalMarketScreen user={user} panicMode={panicMode} onChat={handleMarketChat} onOpenProfile={openUserProfile} {...popupProps} />)}
                       </div>
                     ) : (
-                      <div className="space-y-3">
+                      <div className="space-y-2">
                         <ErrandMarketScreen user={user} panicMode={panicMode} onGpsPost={handleMarketGPSPost} onChat={handleMarketChat} onOpenProfile={openUserProfile} {...popupProps} />
                       </div>
                     )}
                   </div>
 
                   {marketTab !== 'PERSONAL' && marketTab !== 'ERRAND' && marketTab !== 'NOTES' && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                       {filteredMarket.length === 0 ? null : filteredMarket.map(item => (
-                        <div key={item.id} className={`border rounded-xl flex flex-col justify-between shadow-sm overflow-hidden hover:shadow-md transition ${panicMode ? 'bg-slate-800 border-gray-700' : 'bg-white border-gray-200'}`}>
-                          {item.category === 'PRODUCT' && item.imageUrl && <img src={item.imageUrl} className="w-full h-40 object-cover" alt="product" />}
-                          <div className="p-4">
-                            <div className="flex justify-between items-start mb-2"><span className="text-[10px] font-bold bg-indigo-50 text-indigo-600 px-2 py-1 rounded-md uppercase">{item.category}</span><span className="text-[12px] font-bold text-gray-500">{item.location || item.author.major || 'QNU'}</span></div>
-                            <h4 className={`font-bold text-[16px] leading-tight mb-1 ${panicMode ? 'text-white' : 'text-gray-800'}`}>{item.title}</h4>
-                            {item.description && <p className="text-xs text-gray-500 line-clamp-2 mb-2">{item.description}</p>}
-                            {item.fileUrl && <a href={item.fileUrl} target="_blank" rel="noreferrer" className="text-[11px] text-blue-500 underline mb-2 block">📎 Xem trước file</a>}
-                            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200"><UserAvatar user={item.author} size="w-8 h-8" textSize="text-[12px]" /><p className={`text-xs font-bold ${panicMode ? 'text-gray-300' : 'text-gray-700'}`}>{item.author.fullName || item.author.username}</p></div>
+                        <div key={item.id} className={`border rounded-lg flex flex-col justify-between shadow-sm overflow-hidden hover:shadow-md transition-shadow ${panicMode ? 'bg-zinc-850 border-zinc-750' : 'bg-white border-zinc-200/70'}`}>
+                          {item.category === 'PRODUCT' && item.imageUrl && <img src={item.imageUrl} className="w-full h-36 object-cover" alt="product" />}
+                          <div className="p-3.5">
+                            <div className="flex justify-between items-start mb-2"><span className="text-[9px] font-semibold bg-zinc-100 text-zinc-750 px-1.5 py-0.5 rounded uppercase">{item.category}</span><span className="text-[11px] font-medium text-zinc-450">{item.location || item.author.major || 'QNU'}</span></div>
+                            <h4 className={`font-semibold text-[13.5px] leading-tight mb-1 truncate ${panicMode ? 'text-white' : 'text-zinc-800'}`}>{item.title}</h4>
+                            {item.description && <p className="text-[11.5px] text-zinc-500 line-clamp-2 mb-2 leading-relaxed">{item.description}</p>}
+                            {item.fileUrl && <a href={item.fileUrl} target="_blank" rel="noreferrer" className="text-[11px] text-zinc-500 underline mb-2 block">📎 Xem trước file</a>}
+                            <div className="flex items-center gap-1.5 mt-2.5 pt-2.5 border-t border-zinc-100"><UserAvatar user={item.author} size="w-7 h-7" textSize="text-[10px]" /><p className={`text-[11px] font-medium ${panicMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{item.author.fullName || item.author.username}</p></div>
                           </div>
-                          <div className={`p-4 pt-0 ${panicMode ? 'bg-slate-800' : 'bg-white'}`}>
-                            {item.category === 'NOTES' && (<button onClick={() => handleBuyItem(item)} className={`w-full py-2 rounded-lg font-bold text-sm transition ${panicMode ? 'bg-slate-700 text-white hover:bg-indigo-600' : 'bg-[#E4E6EB] text-black hover:bg-indigo-600 hover:text-white'}`}>Mua ngay ({fmtUC(item.reward)} UC)</button>)}
-                            {item.category === 'ERRAND' && (<button onClick={() => handleMarketChat(item.author, `Chào bạn, mình thấy bạn đang ở ${item.location}. Bạn mua hộ mình đồ này được không, mình gửi ${fmtUC(item.reward)} UC nhé!`)} className="w-full bg-green-500 text-white py-2 rounded-lg font-bold text-sm flex justify-center gap-2 hover:bg-green-600">🏃 Nhờ mua hộ ({fmtUC(item.reward)} UC)</button>)}
-                            {item.category === 'PRODUCT' && (<button onClick={() => handleMarketChat(item.author, `Chào Shop, mình muốn hỏi mua món: "${item.title}". Hàng còn không ạ?`)} className="w-full bg-indigo-600 text-white py-2 rounded-lg font-bold text-sm hover:bg-indigo-700">💬 Chat với Shop</button>)}
-                            {item.category === 'RIDE' && (<button onClick={() => handleMarketChat(item.author, `Chào bạn, mình nhận chuyến đi: "${item.title}" với giá ${fmtUC(item.reward)} UC nhé.`)} className="w-full bg-orange-500 text-white py-2 rounded-lg font-bold text-sm hover:bg-orange-600">🛵 Nhận chuyến ({fmtUC(item.reward)} UC)</button>)}
+                          <div className={`p-3.5 pt-0 ${panicMode ? 'bg-zinc-850' : 'bg-white'}`}>
+                            {item.category === 'NOTES' && (<button onClick={() => handleBuyItem(item)} className="w-full py-1.5 bg-zinc-900 text-white rounded-lg font-medium text-xs hover:bg-zinc-800 transition-colors">Mua ngay ({fmtUC(item.reward)} UC)</button>)}
+                            {item.category === 'ERRAND' && (<button onClick={() => handleMarketChat(item.author, `Chào bạn, mình thấy bạn đang ở ${item.location}. Bạn mua hộ mình đồ này được không, mình gửi ${fmtUC(item.reward)} UC nhé!`)} className="w-full bg-zinc-900 text-white py-1.5 rounded-lg font-medium text-xs flex justify-center gap-1.5 hover:bg-zinc-800 transition-colors">🏃 Nhờ mua hộ ({fmtUC(item.reward)} UC)</button>)}
+                            {item.category === 'PRODUCT' && (<button onClick={() => handleMarketChat(item.author, `Chào Shop, mình muốn hỏi mua món: "${item.title}". Hàng còn không ạ?`)} className="w-full bg-zinc-900 text-white py-1.5 rounded-lg font-medium text-xs hover:bg-zinc-800 transition-colors">💬 Chat với Shop</button>)}
+                            {item.category === 'RIDE' && (<button onClick={() => handleMarketChat(item.author, `Chào bạn, mình nhận chuyến đi: "${item.title}" với giá ${fmtUC(item.reward)} UC nhé.`)} className="w-full bg-zinc-900 text-white py-1.5 rounded-lg font-medium text-xs hover:bg-zinc-800 transition-colors">🛵 Nhận chuyến ({fmtUC(item.reward)} UC)</button>)}
                           </div>
                         </div>
                       ))}
@@ -2766,22 +2785,22 @@ function App() {
 
       {/* EDIT PROFILE MODAL */}
       {showProfileEditModal && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60] flex items-center justify-center p-2 sm:p-4">
-          <div className={`p-5 sm:p-6 rounded-xl shadow-2xl w-full max-w-lg border max-h-[90vh] overflow-y-auto hover-scrollbar ${panicMode ? 'bg-slate-800 border-gray-700 text-white' : 'bg-white border-gray-200 text-black'}`}>
-            <div className={`flex justify-between items-center mb-6 border-b pb-4 ${panicMode ? 'border-gray-700' : ''}`}><h3 className="text-xl font-black">Chỉnh sửa hồ sơ</h3><button onClick={() => setShowProfileEditModal(false)} className={`w-8 h-8 rounded-full font-bold flex items-center justify-center ${panicMode ? 'bg-slate-700 hover:bg-slate-600 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}><Icons.X className="w-4 h-4" /></button></div>
-            <form onSubmit={handleUpdateProfile} className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div><label className="text-xs font-bold text-gray-500 mb-1 block">Tên hiển thị</label><input type="text" value={profileForm.fullName || ''} onChange={e => setProfileForm({ ...profileForm, fullName: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
-                <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2"><input type="checkbox" checked={profileForm.showMajor ?? true} onChange={e => setProfileForm({ ...profileForm, showMajor: e.target.checked })} className="w-3 h-3" /> Hiện Lớp/Ngành</label><input type="text" value={profileForm.major || ''} onChange={e => setProfileForm({ ...profileForm, major: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
-                <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2"><input type="checkbox" checked={profileForm.showDob ?? true} onChange={e => setProfileForm({ ...profileForm, showDob: e.target.checked })} className="w-3 h-3" /> Hiện Ngày sinh</label><input type="date" value={profileForm.dob || ''} onChange={e => setProfileForm({ ...profileForm, dob: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
-                <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2"><input type="checkbox" checked={profileForm.showGender ?? true} onChange={e => setProfileForm({ ...profileForm, showGender: e.target.checked })} className="w-3 h-3" /> Hiện Giới tính</label><select value={profileForm.gender || ''} onChange={e => setProfileForm({ ...profileForm, gender: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}><option value="">Chọn giới tính</option><option value="Nam">Nam</option><option value="Nữ">Nữ</option><option value="Khác">Khác</option></select></div>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-2 sm:p-4">
+          <div className={`p-5 sm:p-6 rounded-xl shadow-lg w-full max-w-lg border max-h-[90vh] overflow-y-auto hover-scrollbar ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
+            <div className={`flex justify-between items-center mb-5 border-b pb-4.5 ${panicMode ? 'border-zinc-850' : 'border-zinc-100'}`}><h3 className="text-sm font-semibold">Chỉnh sửa hồ sơ</h3><button onClick={() => setShowProfileEditModal(false)} className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-300' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}><Icons.X className="w-3.5 h-3.5" /></button></div>
+            <form onSubmit={handleUpdateProfile} className="space-y-3.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Tên hiển thị</label><input type="text" value={profileForm.fullName || ''} onChange={e => setProfileForm({ ...profileForm, fullName: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
+                <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showMajor ?? true} onChange={e => setProfileForm({ ...profileForm, showMajor: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Lớp/Ngành</label><input type="text" value={profileForm.major || ''} onChange={e => setProfileForm({ ...profileForm, major: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
+                <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showDob ?? true} onChange={e => setProfileForm({ ...profileForm, showDob: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Ngày sinh</label><input type="date" value={profileForm.dob || ''} onChange={e => setProfileForm({ ...profileForm, dob: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
+                <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showGender ?? true} onChange={e => setProfileForm({ ...profileForm, showGender: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Giới tính</label><select value={profileForm.gender || ''} onChange={e => setProfileForm({ ...profileForm, gender: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`}><option value="">Chọn giới tính</option><option value="Nam">Nam</option><option value="Nữ">Nữ</option><option value="Khác">Khác</option></select></div>
               </div>
-              <div className="grid grid-cols-1 gap-4">
-                <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2">Tên trường Đại học đang học</label><input type="text" placeholder="VD: Đại học Quy Nhơn" value={profileForm.schoolName || ''} onChange={e => setProfileForm({ ...profileForm, schoolName: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+              <div className="grid grid-cols-1 gap-3.5">
+                <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Tên trường Đại học đang học</label><input type="text" placeholder="VD: Đại học Quy Nhơn" value={profileForm.schoolName || ''} onChange={e => setProfileForm({ ...profileForm, schoolName: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
                 <div>
-                  <label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2">Định vị GPS (Dùng cho Check-in)</label>
+                  <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Định vị GPS (Dùng cho Check-in)</label>
                   <div className="flex flex-row gap-2 w-full">
-                    <input type="text" readOnly placeholder="Nhấn nút tải tọa độ" value={profileForm.schoolLat ? `${profileForm.schoolLat}, ${profileForm.schoolLng}` : ''} className={`flex-1 border p-2.5 rounded-lg outline-none text-sm w-full min-w-0 ${panicMode ? 'bg-slate-600 border-gray-500 text-gray-300' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`} />
+                    <input type="text" readOnly placeholder="Nhấn nút tải tọa độ" value={profileForm.schoolLat ? `${profileForm.schoolLat}, ${profileForm.schoolLng}` : ''} className={`flex-1 border px-3 py-2 rounded-lg outline-none text-xs w-full min-w-0 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-500 cursor-not-allowed'}`} />
                     <button type="button" onClick={async () => {
                       if (!profileForm.schoolName) return showAlert("Vui lòng nhập tên trường Đại học đang học!");
                       try {
@@ -2795,46 +2814,46 @@ function App() {
                           showAlert("Không tìm thấy tọa độ. Vui lòng nhập cụ thể tên trường hơn!");
                         }
                       } catch (err) { showAlert("Lỗi khi lấy định vị."); }
-                    }} className="bg-green-600 hover:bg-green-700 text-white font-bold px-3 sm:px-4 py-2 rounded-lg text-sm whitespace-nowrap flex-shrink-0 flex items-center gap-1.5"><Icons.MapPin className="w-4 h-4" /> Lấy tọa độ</button>
+                    }} className="bg-zinc-900 hover:bg-zinc-800 text-white font-medium px-3.5 py-2 rounded-lg text-xs whitespace-nowrap flex-shrink-0 flex items-center gap-1.5 transition-colors"><Icons.MapPin className="w-3.5 h-3.5" /> Lấy tọa độ</button>
                   </div>
                 </div>
               </div>
-              <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2"><input type="checkbox" checked={profileForm.showHometown ?? true} onChange={e => setProfileForm({ ...profileForm, showHometown: e.target.checked })} className="w-3 h-3" /> Hiện Quê quán</label><input type="text" placeholder="VD: Hà Nội, Việt Nam" value={profileForm.hometown || ''} onChange={e => setProfileForm({ ...profileForm, hometown: e.target.value })} className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
-              <div><label className="text-xs font-bold text-gray-500 mb-1 flex items-center gap-2"><input type="checkbox" checked={profileForm.showBio ?? true} onChange={e => setProfileForm({ ...profileForm, showBio: e.target.checked })} className="w-3 h-3" /> Hiện Tiểu sử</label><textarea value={profileForm.bio || ''} onChange={e => setProfileForm({ ...profileForm, bio: e.target.value })} rows="2" className={`w-full border p-2.5 rounded-lg outline-none resize-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}></textarea></div>
-              <div className={`border-t pt-4 ${panicMode ? 'border-gray-700' : ''}`}>
-                <p className="text-sm font-bold mb-2">Ảnh Đại Diện & Ảnh Bìa</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-24 h-24 rounded-full border-4 border-gray-200 overflow-hidden shadow-sm bg-gray-100 relative group">
+              <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showHometown ?? true} onChange={e => setProfileForm({ ...profileForm, showHometown: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Quê quán</label><input type="text" placeholder="VD: Hà Nội, Việt Nam" value={profileForm.hometown || ''} onChange={e => setProfileForm({ ...profileForm, hometown: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
+              <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showBio ?? true} onChange={e => setProfileForm({ ...profileForm, showBio: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Tiểu sử</label><textarea value={profileForm.bio || ''} onChange={e => setProfileForm({ ...profileForm, bio: e.target.value })} rows="2" className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] resize-none ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`}></textarea></div>
+              <div className={`border-t pt-3.5 ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                <p className="text-[12px] font-semibold mb-2.5">Ảnh Đại Diện & Ảnh Bìa</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-20 h-20 rounded-full border border-zinc-200 overflow-hidden shadow-sm bg-zinc-50 relative group">
                       {profileForm.avatarUrl ? (
                         <img src={profileForm.avatarUrl} alt="Avatar Preview" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-3xl"><Icons.User className="w-8 h-8 text-slate-400" /></div>
+                        <div className="w-full h-full flex items-center justify-center text-zinc-400 text-2xl"><Icons.User className="w-6 h-6 text-zinc-455" /></div>
                       )}
                       <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer">
-                        <span className="text-white text-xs font-bold text-center flex flex-col items-center gap-1"><Icons.Camera className="w-4 h-4" /> Đổi Avatar</span>
+                        <span className="text-white text-[10px] font-semibold text-center flex flex-col items-center gap-0.5"><Icons.Camera className="w-3.5 h-3.5" /> Đổi Avatar</span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'avatarUrl')} />
                       </label>
                     </div>
-                    <label className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition flex items-center gap-2 ${panicMode ? 'bg-slate-700 hover:bg-slate-600 text-gray-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border'}`}>
+                    <label className={`text-[10px] font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-colors flex items-center gap-1.5 border ${panicMode ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-200' : 'bg-zinc-50 border-zinc-200 hover:bg-zinc-100 text-zinc-700'}`}>
                       Chọn Avatar
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'avatarUrl')} />
                     </label>
                   </div>
 
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-full h-24 rounded-lg border-2 border-dashed border-gray-300 overflow-hidden shadow-sm bg-gray-100 relative group">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-full h-20 rounded-lg border border-dashed border-zinc-300 overflow-hidden shadow-sm bg-zinc-50 relative group">
                       {profileForm.coverUrl ? (
                         <img src={profileForm.coverUrl} alt="Cover Preview" className="w-full h-full object-cover" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-2xl"><Icons.Image className="w-8 h-8 text-slate-400" /></div>
+                        <div className="w-full h-full flex items-center justify-center text-zinc-400 text-xl"><Icons.Image className="w-6 h-6 text-zinc-455" /></div>
                       )}
                       <label className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition cursor-pointer">
-                        <span className="text-white text-xs font-bold text-center flex flex-col items-center gap-1"><Icons.Camera className="w-4 h-4" /> Đổi Ảnh Bìa</span>
+                        <span className="text-white text-[10px] font-semibold text-center flex flex-col items-center gap-0.5"><Icons.Camera className="w-3.5 h-3.5" /> Đổi Ảnh Bìa</span>
                         <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'coverUrl')} />
                       </label>
                     </div>
-                    <label className={`text-xs font-bold px-4 py-2 rounded-full cursor-pointer transition flex items-center gap-2 ${panicMode ? 'bg-slate-700 hover:bg-slate-600 text-gray-200' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border'}`}>
+                    <label className={`text-[10px] font-semibold px-3 py-1.5 rounded-lg cursor-pointer transition-colors flex items-center gap-1.5 border ${panicMode ? 'bg-zinc-800 border-zinc-700 hover:bg-zinc-700 text-zinc-200' : 'bg-zinc-50 border-zinc-200 hover:bg-zinc-100 text-zinc-700'}`}>
                       Chọn Ảnh Bìa
                       <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, 'coverUrl')} />
                     </label>
@@ -2842,34 +2861,34 @@ function App() {
                 </div>
               </div>
               {/* ĐỔI MẬT KHẨU */}
-              <div className={`border-t pt-4 mt-2 ${panicMode ? 'border-gray-700' : ''}`}>
-                <p className="text-sm font-bold mb-3">🔒 Đổi Mật Khẩu</p>
-                <div className="space-y-3">
+              <div className={`border-t pt-3.5 mt-2 ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
+                <p className="text-[12px] font-semibold mb-2.5">🔒 Đổi Mật Khẩu</p>
+                <div className="space-y-2.5">
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu hiện tại</label>
+                    <label className="text-[10px] font-semibold text-zinc-500 mb-1 block">Mật khẩu hiện tại</label>
                     <div className="relative">
-                      <input type={showPwCurrent ? "text" : "password"} id="pw_current" placeholder="Nhập mật khẩu hiện tại" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
-                      <button type="button" onClick={() => setShowPwCurrent(!showPwCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
-                        {showPwCurrent ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                      <input type={showPwCurrent ? "text" : "password"} id="pw_current" placeholder="Nhập mật khẩu hiện tại" className={`w-full border px-3 py-2 pr-10 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400'}`} />
+                      <button type="button" onClick={() => setShowPwCurrent(!showPwCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition-colors">
+                        {showPwCurrent ? <Icons.EyeOff className="w-3.5 h-3.5" /> : <Icons.Eye className="w-3.5 h-3.5" />}
                       </button>
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <div>
-                      <label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu mới</label>
+                      <label className="text-[10px] font-semibold text-zinc-500 mb-1 block">Mật khẩu mới</label>
                       <div className="relative">
-                        <input type={showPwNew ? "text" : "password"} id="pw_new" placeholder="Ít nhất 3 ký tự" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
-                        <button type="button" onClick={() => setShowPwNew(!showPwNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
-                          {showPwNew ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                        <input type={showPwNew ? "text" : "password"} id="pw_new" placeholder="Ít nhất 3 ký tự" className={`w-full border px-3 py-2 pr-10 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400'}`} />
+                        <button type="button" onClick={() => setShowPwNew(!showPwNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition-colors">
+                          {showPwNew ? <Icons.EyeOff className="w-3.5 h-3.5" /> : <Icons.Eye className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>
                     <div>
-                      <label className="text-xs font-bold text-gray-500 mb-1 block">Xác nhận mật khẩu</label>
+                      <label className="text-[10px] font-semibold text-zinc-500 mb-1 block">Xác nhận mật khẩu</label>
                       <div className="relative">
-                        <input type={showPwConfirm ? "text" : "password"} id="pw_confirm" placeholder="Nhập lại mật khẩu mới" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
-                        <button type="button" onClick={() => setShowPwConfirm(!showPwConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
-                          {showPwConfirm ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                        <input type={showPwConfirm ? "text" : "password"} id="pw_confirm" placeholder="Nhập lại mật khẩu mới" className={`w-full border px-3 py-2 pr-10 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400'}`} />
+                        <button type="button" onClick={() => setShowPwConfirm(!showPwConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition-colors">
+                          {showPwConfirm ? <Icons.EyeOff className="w-3.5 h-3.5" /> : <Icons.Eye className="w-3.5 h-3.5" />}
                         </button>
                       </div>
                     </div>
@@ -2886,10 +2905,10 @@ function App() {
                       if (r.data.success) { showAlert('Đổi mật khẩu thành công! 🎉', 'success'); document.getElementById('pw_current').value = ''; document.getElementById('pw_new').value = ''; document.getElementById('pw_confirm').value = ''; }
                       else { showAlert(r.data.message || 'Đổi mật khẩu thất bại!', 'error'); }
                     } catch (err) { showAlert('Lỗi kết nối máy chủ!', 'error'); }
-                  }} className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-lg transition flex items-center justify-center gap-2">🔑 Đổi Mật Khẩu</button>
+                  }} className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2 rounded-lg transition-colors flex items-center justify-center gap-1.5 text-xs">🔑 Đổi Mật Khẩu</button>
                 </div>
               </div>
-              <button type="submit" disabled={isUploading} className={`w-full ${isUploading ? 'bg-gray-400' : 'bg-indigo-600 hover:bg-indigo-700'} text-white font-bold py-3 rounded-lg mt-4 shadow-md transition`}>
+              <button type="submit" disabled={isUploading} className={`w-full ${isUploading ? 'bg-zinc-300 text-zinc-500' : 'bg-zinc-900 hover:bg-zinc-800 text-white'} font-semibold py-2.5 rounded-lg mt-3 transition-colors text-xs`}>
                 {isUploading ? "Đang xử lý ảnh..." : "Lưu Hồ Sơ"}
               </button>
             </form>
@@ -2906,125 +2925,123 @@ function App() {
             />
           )}
         </div>
-      )}
-
-      {/* WALLET MODAL */}
+      )}       {/* WALLET MODAL */}
       {showWalletModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-md z-[70] flex items-center justify-center p-2 sm:p-4">
-          <div className={`p-5 sm:p-6 rounded-2xl shadow-2xl w-full max-w-2xl border max-h-[90vh] overflow-y-auto hover-scrollbar transition-all duration-300 transform scale-100 ${panicMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-205 text-slate-900'}`}>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[70] flex items-center justify-center p-2 sm:p-4">
+          <div className={`p-5 sm:p-6 rounded-2xl shadow-lg w-full max-w-2xl border max-h-[90vh] overflow-y-auto hover-scrollbar transition-all duration-300 transform scale-100 ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`}>
             
             {/* Header */}
-            <div className={`flex justify-between items-center mb-5 border-b pb-4 ${panicMode ? 'border-slate-800' : 'border-slate-100'}`}>
+            <div className={`flex justify-between items-center mb-5 border-b pb-4.5 ${panicMode ? 'border-zinc-800' : 'border-zinc-100'}`}>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">🪙</span>
+                <span className="text-xl">🪙</span>
                 <div>
-                  <h3 className="text-lg font-black leading-tight text-slate-850">Ví UniCoins & Blockchain Ledger</h3>
-                  <p className="text-[11px] text-slate-400">Hệ thống sổ cái giao dịch minh bạch, chống gian lận</p>
+                  <h3 className="text-sm font-semibold leading-tight text-zinc-900">Ví UniCoins & Blockchain Ledger</h3>
+                  <p className="text-[11px] text-zinc-400 mt-0.5">Hệ thống sổ cái giao dịch minh bạch, chống gian lận</p>
                 </div>
               </div>
-              <button onClick={() => setShowWalletModal(false)} className={`w-8 h-8 rounded-full font-bold flex items-center justify-center transition ${panicMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
-                <Icons.X className="w-4 h-4" />
+              <button onClick={() => setShowWalletModal(false)} className={`w-7 h-7 rounded-md font-bold flex items-center justify-center border transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 border-zinc-700 text-zinc-350' : 'bg-zinc-50 hover:bg-zinc-100 border-zinc-205 text-zinc-500'}`}>
+                <Icons.X className="w-3.5 h-3.5" />
               </button>
             </div>
-
+ 
             {/* Balance Showcase */}
-            <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-5 text-white mb-6 shadow-md relative overflow-hidden">
-              <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4 select-none">
-                <span className="text-9xl font-bold">UC</span>
+            <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-5 text-white mb-6 relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 opacity-5 transform translate-x-4 translate-y-4 select-none">
+                <span className="text-7xl font-bold">UC</span>
               </div>
-              <p className="text-[12px] text-amber-100 uppercase tracking-wider font-semibold">Số dư hiện tại</p>
-              <div className="flex items-baseline gap-2 mt-1">
-                <h2 className="text-4xl font-black">{coins}</h2>
-                <span className="text-lg font-bold text-amber-200">UC</span>
+              <p className="text-[11px] text-zinc-400 uppercase tracking-wider font-semibold">Số dư hiện tại</p>
+              <div className="flex items-baseline gap-1 mt-1">
+                <h2 className="text-3xl font-semibold tracking-tight">{coins}</h2>
+                <span className="text-xs font-medium text-zinc-400">UC</span>
               </div>
-              <div className="mt-3 pt-3 border-t border-white/20 flex justify-between text-xs text-amber-50">
+              <div className="mt-3 pt-3 border-t border-zinc-800 flex justify-between text-[11px] text-zinc-450">
                 <span>Tỷ giá quy đổi: 1 UC = 1,000 VNĐ</span>
                 <span>Tài khoản: @{user?.username}</span>
               </div>
             </div>
-
+ 
             {/* Tab Buttons */}
-            <div className={`flex gap-1 p-1 rounded-xl mb-6 ${panicMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+            <div className={`flex gap-1 p-1 rounded-lg mb-5 ${panicMode ? 'bg-zinc-850' : 'bg-zinc-100'}`}>
               <button
                 type="button"
                 onClick={() => setWalletActiveTab('ledger')}
-                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'ledger' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+                className={`flex-1 py-2 rounded-md text-[12px] font-semibold transition-all flex items-center justify-center gap-1.5 ${walletActiveTab === 'ledger' ? 'bg-white text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`}
               >
                 ⛓️ Sổ cái Giao dịch
               </button>
               <button
                 type="button"
                 onClick={() => setWalletActiveTab('deposit')}
-                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'deposit' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+                className={`flex-1 py-2 rounded-md text-[12px] font-semibold transition-all flex items-center justify-center gap-1.5 ${walletActiveTab === 'deposit' ? 'bg-white text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`}
               >
                 📥 Nạp tiền (Deposit)
               </button>
               <button
                 type="button"
                 onClick={() => setWalletActiveTab('withdraw')}
-                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'withdraw' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+                className={`flex-1 py-2 rounded-md text-[12px] font-semibold transition-all flex items-center justify-center gap-1.5 ${walletActiveTab === 'withdraw' ? 'bg-white text-zinc-950 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`}
               >
                 📤 Rút tiền (Withdraw)
               </button>
             </div>
-
+ 
             {/* TAB CONTENTS */}
             {walletActiveTab === 'ledger' && (
-              <div className="space-y-3.5">
-                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Lịch sử khối giao dịch (Ledger Blocks)</h4>
+              <div className="space-y-3">
+                <h4 className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider pl-1">Lịch sử khối giao dịch (Ledger Blocks)</h4>
                 {walletTransactions.length === 0 ? (
-                  <div className="text-center py-10 text-slate-450">
-                    <p className="text-lg">📭 Chưa có giao dịch nào.</p>
-                    <p className="text-xs mt-1 text-slate-500">Hãy thực hiện điểm danh hoặc mua bán để tạo khối giao dịch đầu tiên.</p>
+                  <div className="text-center py-10 text-zinc-400">
+                    <p className="text-sm font-medium">📭 Chưa có giao dịch nào.</p>
+                    <p className="text-[11px] mt-1 text-zinc-500">Hãy thực hiện điểm danh hoặc mua bán để tạo khối giao dịch đầu tiên.</p>
                   </div>
                 ) : (
-                  <div className="space-y-3 max-h-[350px] overflow-y-auto hover-scrollbar pr-1">
+                  <div className="space-y-2.5 max-h-[300px] overflow-y-auto hover-scrollbar pr-1">
                     {walletTransactions.map((tx) => {
                       const isReceived = tx.receiverId === user.id;
-                      const amountColor = isReceived ? 'text-green-600 font-bold' : 'text-red-500 font-bold';
+                      const amountColor = isReceived ? 'text-zinc-900 dark:text-white font-semibold' : 'text-zinc-500 font-semibold';
                       const amountSign = isReceived ? `+${tx.amount}` : `-${tx.amount}`;
                       const isExpanded = expandedTxId === tx.id;
                       
                       return (
-                        <div key={tx.id} className={`border rounded-xl p-3.5 transition ${panicMode ? 'border-slate-800 bg-slate-950/30' : 'border-slate-100 bg-slate-50/50'}`}>
+                        <div key={tx.id} className={`border rounded-lg p-3 transition-colors ${panicMode ? 'border-zinc-800 bg-zinc-950/20' : 'border-zinc-150 bg-zinc-50/40 hover:bg-zinc-50'}`}>
                           <div className="flex justify-between items-center gap-4 cursor-pointer" onClick={() => setExpandedTxId(isExpanded ? null : tx.id)}>
                             <div className="flex-1 min-w-0">
-                              <p className="text-[10px] text-slate-400 font-semibold">{new Date(tx.createdAt).toLocaleString('vi-VN')}</p>
-                              <h5 className="font-bold text-[13px] text-slate-750 truncate mt-0.5">{tx.note || "Giao dịch UC"}</h5>
-                              <p className="text-[10px] text-slate-400 mt-0.5">
+                              <p className="text-[9px] text-zinc-400 font-semibold">{new Date(tx.createdAt).toLocaleString('vi-VN')}</p>
+                              <h5 className="font-semibold text-[12.5px] text-zinc-800 truncate mt-0.5">{tx.note || "Giao dịch UC"}</h5>
+                              <p className="text-[9px] text-zinc-400 mt-0.5">
                                 {tx.type} • Block #{tx.id}
                               </p>
                             </div>
                             <div className="text-right flex-shrink-0">
-                              <p className={`font-black text-sm ${amountColor}`}>{amountSign} UC</p>
-                              <span className="text-[9px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-bold border border-green-200">Verified ✅</span>
+                              <p className={`text-[13px] ${amountColor}`}>{amountSign} UC</p>
+                              <span className="text-[8.5px] bg-zinc-100 text-zinc-800 px-2 py-0.5 rounded border border-zinc-200 font-medium">Verified ✅</span>
                             </div>
                           </div>
                           
                           {/* Blockchain block details expanded */}
                           {isExpanded && (
-                            <div className={`mt-3.5 pt-3.5 border-t text-[10px] font-mono space-y-1.5 overflow-x-auto ${panicMode ? 'border-slate-800 text-slate-300' : 'border-slate-200/60 text-slate-600'}`}>
+                            <div className={`mt-3 pt-3 border-t text-[9px] font-mono space-y-1.5 overflow-x-auto ${panicMode ? 'border-zinc-800 text-zinc-350' : 'border-zinc-200 text-zinc-600'}`}>
                               <div className="flex justify-between gap-4">
-                                <span className="font-bold text-slate-400">TRANSACTION TYPE:</span>
-                                <span className="text-slate-800 font-bold">{tx.type}</span>
+                                <span className="font-semibold text-zinc-400">TRANSACTION TYPE:</span>
+                                <span className="text-zinc-800 font-semibold">{tx.type}</span>
                               </div>
                               <div className="flex justify-between gap-4">
-                                <span className="font-bold text-slate-400">SENDER:</span>
-                                <span className="text-slate-800">{tx.sender ? `${tx.sender.fullName || tx.sender.username} (ID: ${tx.senderId})` : 'Hệ thống / Ngân hàng'}</span>
+                                <span className="font-semibold text-zinc-400">SENDER:</span>
+                                <span className="text-zinc-800">{tx.sender ? `${tx.sender.fullName || tx.sender.username} (ID: ${tx.senderId})` : 'Hệ thống / Ngân hàng'}</span>
                               </div>
                               <div className="flex justify-between gap-4">
-                                <span className="font-bold text-slate-400">RECEIVER:</span>
-                                <span className="text-slate-800">{tx.receiver ? `${tx.receiver.fullName || tx.receiver.username} (ID: ${tx.receiverId})` : 'Hệ thống / Ngân hàng'}</span>
+                                <span className="font-semibold text-zinc-400">RECEIVER:</span>
+                                <span className="text-zinc-800">{tx.receiver ? `${tx.receiver.fullName || tx.receiver.username} (ID: ${tx.receiverId})` : 'Hệ thống / Ngân hàng'}</span>
                               </div>
                               <div className="flex flex-col gap-0.5">
-                                <span className="font-bold text-slate-400">BLOCK HASH:</span>
-                                <span className="text-indigo-600 bg-indigo-50/50 p-1.5 rounded border border-indigo-100 select-all">{tx.hash}</span>
+                                <span className="font-semibold text-zinc-400">BLOCK HASH:</span>
+                                <span className="text-zinc-800 bg-zinc-50 p-1.5 rounded border border-zinc-200 select-all">{tx.hash}</span>
                               </div>
                               <div className="flex flex-col gap-0.5">
-                                <span className="font-bold text-slate-400">PREVIOUS BLOCK HASH:</span>
-                                <span className="text-slate-500 bg-slate-100/50 p-1.5 rounded border border-slate-200 select-all">{tx.previousHash}</span>
+                                <span className="font-semibold text-zinc-400">PREVIOUS BLOCK HASH:</span>
+                                <span className="text-zinc-500 bg-zinc-50/50 p-1.5 rounded border border-zinc-200 select-all">{tx.previousHash}</span>
                               </div>
-                              <div className="text-[10px] text-green-700 bg-green-50 p-2 rounded-lg border border-green-200 font-sans mt-2 flex items-center gap-1.5">
+                              <div className="text-[9.5px] text-zinc-700 bg-zinc-50 p-2 rounded-lg border border-zinc-200 font-sans mt-2">
                                 🔒 <strong>Mã hóa chuỗi khối thành công:</strong> Khối giao dịch đã được ký mật mã và liên kết không thể sửa đổi (Immutable Ledger).
                               </div>
                             </div>
@@ -3036,21 +3053,21 @@ function App() {
                 )}
               </div>
             )}
-
+ 
             {walletActiveTab === 'deposit' && (
-              <form onSubmit={handleDepositSubmit} className="space-y-4 text-black">
-                <div className="bg-blue-50 border border-blue-200 text-blue-800 p-3.5 rounded-xl text-xs space-y-1">
-                  <p className="font-bold">💡 Hướng dẫn nạp tiền:</p>
+              <form onSubmit={handleDepositSubmit} className="space-y-4">
+                <div className={`border p-3.5 rounded-lg text-xs space-y-1 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  <p className="font-semibold text-zinc-800">💡 Hướng dẫn nạp tiền:</p>
                   <p>Quy đổi: <strong>1 UC = 1,000 VNĐ</strong>. Bạn chỉ cần điền số tiền nạp, hệ thống sẽ liên kết ngân hàng và tự động ghi nhận khối UC tương ứng lập tức vào tài khoản.</p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Chọn Ngân hàng nạp</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Chọn Ngân hàng nạp</label>
                     <select
                       value={depositForm.bankName}
                       onChange={(e) => setDepositForm({ ...depositForm, bankName: e.target.value })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     >
                       <option value="Vietcombank">Vietcombank</option>
                       <option value="VietinBank">VietinBank</option>
@@ -3062,33 +3079,33 @@ function App() {
                   </div>
                   
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tài khoản ngân hàng của bạn</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Số tài khoản ngân hàng của bạn</label>
                     <input
                       type="text"
                       required
                       placeholder="Nhập số tài khoản để liên kết"
                       value={depositForm.bankAccount}
                       onChange={(e) => setDepositForm({ ...depositForm, bankAccount: e.target.value })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     />
                   </div>
                 </div>
-
+ 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Tên chủ thẻ ngân hàng (Không dấu)</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Tên chủ thẻ ngân hàng (Không dấu)</label>
                     <input
                       type="text"
                       required
                       placeholder="VD: NGUYEN VAN A"
                       value={depositForm.cardHolder}
                       onChange={(e) => setDepositForm({ ...depositForm, cardHolder: e.target.value.toUpperCase() })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     />
                   </div>
                   
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tiền muốn nạp (VNĐ)</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Số tiền muốn nạp (VNĐ)</label>
                     <div className="relative">
                       <input
                         type="number"
@@ -3098,44 +3115,44 @@ function App() {
                         placeholder="VD: 50000"
                         value={depositForm.amount}
                         onChange={(e) => setDepositForm({ ...depositForm, amount: e.target.value })}
-                        className={`w-full border p-2.5 pr-12 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                        className={`w-full border px-3 py-2 pr-12 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">VNĐ</span>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">VNĐ</span>
                     </div>
                   </div>
                 </div>
-
-                <div className="bg-slate-50 border p-3 rounded-xl text-xs space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Số UC nhận được:</span>
-                    <span className="font-bold text-amber-600 text-sm">+{depositForm.amount ? Math.floor(parseInt(depositForm.amount) / 1000) : 0} UC</span>
+ 
+                <div className={`border p-3 rounded-lg text-xs space-y-1.5 ${panicMode ? 'bg-zinc-800 border-zinc-750 text-zinc-300' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-500">Số UC nhận được:</span>
+                    <span className="font-semibold text-zinc-800 text-sm">+{depositForm.amount ? Math.floor(parseInt(depositForm.amount) / 1000) : 0} UC</span>
                   </div>
                 </div>
-
+ 
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl mt-2 shadow-md transition disabled:opacity-50"
+                  className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2.5 rounded-lg mt-2 transition-colors disabled:opacity-50 text-xs"
                 >
                   {authLoading ? "Đang liên kết & ghi sổ cái..." : "Xác nhận Nạp UC"}
                 </button>
               </form>
             )}
-
+ 
             {walletActiveTab === 'withdraw' && (
-              <form onSubmit={handleWithdrawSubmit} className="space-y-4 text-black">
-                <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3.5 rounded-xl text-xs space-y-1">
-                  <p className="font-bold">⚠️ Lưu ý khi rút tiền:</p>
+              <form onSubmit={handleWithdrawSubmit} className="space-y-4">
+                <div className={`border p-3.5 rounded-lg text-xs space-y-1 ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-200' : 'bg-zinc-50/50 border-zinc-200 text-zinc-700'}`}>
+                  <p className="font-semibold text-zinc-800">⚠️ Lưu ý khi rút tiền:</p>
                   <p>Số dư tối thiểu để rút là 10 UC. Phí rút tiền: 0%. Số tiền sẽ được chuyển thẳng về tài khoản ngân hàng của bạn sau khi xác nhận khối.</p>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Chọn Ngân hàng nhận</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Chọn Ngân hàng nhận</label>
                     <select
                       value={withdrawForm.bankName}
                       onChange={(e) => setWithdrawForm({ ...withdrawForm, bankName: e.target.value })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     >
                       <option value="Vietcombank">Vietcombank</option>
                       <option value="VietinBank">VietinBank</option>
@@ -3147,33 +3164,33 @@ function App() {
                   </div>
                   
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tài khoản ngân hàng thụ hưởng</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Số tài khoản ngân hàng thụ hưởng</label>
                     <input
                       type="text"
                       required
                       placeholder="Nhập số tài khoản nhận tiền"
                       value={withdrawForm.bankAccount}
                       onChange={(e) => setWithdrawForm({ ...withdrawForm, bankAccount: e.target.value })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Tên chủ tài khoản (Không dấu)</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Tên chủ tài khoản (Không dấu)</label>
                     <input
                       type="text"
                       required
                       placeholder="VD: NGUYEN VAN A"
                       value={withdrawForm.cardHolder}
                       onChange={(e) => setWithdrawForm({ ...withdrawForm, cardHolder: e.target.value.toUpperCase() })}
-                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                     />
                   </div>
                   
                   <div>
-                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số lượng UC muốn rút</label>
+                    <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Số lượng UC muốn rút</label>
                     <div className="relative">
                       <input
                         type="number"
@@ -3182,24 +3199,24 @@ function App() {
                         placeholder="Tối thiểu 10 UC"
                         value={withdrawForm.amount}
                         onChange={(e) => setWithdrawForm({ ...withdrawForm, amount: e.target.value })}
-                        className={`w-full border p-2.5 pr-12 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                        className={`w-full border px-3 py-2 pr-12 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 text-zinc-800 focus:border-zinc-400'}`}
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">UC</span>
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-zinc-400">UC</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-slate-50 border p-3 rounded-xl text-xs space-y-1.5">
-                  <div className="flex justify-between">
-                    <span className="text-gray-500">Số tiền bạn nhận được (VNĐ):</span>
-                    <span className="font-bold text-green-600 text-sm">+{withdrawForm.amount ? (parseInt(withdrawForm.amount) * 1000).toLocaleString('vi-VN') : 0} VNĐ</span>
+                <div className={`border p-3 rounded-lg text-xs space-y-1.5 ${panicMode ? 'bg-zinc-850 border-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-700'}`}>
+                  <div className="flex justify-between items-center">
+                    <span className="text-zinc-500">Số tiền bạn nhận được (VNĐ):</span>
+                    <span className="font-semibold text-zinc-800 text-sm">+{withdrawForm.amount ? (parseInt(withdrawForm.amount) * 1000).toLocaleString('vi-VN') : 0} VNĐ</span>
                   </div>
                 </div>
 
                 <button
                   type="submit"
                   disabled={authLoading}
-                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl mt-2 shadow-md transition disabled:opacity-50"
+                  className="w-full bg-zinc-900 hover:bg-zinc-800 text-white font-medium py-2.5 rounded-lg mt-2 transition-colors disabled:opacity-50 text-xs"
                 >
                   {authLoading ? "Đang xử lý trừ UC & chuyển khoản..." : "Xác nhận Rút UC"}
                 </button>
@@ -3210,25 +3227,22 @@ function App() {
         </div>
       )}
 
-
       {/* ===== GLOBAL POPUP SYSTEM ===== */}
       {/* ALERT POPUP */}
       {globalAlert && (() => {
         const iconMap = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
-        const colorMap = { success: '#16a34a', error: '#dc2626', warning: '#d97706', info: '#e11d48' };
-        const bgMap = { success: '#f0fdf4', error: '#fef2f2', warning: '#fffbeb', info: '#fff1f2' };
         const t = globalAlert.type || 'info';
         return (
-          <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4" onClick={() => setGlobalAlert(null)} style={{ backdropFilter: 'blur(4px)' }}>
-            <div className={`max-w-sm w-full shadow-2xl rounded-2xl overflow-hidden`} style={{ animation: 'popIn 0.22s cubic-bezier(.34,1.56,.64,1)' }} onClick={e => e.stopPropagation()}>
-              <div style={{ background: 'white', padding: '20px 22px 14px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #f1f5f9' }}>
-                <span style={{ fontSize: 24, lineHeight: 1 }}>{iconMap[t]}</span>
-                <span style={{ color: '#4F46E5', fontWeight: 800, fontSize: 17, flex: 1 }}>Thông báo</span>
-                <button onClick={() => setGlobalAlert(null)} style={{ width: 28, height: 28, borderRadius: '50%', background: '#f1f5f9', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>✕</button>
+          <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4" onClick={() => setGlobalAlert(null)} style={{ backdropFilter: 'blur(3px)' }}>
+            <div className={`max-w-sm w-full shadow-lg rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`} style={{ animation: 'popIn 0.15s ease-out' }} onClick={e => e.stopPropagation()}>
+              <div className={`px-5 py-3.5 flex items-center gap-2.5 border-b ${panicMode ? 'border-zinc-850' : 'border-zinc-100'}`}>
+                <span className="text-[16px]">{iconMap[t]}</span>
+                <span className="font-semibold text-xs flex-1">Thông báo</span>
+                <button onClick={() => setGlobalAlert(null)} className={`w-6 h-6 rounded-md flex items-center justify-center border transition-colors text-xs font-semibold ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-350 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-500 hover:bg-zinc-100'}`}>✕</button>
               </div>
-              <div style={{ background: 'white', padding: '18px 22px 20px' }}>
-                <p style={{ fontSize: 14.5, color: '#374151', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-line' }}>{globalAlert.msg}</p>
-                <button onClick={() => setGlobalAlert(null)} style={{ marginTop: 18, width: '100%', padding: '11px 0', borderRadius: 12, background: '#4F46E5', border: 'none', color: 'white', fontWeight: 700, fontSize: 14.5, cursor: 'pointer', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }}>Đã hiểu</button>
+              <div className="p-5">
+                <p className={`text-[12.5px] leading-relaxed mb-4 whitespace-pre-line ${panicMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{globalAlert.msg}</p>
+                <button onClick={() => setGlobalAlert(null)} className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs transition-colors">Đã hiểu</button>
               </div>
             </div>
           </div>
@@ -3237,17 +3251,17 @@ function App() {
 
       {/* CONFIRM POPUP */}
       {globalConfirm && (
-        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4" style={{ backdropFilter: 'blur(4px)' }}>
-          <div className="max-w-sm w-full shadow-2xl rounded-2xl overflow-hidden" style={{ animation: 'popIn 0.22s cubic-bezier(.34,1.56,.64,1)' }}>
-            <div style={{ background: 'white', padding: '20px 22px 14px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ fontSize: 24 }}>❓</span>
-              <span style={{ color: '#4F46E5', fontWeight: 800, fontSize: 17 }}>Xác nhận</span>
+        <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4" style={{ backdropFilter: 'blur(3px)' }}>
+          <div className={`max-w-sm w-full shadow-lg rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`} style={{ animation: 'popIn 0.15s ease-out' }}>
+            <div className={`px-5 py-3.5 flex items-center gap-2.5 border-b ${panicMode ? 'border-zinc-850' : 'border-zinc-100'}`}>
+              <span className="text-[16px]">❓</span>
+              <span className="font-semibold text-xs">Xác nhận</span>
             </div>
-            <div style={{ background: 'white', padding: '18px 22px 20px' }}>
-              <p style={{ fontSize: 14.5, color: '#374151', lineHeight: 1.6, margin: 0, whiteSpace: 'pre-line' }}>{globalConfirm.msg}</p>
-              <div style={{ display: 'flex', gap: 10, marginTop: 18 }}>
-                <button onClick={() => { globalConfirm.resolve(false); setGlobalConfirm(null); }} style={{ flex: 1, padding: '11px 0', borderRadius: 12, background: '#f1f5f9', border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer', color: '#374151' }}>Hủy</button>
-                <button onClick={() => { globalConfirm.resolve(true); setGlobalConfirm(null); }} style={{ flex: 1, padding: '11px 0', borderRadius: 12, background: '#4F46E5', border: 'none', color: 'white', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }}>Xác nhận</button>
+            <div className="p-5">
+              <p className={`text-[12.5px] leading-relaxed mb-4 whitespace-pre-line ${panicMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{globalConfirm.msg}</p>
+              <div className="flex gap-2">
+                <button onClick={() => { globalConfirm.resolve(false); setGlobalConfirm(null); }} className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-750 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-205 text-zinc-700 hover:bg-zinc-100'}`}>Hủy</button>
+                <button onClick={() => { globalConfirm.resolve(true); setGlobalConfirm(null); }} className="flex-1 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs transition-colors">Xác nhận</button>
               </div>
             </div>
           </div>
@@ -3256,26 +3270,24 @@ function App() {
 
       {/* PROMPT POPUP */}
       {globalPrompt && (
-        <div className="fixed inset-0 bg-black/50 z-[200] flex items-center justify-center p-4" style={{ backdropFilter: 'blur(4px)' }}>
-          <div className="max-w-sm w-full shadow-2xl rounded-2xl overflow-hidden" style={{ animation: 'popIn 0.22s cubic-bezier(.34,1.56,.64,1)' }}>
-            <div style={{ background: 'white', padding: '20px 22px 14px', display: 'flex', alignItems: 'center', gap: 12, borderBottom: '1px solid #f1f5f9' }}>
-              <span style={{ fontSize: 24 }}>✏️</span>
-              <span style={{ color: '#4F46E5', fontWeight: 800, fontSize: 17 }}>Nhập thông tin</span>
+        <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4" style={{ backdropFilter: 'blur(3px)' }}>
+          <div className={`max-w-sm w-full shadow-lg rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`} style={{ animation: 'popIn 0.15s ease-out' }}>
+            <div className={`px-5 py-3.5 flex items-center gap-2.5 border-b ${panicMode ? 'border-zinc-850' : 'border-zinc-100'}`}>
+              <span className="text-[16px]">✏️</span>
+              <span className="font-semibold text-xs">Nhập thông tin</span>
             </div>
-            <div style={{ background: 'white', padding: '18px 22px 20px' }}>
-              <p style={{ fontSize: 14.5, color: '#374151', lineHeight: 1.5, marginBottom: 12, whiteSpace: 'pre-line' }}>{globalPrompt.msg}</p>
+            <div className="p-5">
+              <p className={`text-[12.5px] leading-relaxed mb-3 whitespace-pre-line ${panicMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{globalPrompt.msg}</p>
               <input
                 autoFocus
                 value={promptInputVal}
                 onChange={e => setPromptInputVal(e.target.value)}
                 onKeyDown={e => { if (e.key === 'Enter') { globalPrompt.resolve(promptInputVal); setGlobalPrompt(null); } if (e.key === 'Escape') { globalPrompt.resolve(null); setGlobalPrompt(null); } }}
-                style={{ width: '100%', padding: '10px 14px', borderRadius: 10, border: '2px solid #e2e8f0', outline: 'none', fontSize: 14.5, boxSizing: 'border-box', transition: 'border-color 0.2s' }}
-                onFocus={e => e.target.style.borderColor = '#4F46E5'}
-                onBlur={e => e.target.style.borderColor = '#e2e8f0'}
+                className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] mb-3.5 ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400'}`}
               />
-              <div style={{ display: 'flex', gap: 10, marginTop: 14 }}>
-                <button onClick={() => { globalPrompt.resolve(null); setGlobalPrompt(null); }} style={{ flex: 1, padding: '11px 0', borderRadius: 12, background: '#f1f5f9', border: 'none', fontWeight: 700, fontSize: 14, cursor: 'pointer', color: '#374151' }}>Hủy</button>
-                <button onClick={() => { globalPrompt.resolve(promptInputVal); setGlobalPrompt(null); }} style={{ flex: 1, padding: '11px 0', borderRadius: 12, background: '#4F46E5', border: 'none', color: 'white', fontWeight: 700, fontSize: 14, cursor: 'pointer', boxShadow: '0 4px 12px rgba(79, 70, 229, 0.3)' }}>Xác nhận</button>
+              <div className="flex gap-2">
+                <button onClick={() => { globalPrompt.resolve(null); setGlobalPrompt(null); }} className={`flex-1 py-2 rounded-lg text-xs font-medium border transition-colors ${panicMode ? 'bg-zinc-800 border-zinc-750 text-zinc-300 hover:bg-zinc-700' : 'bg-zinc-50 border-zinc-205 text-zinc-700 hover:bg-zinc-100'}`}>Hủy</button>
+                <button onClick={() => { globalPrompt.resolve(promptInputVal); setGlobalPrompt(null); }} className="flex-1 py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs transition-colors">Xác nhận</button>
               </div>
             </div>
           </div>
@@ -3285,12 +3297,12 @@ function App() {
       {/* CHECK-IN WARNING MODAL */}
       {showCheckInWarning && (
         <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4">
-          <div className={`p-6 rounded-2xl max-w-sm w-full shadow-2xl animate-slide-up ${panicMode ? 'bg-slate-800 text-white border border-gray-700' : 'bg-white text-black border border-gray-200'}`}>
-            <h3 className="text-xl font-bold mb-3 text-indigo-600 flex items-center gap-2">⚠️ Lỗi điểm danh</h3>
-            <p className="mb-6 text-sm">Bạn chưa điền Tên trường và Định vị GPS của trường đang học. Để tiếp tục điểm danh vào lớp, vui lòng cập nhật thông tin này trong phần Chỉnh sửa hồ sơ.</p>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowCheckInWarning(false)} className={`px-4 py-2 font-bold rounded-lg ${panicMode ? 'bg-slate-700 hover:bg-slate-600 text-white' : 'bg-gray-200 hover:bg-gray-300'} transition`}>Trở lại</button>
-              <button onClick={() => { setShowCheckInWarning(false); setShowMobileMenu(false); setShowProfileEditModal(true); }} className="px-4 py-2 font-bold rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition">Cập nhật ngay</button>
+          <div className={`p-5 rounded-xl max-w-sm w-full shadow-lg border ${panicMode ? 'bg-zinc-900 text-white border-zinc-800' : 'bg-white text-zinc-900 border-zinc-200'}`}>
+            <h3 className="text-sm font-semibold mb-2 flex items-center gap-1.5"><Icons.AlertTriangle className="w-4.5 h-4.5 text-zinc-500" /> Lại lỗi điểm danh</h3>
+            <p className="mb-4 text-xs text-zinc-500 leading-relaxed">Bạn chưa điền Tên trường và Định vị GPS của trường đang học. Để tiếp tục điểm danh vào lớp, vui lòng cập nhật thông tin này trong phần Chỉnh sửa hồ sơ.</p>
+            <div className="flex justify-end gap-2">
+              <button onClick={() => setShowCheckInWarning(false)} className={`px-3 py-1.5 font-medium rounded-lg text-xs transition-colors ${panicMode ? 'bg-zinc-800 hover:bg-zinc-700 text-white' : 'bg-zinc-100 hover:bg-zinc-200/80 text-zinc-800'}`}>Trở lại</button>
+              <button onClick={() => { setShowCheckInWarning(false); setShowMobileMenu(false); setShowProfileEditModal(true); }} className="px-3 py-1.5 font-medium rounded-lg text-xs bg-zinc-900 text-white hover:bg-zinc-800 transition-colors">Cập nhật ngay</button>
             </div>
           </div>
         </div>
@@ -3300,30 +3312,30 @@ function App() {
       {aiTutorTucked ? (
         <button
           onClick={() => { setAiTutorTucked(false); setShowAiTutorFloat(true); setAiTutorMinimized(false); }}
-          className="fixed right-0 bottom-[120px] md:bottom-[60px] w-8 h-12 bg-[#9C27B0] hover:bg-[#7B1FA2] text-white rounded-l-xl shadow-lg flex items-center justify-center text-lg z-[80] transition-all hover:w-10"
+          className="fixed right-0 bottom-[120px] md:bottom-[60px] w-7 h-11 bg-zinc-900 border border-r-0 border-zinc-800 hover:bg-zinc-800 text-white rounded-l-lg shadow-md flex items-center justify-center text-xs z-[80] transition-all hover:w-9"
           title="Mở UniBot"
         >
           ❮
         </button>
       ) : showAiTutorFloat ? (
-        <div className="fixed bottom-[80px] md:bottom-6 right-4 md:right-6 w-[90vw] max-w-[380px] h-[500px] md:h-[520px] z-[80] flex flex-col rounded-2xl shadow-[0_0_40px_rgba(156,39,176,0.3)] border border-purple-200 overflow-hidden bg-white">
-          <div className="bg-[#9C27B0] p-3 flex justify-between items-center text-white">
+        <div className={`fixed bottom-[80px] md:bottom-6 right-4 md:right-6 w-[90vw] max-w-[360px] h-[480px] md:h-[500px] z-[80] flex flex-col rounded-xl shadow-lg border overflow-hidden ${panicMode ? 'bg-zinc-900 border-zinc-800' : 'bg-white border-zinc-200'}`}>
+          <div className="bg-zinc-950 p-3 flex justify-between items-center text-white border-b border-zinc-800">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center text-lg">🤖</div>
+              <div className="w-7 h-7 bg-zinc-800 rounded flex items-center justify-center text-sm">🤖</div>
               <div>
-                <h4 className="font-bold text-[15px]">UniBot</h4>
-                <p className="text-[11px] text-purple-200">Sẵn sàng giải đáp mọi thứ</p>
+                <h4 className="font-semibold text-xs">UniBot</h4>
+                <p className="text-[10px] text-zinc-400">Sẵn sàng giải đáp mọi thứ</p>
               </div>
             </div>
             <div className="flex gap-1">
               <button
                 onClick={() => { setShowAiTutorFloat(false); setAiTutorMinimized(true); }}
-                className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xs font-bold transition"
+                className="w-6 h-6 rounded bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-[10px] transition-colors"
                 title="Thu nhỏ"
               >➖</button>
               <button
                 onClick={() => { setShowAiTutorFloat(false); setAiTutorTucked(true); setAiTutorMinimized(false); }}
-                className="w-7 h-7 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xs font-bold transition"
+                className="w-6 h-6 rounded bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-[10px] transition-colors"
                 title="Đóng & Nép vào góc"
               >✕</button>
             </div>
@@ -3342,7 +3354,7 @@ function App() {
           {aiTutorMinimized ? (
             <button
               onClick={() => { setAiTutorMinimized(false); setShowAiTutorFloat(true); }}
-              className="w-12 h-12 bg-[#9C27B0] hover:bg-[#7B1FA2] text-white rounded-full shadow-lg flex items-center justify-center text-lg transition-all hover:scale-110 opacity-80 hover:opacity-100 touch-none"
+              className="w-11 h-11 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-md flex items-center justify-center text-lg transition-all hover:scale-105 opacity-90 hover:opacity-100 touch-none border border-zinc-800"
               title="Mở lại UniBot"
             >
               🤖
@@ -3350,7 +3362,7 @@ function App() {
           ) : (
             <button
               onClick={() => setShowAiTutorFloat(true)}
-              className="w-14 h-14 bg-[#9C27B0] hover:bg-[#7B1FA2] text-white rounded-full shadow-[0_4px_20px_rgba(156,39,176,0.5)] flex items-center justify-center text-2xl transition-all hover:scale-110 touch-none"
+              className="w-12 h-12 bg-zinc-900 hover:bg-zinc-800 text-white rounded-full shadow-md flex items-center justify-center text-lg transition-all hover:scale-105 touch-none border border-zinc-800"
               title="Mở UniBot"
             >
               🤖
