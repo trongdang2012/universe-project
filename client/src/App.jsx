@@ -410,6 +410,11 @@ export const Icons = {
       <circle cx="12" cy="12" r="3" />
     </svg>
   ),
+  EyeOff: (props) => (
+    <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22" />
+    </svg>
+  ),
   Clock: (props) => (
     <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="12" cy="12" r="10" />
@@ -668,6 +673,10 @@ function App() {
   const [authForm, setAuthForm] = useState({ username: '', password: '', fullName: '', major: '' });
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
+  const [showAuthPassword, setShowAuthPassword] = useState(false);
+  const [showPwCurrent, setShowPwCurrent] = useState(false);
+  const [showPwNew, setShowPwNew] = useState(false);
+  const [showPwConfirm, setShowPwConfirm] = useState(false);
 
   // UI States
   const [activeTab, setActiveTab] = useState(initNav.tab);
@@ -1306,7 +1315,12 @@ function App() {
           <form onSubmit={handleAuthSubmit} className="space-y-3">
             {authMode === 'register' && (<><input type="text" placeholder="Họ và Tên" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.fullName} onChange={e => setAuthForm({ ...authForm, fullName: e.target.value })} /><input type="text" placeholder="Lớp / Chuyên ngành" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.major} onChange={e => setAuthForm({ ...authForm, major: e.target.value })} /></>)}
             <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.username} onChange={e => setAuthForm({ ...authForm, username: e.target.value })} />
-            <input type="password" placeholder="Mật khẩu" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 rounded-lg outline-none text-black" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
+            <div className="relative">
+              <input type={showAuthPassword ? "text" : "password"} placeholder="Mật khẩu" required className="w-full bg-gray-50 border border-transparent focus:border-rose-600 p-3 pr-10 rounded-lg outline-none text-black" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
+              <button type="button" onClick={() => setShowAuthPassword(!showAuthPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+                {showAuthPassword ? <Icons.EyeOff className="w-5 h-5" /> : <Icons.Eye className="w-5 h-5" />}
+              </button>
+            </div>
             {authError && <p className="text-red-500 text-sm font-bold text-center">{authError}</p>}
             <button type="submit" disabled={authLoading} className={`w-full py-3 mt-4 ${authLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-lg font-black text-[15px] uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2`}>{authLoading ? (<><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Đang xử lý...</>) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}</button>
           </form>
@@ -2740,10 +2754,34 @@ function App() {
               <div className={`border-t pt-4 mt-2 ${panicMode ? 'border-gray-700' : ''}`}>
                 <p className="text-sm font-bold mb-3">🔒 Đổi Mật Khẩu</p>
                 <div className="space-y-3">
-                  <div><label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu hiện tại</label><input type="password" id="pw_current" placeholder="Nhập mật khẩu hiện tại" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu hiện tại</label>
+                    <div className="relative">
+                      <input type={showPwCurrent ? "text" : "password"} id="pw_current" placeholder="Nhập mật khẩu hiện tại" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
+                      <button type="button" onClick={() => setShowPwCurrent(!showPwCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+                        {showPwCurrent ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div><label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu mới</label><input type="password" id="pw_new" placeholder="Ít nhất 3 ký tự" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
-                    <div><label className="text-xs font-bold text-gray-500 mb-1 block">Xác nhận mật khẩu</label><input type="password" id="pw_confirm" placeholder="Nhập lại mật khẩu mới" className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} /></div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1 block">Mật khẩu mới</label>
+                      <div className="relative">
+                        <input type={showPwNew ? "text" : "password"} id="pw_new" placeholder="Ít nhất 3 ký tự" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
+                        <button type="button" onClick={() => setShowPwNew(!showPwNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+                          {showPwNew ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs font-bold text-gray-500 mb-1 block">Xác nhận mật khẩu</label>
+                      <div className="relative">
+                        <input type={showPwConfirm ? "text" : "password"} id="pw_confirm" placeholder="Nhập lại mật khẩu mới" className={`w-full border p-2.5 pr-10 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`} />
+                        <button type="button" onClick={() => setShowPwConfirm(!showPwConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+                          {showPwConfirm ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                   <button type="button" onClick={async () => {
                     const cur = document.getElementById('pw_current').value;
