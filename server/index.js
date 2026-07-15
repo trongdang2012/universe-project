@@ -1167,6 +1167,33 @@ app.post('/api/auth/change-password', async (req, res) => {
     res.json({ success: true, message: 'Đổi mật khẩu thành công!' });
   } catch (err) { res.json({ success: false, message: 'Lỗi hệ thống!' }); }
 });
+app.post('/api/auth/google-login', async (req, res) => {
+  try {
+    const { googleId, email, name, picture } = req.body;
+    if (!googleId) return res.json({ success: false, message: 'Thiếu thông tin Google ID!' });
+
+    const username = `google_${googleId}`;
+    let user = await prisma.user.findUnique({ where: { username } });
+
+    if (!user) {
+      // Đăng ký tài khoản tự động nếu đăng nhập lần đầu bằng Google
+      user = await prisma.user.create({
+        data: {
+          username,
+          password: "", // Không cần mật khẩu cho đăng nhập bằng Google
+          fullName: name || email.split('@')[0],
+          avatarUrl: picture || "",
+          coins: 250,
+          major: ""
+        }
+      });
+    }
+
+    res.json({ success: true, user });
+  } catch (err) {
+    res.json({ success: false, message: 'Lỗi hệ thống khi đăng nhập bằng Google.' });
+  }
+});
 app.get('/api/notifications/:userId', async (req, res) => { try { const notifs = await prisma.notification.findMany({ where: { userId: parseInt(req.params.userId) }, include: { sourceUser: { select: { fullName: true, username: true, avatarUrl: true } } }, orderBy: { createdAt: 'desc' } }); res.json(notifs); } catch (err) {} });
 
 // API Admin

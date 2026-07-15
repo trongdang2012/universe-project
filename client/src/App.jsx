@@ -1017,6 +1017,34 @@ function App() {
       setAuthLoading(false);
     }
   };
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setAuthLoading(true);
+      setAuthError('');
+      try {
+        const userInfoRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
+        });
+        const { sub, email, name, picture } = userInfoRes.data;
+        const res = await axios.post('/api/auth/google-login', { googleId: sub, email, name, picture });
+        if (res.data.success) {
+          showAlert('Đăng nhập bằng Google thành công! 🎉', 'success');
+          setUser(res.data.user);
+          localStorage.setItem('universe_user', JSON.stringify(res.data.user));
+        } else {
+          setAuthError(res.data.message || 'Đăng nhập Google thất bại');
+        }
+      } catch (err) {
+        setAuthError('Lỗi khi đăng nhập bằng Google. Vui lòng thử lại.');
+      } finally {
+        setAuthLoading(false);
+      }
+    },
+    onError: (error) => {
+      console.error("Google Login Failed", error);
+      showAlert("Lỗi đăng nhập Google!");
+    }
+  });
 
   const handleImageUpload = async (e, field) => {
     const file = e.target.files[0];
@@ -1278,6 +1306,27 @@ function App() {
             {authError && <p className="text-red-500 text-sm font-bold text-center">{authError}</p>}
             <button type="submit" disabled={authLoading} className={`w-full py-3 mt-4 ${authLoading ? 'bg-indigo-400 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700'} text-white rounded-lg font-black text-[15px] uppercase tracking-wider transition shadow-lg flex items-center justify-center gap-2`}>{authLoading ? (<><svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Đang xử lý...</>) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}</button>
           </form>
+
+          <div className="relative flex py-4 items-center">
+            <div className="flex-grow border-t border-gray-200"></div>
+            <span className="flex-shrink mx-4 text-gray-400 text-xs font-bold uppercase">Hoặc</span>
+            <div className="flex-grow border-t border-gray-200"></div>
+          </div>
+
+          <button
+            type="button"
+            disabled={authLoading}
+            onClick={() => handleGoogleLogin()}
+            className="w-full py-3 bg-white hover:bg-gray-50 border border-gray-300 text-gray-700 rounded-lg font-black text-[14px] transition flex items-center justify-center gap-2.5 shadow-sm active-scale"
+          >
+            <svg className="w-5 h-5" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v3.92h6.69c-.29 1.5-1.14 2.77-2.4 3.61v3h3.84c2.24-2.07 3.61-5.11 3.61-8.46z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.97-1.08 7.96-2.91l-3.84-3c-1.07.72-2.44 1.16-4.12 1.16-3.17 0-5.85-2.14-6.81-5.02H1.23v3.1A11.973 11.973 0 0 0 12 24z"/>
+              <path fill="#FBBC05" d="M5.19 14.23A7.169 7.169 0 0 1 4.8 12c0-.79.13-1.57.39-2.31V6.59H1.23a11.96 11.96 0 0 0 0 10.82l3.96-3.18z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.96 1.19 15.24 0 12 0 7.37 0 3.33 2.66 1.23 6.59l3.96 3.18c.96-2.88 3.64-5.02 6.81-5.02z"/>
+            </svg>
+            Đăng nhập với Google
+          </button>
         </div>
       </div>
     );
