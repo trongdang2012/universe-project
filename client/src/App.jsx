@@ -677,6 +677,12 @@ function App() {
   const [showPwCurrent, setShowPwCurrent] = useState(false);
   const [showPwNew, setShowPwNew] = useState(false);
   const [showPwConfirm, setShowPwConfirm] = useState(false);
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [walletTransactions, setWalletTransactions] = useState([]);
+  const [walletActiveTab, setWalletActiveTab] = useState('ledger');
+  const [depositForm, setDepositForm] = useState({ amount: '', bankName: 'Vietcombank', bankAccount: '', cardHolder: '' });
+  const [withdrawForm, setWithdrawForm] = useState({ amount: '', bankName: 'Vietcombank', bankAccount: '', cardHolder: '' });
+  const [expandedTxId, setExpandedTxId] = useState(null);
 
   // UI States
   const [activeTab, setActiveTab] = useState(initNav.tab);
@@ -884,6 +890,85 @@ function App() {
   const handleLogout = () => { localStorage.clear(); window.location.replace('/'); };
 
   if (user && user.role === 'ADMIN') return <AdminScreen user={user} onLogout={handleLogout} />;
+
+  const fetchWalletTransactions = async () => {
+    if (!user) return;
+    try {
+      const res = await axios.get(`/api/transactions/${user.id}`);
+      if (res.data.success) {
+        setWalletTransactions(res.data.transactions || []);
+      }
+    } catch (err) {
+      console.error("Lỗi khi tải lịch sử giao dịch:", err);
+    }
+  };
+
+  const handleDepositSubmit = async (e) => {
+    e.preventDefault();
+    if (!depositForm.amount || parseInt(depositForm.amount) <= 0) return showAlert("Số tiền nạp không hợp lệ!", "warning");
+    setAuthLoading(true);
+    try {
+      const res = await axios.post('/api/transactions/deposit', {
+        userId: user.id,
+        amount: parseInt(depositForm.amount),
+        bankAccount: depositForm.bankAccount,
+        bankName: depositForm.bankName,
+        cardHolder: depositForm.cardHolder
+      });
+      if (res.data.success) {
+        setCoins(res.data.newBalance);
+        // Cập nhật lại số dư trong localStorage
+        const uInfo = JSON.parse(localStorage.getItem('universe_user'));
+        if (uInfo) { uInfo.coins = res.data.newBalance; localStorage.setItem('universe_user', JSON.stringify(uInfo)); }
+        showAlert(`Nạp thành công ${depositForm.amount} UC! 🎉`, 'success');
+        setDepositForm({ amount: '', bankName: 'Vietcombank', bankAccount: '', cardHolder: '' });
+        fetchWalletTransactions();
+      } else {
+        showAlert(res.data.message || 'Nạp tiền thất bại', 'error');
+      }
+    } catch (err) {
+      showAlert('Lỗi kết nối máy chủ!', 'error');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleWithdrawSubmit = async (e) => {
+    e.preventDefault();
+    if (!withdrawForm.amount || parseInt(withdrawForm.amount) <= 0) return showAlert("Số tiền rút không hợp lệ!", "warning");
+    if (coins < parseInt(withdrawForm.amount)) return showAlert("Số dư UC không đủ!", "error");
+    setAuthLoading(true);
+    try {
+      const res = await axios.post('/api/transactions/withdraw', {
+        userId: user.id,
+        amount: parseInt(withdrawForm.amount),
+        bankAccount: withdrawForm.bankAccount,
+        bankName: withdrawForm.bankName,
+        cardHolder: withdrawForm.cardHolder
+      });
+      if (res.data.success) {
+        setCoins(res.data.newBalance);
+        // Cập nhật lại số dư trong localStorage
+        const uInfo = JSON.parse(localStorage.getItem('universe_user'));
+        if (uInfo) { uInfo.coins = res.data.newBalance; localStorage.setItem('universe_user', JSON.stringify(uInfo)); }
+        showAlert(`Rút thành công ${withdrawForm.amount} UC về tài khoản! 🎉`, 'success');
+        setWithdrawForm({ amount: '', bankName: 'Vietcombank', bankAccount: '', cardHolder: '' });
+        fetchWalletTransactions();
+      } else {
+        showAlert(res.data.message || 'Rút tiền thất bại', 'error');
+      }
+    } catch (err) {
+      showAlert('Lỗi kết nối máy chủ!', 'error');
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleOpenWallet = () => {
+    setShowWalletModal(true);
+    setWalletActiveTab('ledger');
+    fetchWalletTransactions();
+  };
 
   const fetchData = async () => {
     if (!user) return;
@@ -1546,6 +1631,12 @@ function App() {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Wallet badge */}
+            <div onClick={handleOpenWallet} className="flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 text-amber-850 px-3.5 py-1.5 rounded-full border border-amber-200 text-xs sm:text-sm font-bold shadow-sm hover:shadow transition cursor-pointer select-none active:scale-95">
+              <span>🪙</span>
+              <span>{coins} UC</span>
             </div>
 
             {/* Profile button - desktop */}
@@ -2814,6 +2905,308 @@ function App() {
               onError={(msg) => showAlert(msg, 'error')}
             />
           )}
+        </div>
+      )}
+
+      {/* WALLET MODAL */}
+      {showWalletModal && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-md z-[70] flex items-center justify-center p-2 sm:p-4">
+          <div className={`p-5 sm:p-6 rounded-2xl shadow-2xl w-full max-w-2xl border max-h-[90vh] overflow-y-auto hover-scrollbar transition-all duration-300 transform scale-100 ${panicMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-205 text-slate-900'}`}>
+            
+            {/* Header */}
+            <div className={`flex justify-between items-center mb-5 border-b pb-4 ${panicMode ? 'border-slate-800' : 'border-slate-100'}`}>
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">🪙</span>
+                <div>
+                  <h3 className="text-lg font-black leading-tight text-slate-850">Ví UniCoins & Blockchain Ledger</h3>
+                  <p className="text-[11px] text-slate-400">Hệ thống sổ cái giao dịch minh bạch, chống gian lận</p>
+                </div>
+              </div>
+              <button onClick={() => setShowWalletModal(false)} className={`w-8 h-8 rounded-full font-bold flex items-center justify-center transition ${panicMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'}`}>
+                <Icons.X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Balance Showcase */}
+            <div className="bg-gradient-to-r from-amber-500 to-orange-600 rounded-2xl p-5 text-white mb-6 shadow-md relative overflow-hidden">
+              <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4 select-none">
+                <span className="text-9xl font-bold">UC</span>
+              </div>
+              <p className="text-[12px] text-amber-100 uppercase tracking-wider font-semibold">Số dư hiện tại</p>
+              <div className="flex items-baseline gap-2 mt-1">
+                <h2 className="text-4xl font-black">{coins}</h2>
+                <span className="text-lg font-bold text-amber-200">UC</span>
+              </div>
+              <div className="mt-3 pt-3 border-t border-white/20 flex justify-between text-xs text-amber-50">
+                <span>Tỷ giá quy đổi: 1 UC = 1,000 VNĐ</span>
+                <span>Tài khoản: @{user?.username}</span>
+              </div>
+            </div>
+
+            {/* Tab Buttons */}
+            <div className={`flex gap-1 p-1 rounded-xl mb-6 ${panicMode ? 'bg-slate-800' : 'bg-slate-100'}`}>
+              <button
+                type="button"
+                onClick={() => setWalletActiveTab('ledger')}
+                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'ledger' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                ⛓️ Sổ cái Giao dịch
+              </button>
+              <button
+                type="button"
+                onClick={() => setWalletActiveTab('deposit')}
+                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'deposit' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                📥 Nạp tiền (Deposit)
+              </button>
+              <button
+                type="button"
+                onClick={() => setWalletActiveTab('withdraw')}
+                className={`flex-1 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition flex items-center justify-center gap-1.5 ${walletActiveTab === 'withdraw' ? (panicMode ? 'bg-slate-700 text-white shadow' : 'bg-white text-indigo-700 shadow') : 'text-slate-500 hover:text-slate-800'}`}
+              >
+                📤 Rút tiền (Withdraw)
+              </button>
+            </div>
+
+            {/* TAB CONTENTS */}
+            {walletActiveTab === 'ledger' && (
+              <div className="space-y-3.5">
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Lịch sử khối giao dịch (Ledger Blocks)</h4>
+                {walletTransactions.length === 0 ? (
+                  <div className="text-center py-10 text-slate-450">
+                    <p className="text-lg">📭 Chưa có giao dịch nào.</p>
+                    <p className="text-xs mt-1 text-slate-500">Hãy thực hiện điểm danh hoặc mua bán để tạo khối giao dịch đầu tiên.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[350px] overflow-y-auto hover-scrollbar pr-1">
+                    {walletTransactions.map((tx) => {
+                      const isReceived = tx.receiverId === user.id;
+                      const amountColor = isReceived ? 'text-green-600 font-bold' : 'text-red-500 font-bold';
+                      const amountSign = isReceived ? `+${tx.amount}` : `-${tx.amount}`;
+                      const isExpanded = expandedTxId === tx.id;
+                      
+                      return (
+                        <div key={tx.id} className={`border rounded-xl p-3.5 transition ${panicMode ? 'border-slate-800 bg-slate-950/30' : 'border-slate-100 bg-slate-50/50'}`}>
+                          <div className="flex justify-between items-center gap-4 cursor-pointer" onClick={() => setExpandedTxId(isExpanded ? null : tx.id)}>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[10px] text-slate-400 font-semibold">{new Date(tx.createdAt).toLocaleString('vi-VN')}</p>
+                              <h5 className="font-bold text-[13px] text-slate-750 truncate mt-0.5">{tx.note || "Giao dịch UC"}</h5>
+                              <p className="text-[10px] text-slate-400 mt-0.5">
+                                {tx.type} • Block #{tx.id}
+                              </p>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <p className={`font-black text-sm ${amountColor}`}>{amountSign} UC</p>
+                              <span className="text-[9px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-bold border border-green-200">Verified ✅</span>
+                            </div>
+                          </div>
+                          
+                          {/* Blockchain block details expanded */}
+                          {isExpanded && (
+                            <div className={`mt-3.5 pt-3.5 border-t text-[10px] font-mono space-y-1.5 overflow-x-auto ${panicMode ? 'border-slate-800 text-slate-300' : 'border-slate-200/60 text-slate-600'}`}>
+                              <div className="flex justify-between gap-4">
+                                <span className="font-bold text-slate-400">TRANSACTION TYPE:</span>
+                                <span className="text-slate-800 font-bold">{tx.type}</span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span className="font-bold text-slate-400">SENDER:</span>
+                                <span className="text-slate-800">{tx.sender ? `${tx.sender.fullName || tx.sender.username} (ID: ${tx.senderId})` : 'Hệ thống / Ngân hàng'}</span>
+                              </div>
+                              <div className="flex justify-between gap-4">
+                                <span className="font-bold text-slate-400">RECEIVER:</span>
+                                <span className="text-slate-800">{tx.receiver ? `${tx.receiver.fullName || tx.receiver.username} (ID: ${tx.receiverId})` : 'Hệ thống / Ngân hàng'}</span>
+                              </div>
+                              <div className="flex flex-col gap-0.5">
+                                <span className="font-bold text-slate-400">BLOCK HASH:</span>
+                                <span className="text-indigo-600 bg-indigo-50/50 p-1.5 rounded border border-indigo-100 select-all">{tx.hash}</span>
+                              </div>
+                              <div className="flex flex-col gap-0.5">
+                                <span className="font-bold text-slate-400">PREVIOUS BLOCK HASH:</span>
+                                <span className="text-slate-500 bg-slate-100/50 p-1.5 rounded border border-slate-200 select-all">{tx.previousHash}</span>
+                              </div>
+                              <div className="text-[10px] text-green-700 bg-green-50 p-2 rounded-lg border border-green-200 font-sans mt-2 flex items-center gap-1.5">
+                                🔒 <strong>Mã hóa chuỗi khối thành công:</strong> Khối giao dịch đã được ký mật mã và liên kết không thể sửa đổi (Immutable Ledger).
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {walletActiveTab === 'deposit' && (
+              <form onSubmit={handleDepositSubmit} className="space-y-4 text-black">
+                <div className="bg-blue-50 border border-blue-200 text-blue-800 p-3.5 rounded-xl text-xs space-y-1">
+                  <p className="font-bold">💡 Hướng dẫn nạp tiền:</p>
+                  <p>Quy đổi: <strong>1 UC = 1,000 VNĐ</strong>. Bạn chỉ cần điền số tiền nạp, hệ thống sẽ liên kết ngân hàng và tự động ghi nhận khối UC tương ứng lập tức vào tài khoản.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Chọn Ngân hàng nạp</label>
+                    <select
+                      value={depositForm.bankName}
+                      onChange={(e) => setDepositForm({ ...depositForm, bankName: e.target.value })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    >
+                      <option value="Vietcombank">Vietcombank</option>
+                      <option value="VietinBank">VietinBank</option>
+                      <option value="BIDV">BIDV</option>
+                      <option value="Agribank">Agribank</option>
+                      <option value="MB Bank">MB Bank</option>
+                      <option value="Techcombank">Techcombank</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tài khoản ngân hàng của bạn</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nhập số tài khoản để liên kết"
+                      value={depositForm.bankAccount}
+                      onChange={(e) => setDepositForm({ ...depositForm, bankAccount: e.target.value })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Tên chủ thẻ ngân hàng (Không dấu)</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="VD: NGUYEN VAN A"
+                      value={depositForm.cardHolder}
+                      onChange={(e) => setDepositForm({ ...depositForm, cardHolder: e.target.value.toUpperCase() })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tiền muốn nạp (VNĐ)</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        required
+                        min="1000"
+                        step="1000"
+                        placeholder="VD: 50000"
+                        value={depositForm.amount}
+                        onChange={(e) => setDepositForm({ ...depositForm, amount: e.target.value })}
+                        className={`w-full border p-2.5 pr-12 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">VNĐ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 border p-3 rounded-xl text-xs space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Số UC nhận được:</span>
+                    <span className="font-bold text-amber-600 text-sm">+{depositForm.amount ? Math.floor(parseInt(depositForm.amount) / 1000) : 0} UC</span>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl mt-2 shadow-md transition disabled:opacity-50"
+                >
+                  {authLoading ? "Đang liên kết & ghi sổ cái..." : "Xác nhận Nạp UC"}
+                </button>
+              </form>
+            )}
+
+            {walletActiveTab === 'withdraw' && (
+              <form onSubmit={handleWithdrawSubmit} className="space-y-4 text-black">
+                <div className="bg-amber-50 border border-amber-200 text-amber-800 p-3.5 rounded-xl text-xs space-y-1">
+                  <p className="font-bold">⚠️ Lưu ý khi rút tiền:</p>
+                  <p>Số dư tối thiểu để rút là 10 UC. Phí rút tiền: 0%. Số tiền sẽ được chuyển thẳng về tài khoản ngân hàng của bạn sau khi xác nhận khối.</p>
+                </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Chọn Ngân hàng nhận</label>
+                    <select
+                      value={withdrawForm.bankName}
+                      onChange={(e) => setWithdrawForm({ ...withdrawForm, bankName: e.target.value })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    >
+                      <option value="Vietcombank">Vietcombank</option>
+                      <option value="VietinBank">VietinBank</option>
+                      <option value="BIDV">BIDV</option>
+                      <option value="Agribank">Agribank</option>
+                      <option value="MB Bank">MB Bank</option>
+                      <option value="Techcombank">Techcombank</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số tài khoản ngân hàng thụ hưởng</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nhập số tài khoản nhận tiền"
+                      value={withdrawForm.bankAccount}
+                      onChange={(e) => setWithdrawForm({ ...withdrawForm, bankAccount: e.target.value })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Tên chủ tài khoản (Không dấu)</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="VD: NGUYEN VAN A"
+                      value={withdrawForm.cardHolder}
+                      onChange={(e) => setWithdrawForm({ ...withdrawForm, cardHolder: e.target.value.toUpperCase() })}
+                      className={`w-full border p-2.5 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="text-xs font-bold text-gray-500 mb-1 block">Số lượng UC muốn rút</label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        required
+                        min="10"
+                        placeholder="Tối thiểu 10 UC"
+                        value={withdrawForm.amount}
+                        onChange={(e) => setWithdrawForm({ ...withdrawForm, amount: e.target.value })}
+                        className={`w-full border p-2.5 pr-12 rounded-lg outline-none focus:border-indigo-500 ${panicMode ? 'bg-slate-700 border-gray-600 text-white' : 'bg-white'}`}
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-bold text-gray-400">UC</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 border p-3 rounded-xl text-xs space-y-1.5">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Số tiền bạn nhận được (VNĐ):</span>
+                    <span className="font-bold text-green-600 text-sm">+{withdrawForm.amount ? (parseInt(withdrawForm.amount) * 1000).toLocaleString('vi-VN') : 0} VNĐ</span>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={authLoading}
+                  className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 rounded-xl mt-2 shadow-md transition disabled:opacity-50"
+                >
+                  {authLoading ? "Đang xử lý trừ UC & chuyển khoản..." : "Xác nhận Rút UC"}
+                </button>
+              </form>
+            )}
+
+          </div>
         </div>
       )}
 

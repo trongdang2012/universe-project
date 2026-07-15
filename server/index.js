@@ -20,6 +20,36 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const server = http.createServer(app);
 const io = new Server(server, { cors: { origin: "*" } });
 const prisma = new PrismaClient();
+const crypto = require('crypto');
+
+async function createBlockchainTransaction({ senderId, receiverId, amount, type, referenceId, referenceType, note }) {
+  try {
+    const lastTx = await prisma.coinTransaction.findFirst({
+      orderBy: { id: 'desc' }
+    });
+    const previousHash = lastTx ? lastTx.hash : "0000000000000000000000000000000000000000000000000000000000000000";
+    const timestamp = new Date().toISOString();
+    const txData = `${senderId || ''}-${receiverId || ''}-${amount}-${type}-${referenceId || ''}-${referenceType || ''}-${note || ''}-${previousHash}-${timestamp}`;
+    const hash = crypto.createHash('sha256').update(txData).digest('hex');
+    
+    return await prisma.coinTransaction.create({
+      data: {
+        senderId,
+        receiverId,
+        amount,
+        type,
+        referenceId,
+        referenceType,
+        note,
+        previousHash,
+        hash
+      }
+    });
+  } catch (err) {
+    console.error("BLOCKCHAIN TRANSACTION CREATION ERROR:", err);
+  }
+}
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "AIzaSyBP80-gt89yNKGUhnflpg_6s1MLWTJ5wmU");
 
 const storage = multer.diskStorage({
@@ -160,7 +190,14 @@ app.post('/api/users/checkin', async (req, res) => {
       data: { coins: user.coins + 1 }
     });
 
-    res.json({ success: true, message: "ĐiỒm danh thành công! (+1 Coin)", coins: updatedUser.coins });
+    await createBlockchainTransaction({
+      receiverId: parseInt(userId),
+      amount: 1,
+      type: "TRANSFER",
+      note: "Điểm danh hàng ngày tại trường (+1 UC)"
+    });
+
+    res.json({ success: true, message: "Điểm danh thành công! (+1 Coin)", coins: updatedUser.coins });
 
   } catch (err) {
     console.error(err);
@@ -1068,13 +1105,13 @@ cron.schedule('0 6 * * *', async () => {
       const subjectNames = schs.map(s => `${s.subjectName} tại ${s.room}`).join(', ');
       await sendNotification(
         parseInt(uId), 
-        'H�RC TẬP', 
-        `Hôm nay (${todayStr}) bạn có ${schs.length} môn học: ${subjectNames}. Hãy nạp lại nĒng lượng cho m�"t ngày m�:i nhé!`
+        'HRC TẬP', 
+        `Hôm nay (${todayStr}) bạn có ${schs.length} môn học: ${subjectNames}. Hãy nạp lại nĒng lượng cho m"t ngày m:i nhé!`
       );
     }
     console.log(`Đã gửi thông báo TKB cho ${Object.keys(notifyMap).length} sinh viên.`);
     
-    // 4. Đ�ng b�" Google Classroom ngầm
+    // 4. Đ ng b" Google Classroom ngầm
     const classroomUsers = await prisma.user.findMany({
       where: { googleRefreshToken: { not: null } }
     });
@@ -1092,10 +1129,10 @@ cron.schedule('0 6 * * *', async () => {
         
         const newTasksCount = await syncGoogleClassroom(user.id, oauth2Client);
         if (newTasksCount > 0) {
-           await sendNotification(user.id, 'H�RC TẬP', `[AUTO] Đã ��ng b�" ${newTasksCount} bài tập m�:i từ Google Classroom!`);
+           await sendNotification(user.id, 'HRC TẬP', `[AUTO] Đã   ng b" ${newTasksCount} bài tập m:i từ Google Classroom!`);
         }
       } catch(e) {
-        console.error(`L�i Auto-Sync Classroom cho User ${user.id}:`, e.message);
+        console.error(`L i Auto-Sync Classroom cho User ${user.id}:`, e.message);
       }
     }
 
@@ -1113,8 +1150,30 @@ app.use(adminRoutes);
 // Legacy Market API (backward compatible)
 
 app.get('/api/market', async (req, res) => { try { const items = await prisma.marketItem.findMany({ include: { author: { select: { id: true, username: true, fullName: true, avatarUrl: true, major: true } } }, orderBy: { id: 'desc' } }); res.json(items); } catch (err) {} });
-app.post('/api/market', async (req, res) => { try { let { title, reward, category, description, imageUrl, fileUrl, location, authorId } = req.body; title = getCensoredText(title); description = getCensoredText(description); const newItem = await prisma.marketItem.create({ data: { title, reward: parseInt(reward), category, description, imageUrl, fileUrl, location, authorId } }); res.json(newItem); } catch (err) { res.status(500).json({error: "L�i"}); } });
-app.post('/api/market/buy', async (req, res) => { try { const { itemId, buyerId } = req.body; const item = await prisma.marketItem.findUnique({ where: { id: itemId } }); const buyer = await prisma.user.findUnique({ where: { id: buyerId } }); if (!item || !buyer || buyer.id === item.authorId || buyer.coins < item.reward) return res.json({ success: false, message: "L�i giao d�9ch!" }); await prisma.$transaction([ prisma.user.update({ where: { id: buyerId }, data: { coins: buyer.coins - item.reward } }), prisma.user.update({ where: { id: item.authorId }, data: { coins: { increment: item.reward } } }), prisma.marketItem.delete({ where: { id: itemId } }) ]); res.json({ success: true, newCoinBalance: buyer.coins - item.reward }); } catch (err) { res.json({ success: false }); } });
+app.post('/api/market', async (req, res) => { try { let { title, reward, category, description, imageUrl, fileUrl, location, authorId } = req.body; title = getCensoredText(title); description = getCensoredText(description); const newItem = await prisma.marketItem.create({ data: { title, reward: parseInt(reward), category, description, imageUrl, fileUrl, location, authorId } }); res.json(newItem); } catch (err) { res.status(500).json({error: "L i"}); } });
+app.post('/api/market/buy', async (req, res) => {
+  try {
+    const { itemId, buyerId } = req.body;
+    const item = await prisma.marketItem.findUnique({ where: { id: itemId } });
+    const buyer = await prisma.user.findUnique({ where: { id: buyerId } });
+    if (!item || !buyer || buyer.id === item.authorId || buyer.coins < item.reward) return res.json({ success: false, message: "Giao dịch không hợp lệ!" });
+    await prisma.$transaction([
+      prisma.user.update({ where: { id: buyerId }, data: { coins: buyer.coins - item.reward } }),
+      prisma.user.update({ where: { id: item.authorId }, data: { coins: { increment: item.reward } } }),
+      prisma.marketItem.delete({ where: { id: itemId } })
+    ]);
+    await createBlockchainTransaction({
+      senderId: buyerId,
+      receiverId: item.authorId,
+      amount: item.reward,
+      type: "PURCHASE",
+      referenceId: itemId,
+      referenceType: "ITEM",
+      note: `Mua vật phẩm: ${item.title}`
+    });
+    res.json({ success: true, newCoinBalance: buyer.coins - item.reward });
+  } catch (err) { res.json({ success: false }); }
+});
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, password, fullName, major } = req.body;
@@ -1196,6 +1255,85 @@ app.post('/api/auth/google-login', async (req, res) => {
 });
 app.get('/api/notifications/:userId', async (req, res) => { try { const notifs = await prisma.notification.findMany({ where: { userId: parseInt(req.params.userId) }, include: { sourceUser: { select: { fullName: true, username: true, avatarUrl: true } } }, orderBy: { createdAt: 'desc' } }); res.json(notifs); } catch (err) {} });
 
+app.get('/api/transactions/:userId', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.userId);
+    const txs = await prisma.coinTransaction.findMany({
+      where: {
+        OR: [
+          { senderId: userId },
+          { receiverId: userId }
+        ]
+      },
+      include: {
+        sender: { select: { id: true, fullName: true, username: true, avatarUrl: true } },
+        receiver: { select: { id: true, fullName: true, username: true, avatarUrl: true } }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.json({ success: true, transactions: txs });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/transactions/deposit', async (req, res) => {
+  try {
+    const { userId, amount, bankAccount, bankName, cardHolder } = req.body;
+    const uId = parseInt(userId);
+    const amt = parseInt(amount);
+    if (!uId || !amt || amt <= 0) return res.json({ success: false, message: 'Thông tin nạp tiền không hợp lệ!' });
+
+    const user = await prisma.user.findUnique({ where: { id: uId } });
+    if (!user) return res.json({ success: false, message: 'Không tìm thấy tài khoản!' });
+
+    const updatedUser = await prisma.user.update({
+      where: { id: uId },
+      data: { coins: user.coins + amt }
+    });
+
+    const tx = await createBlockchainTransaction({
+      receiverId: uId,
+      amount: amt,
+      type: "TRANSFER",
+      note: `Nạp tiền từ ngân hàng ${bankName} (${bankAccount}) - Chủ thẻ: ${cardHolder}`
+    });
+
+    res.json({ success: true, newBalance: updatedUser.coins, transaction: tx });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+app.post('/api/transactions/withdraw', async (req, res) => {
+  try {
+    const { userId, amount, bankAccount, bankName, cardHolder } = req.body;
+    const uId = parseInt(userId);
+    const amt = parseInt(amount);
+    if (!uId || !amt || amt <= 0) return res.json({ success: false, message: 'Thông tin rút tiền không hợp lệ!' });
+
+    const user = await prisma.user.findUnique({ where: { id: uId } });
+    if (!user) return res.json({ success: false, message: 'Không tìm thấy tài khoản!' });
+    if (user.coins < amt) return res.json({ success: false, message: 'Số dư UC không đủ để thực hiện rút tiền!' });
+
+    const updatedUser = await prisma.user.update({
+      where: { id: uId },
+      data: { coins: user.coins - amt }
+    });
+
+    const tx = await createBlockchainTransaction({
+      senderId: uId,
+      amount: amt,
+      type: "TRANSFER",
+      note: `Rút tiền về ngân hàng ${bankName} (${bankAccount}) - Chủ thẻ: ${cardHolder}`
+    });
+
+    res.json({ success: true, newBalance: updatedUser.coins, transaction: tx });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
 // API Admin
 app.get('/api/admin/users', async (req, res) => { const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } }); res.json(users); });
 app.delete('/api/admin/users/:id', async (req, res) => { const id = parseInt(req.params.id); await prisma.messageReaction.deleteMany({ where: { userId: id } }); await prisma.postReaction.deleteMany({ where: { userId: id } }); await prisma.message.deleteMany({ where: { OR: [{senderId: id}, {receiverId: id}] } }); await prisma.friendship.deleteMany({ where: { OR: [{userId: id}, {friendId: id}] } }); await prisma.commentLike.deleteMany({ where: { userId: id } }); await prisma.comment.deleteMany({ where: { userId: id } }); await prisma.hiddenPost.deleteMany({ where: { userId: id } }); await prisma.task.deleteMany({ where: { userId: id } }); await prisma.marketItem.deleteMany({ where: { authorId: id } }); await prisma.notification.deleteMany({ where: { userId: id } }); await prisma.post.deleteMany({ where: { userId: id } }); await prisma.user.delete({ where: { id } }); res.json({ success: true }); });
@@ -1215,4 +1353,4 @@ app.get(/.*/, (req, res, next) => {
 });
 
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => console.log('Server dang chay: http://localhost:' + PORT));
+server.listen(PORT, () => console.log('Server dang chay: http://localhost:' + PORT)); // restarted again
