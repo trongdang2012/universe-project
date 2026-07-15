@@ -1022,10 +1022,13 @@ function App() {
       setAuthLoading(true);
       setAuthError('');
       try {
-        const userInfoRes = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+        const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
           headers: { Authorization: `Bearer ${tokenResponse.access_token}` }
         });
-        const { sub, email, name, picture } = userInfoRes.data;
+        if (!userInfoRes.ok) throw new Error('Không thể tải thông tin từ Google');
+        const userInfo = await userInfoRes.json();
+        const { sub, email, name, picture } = userInfo;
+        
         const res = await axios.post('/api/auth/google-login', { googleId: sub, email, name, picture });
         if (res.data.success) {
           showAlert('Đăng nhập bằng Google thành công! 🎉', 'success');
@@ -1035,7 +1038,8 @@ function App() {
           setAuthError(res.data.message || 'Đăng nhập Google thất bại');
         }
       } catch (err) {
-        setAuthError('Lỗi khi đăng nhập bằng Google. Vui lòng thử lại.');
+        console.error("Lỗi đăng nhập Google:", err);
+        setAuthError(`Lỗi đăng nhập Google: ${err.message || err}`);
       } finally {
         setAuthLoading(false);
       }
