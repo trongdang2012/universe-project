@@ -1092,10 +1092,37 @@ function App() {
   };
   const handleScanImage = async () => { if (!selectedImage) return showAlert("Chọn ảnh bài giảng!"); setIsOcrLoading(true); setOcrOutput("AI đang quét..."); const formData = new FormData(); formData.append('image', selectedImage); try { const res = await axios.post('/api/ai/ocr', formData, { headers: { 'Content-Type': 'multipart/form-data' } }); setOcrOutput(res.data.output); } catch (error) { setOcrOutput("Lỗi!"); } finally { setIsOcrLoading(false); } };
 
+  const validatePassword = (password) => {
+    if (!password || password.length <= 6) {
+      return { isValid: false, message: 'Mật khẩu phải dài hơn 6 ký tự!' };
+    }
+    if (!/[a-zA-Z]/.test(password)) {
+      return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ cái!' };
+    }
+    if (!/[A-Z]/.test(password)) {
+      return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!' };
+    }
+    if (!/[0-9]/.test(password)) {
+      return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ số!' };
+    }
+    if (!/[^a-zA-Z0-9]/.test(password)) {
+      return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt (ví dụ: @, #, $, ...).' };
+    }
+    return { isValid: true };
+  };
+
   const handleAuthSubmit = async (e) => {
     e.preventDefault();
     setAuthError('');
     setAuthLoading(true);
+    if (authMode === 'register') {
+      const check = validatePassword(authForm.password);
+      if (!check.isValid) {
+        setAuthError(check.message);
+        setAuthLoading(false);
+        return;
+      }
+    }
     try {
       const res = await axios.post(`${authMode === 'login' ? '/api/auth/login' : '/api/auth/register'}`, authForm);
       if (res.data.success) {
@@ -2899,7 +2926,8 @@ function App() {
                     const cf = document.getElementById('pw_confirm').value;
                     if (!cur || !nw) return showAlert('Vui lòng điền đầy đủ mật khẩu!', 'warning');
                     if (nw !== cf) return showAlert('Mật khẩu mới không khớp!', 'error');
-                    if (nw.length < 3) return showAlert('Mật khẩu mới phải có ít nhất 3 ký tự!', 'warning');
+                    const check = validatePassword(nw);
+                    if (!check.isValid) return showAlert(check.message, 'warning');
                     try {
                       const r = await axios.post('/api/auth/change-password', { userId: user.id, currentPassword: cur, newPassword: nw });
                       if (r.data.success) { showAlert('Đổi mật khẩu thành công! 🎉', 'success'); document.getElementById('pw_current').value = ''; document.getElementById('pw_new').value = ''; document.getElementById('pw_confirm').value = ''; }

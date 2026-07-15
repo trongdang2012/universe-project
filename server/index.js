@@ -1410,11 +1410,32 @@ app.post('/api/market/buy', async (req, res) => {
     res.json({ success: true, newCoinBalance: buyer.coins - item.reward });
   } catch (err) { res.json({ success: false }); }
 });
+const validatePassword = (password) => {
+  if (!password || password.length <= 6) {
+    return { isValid: false, message: 'Mật khẩu phải dài hơn 6 ký tự!' };
+  }
+  if (!/[a-zA-Z]/.test(password)) {
+    return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ cái!' };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ cái in hoa!' };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một chữ số!' };
+  }
+  if (!/[^a-zA-Z0-9]/.test(password)) {
+    return { isValid: false, message: 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt (ví dụ: @, #, $, ...).' };
+  }
+  return { isValid: true };
+};
+
 app.post('/api/auth/register', async (req, res) => {
   try {
     const { username, password, fullName, major } = req.body;
     const existing = await prisma.user.findUnique({ where: { username } });
     if (existing) return res.json({ success: false, message: 'Username đã tồn tại!' });
+    const check = validatePassword(password);
+    if (!check.isValid) return res.json({ success: false, message: check.message });
     const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = await prisma.user.create({ data: { username, password: hashedPassword, fullName: fullName || username, major: major || '', coins: 250 } });
     res.json({ success: true, user: newUser });
@@ -1446,7 +1467,8 @@ app.post('/api/auth/change-password', async (req, res) => {
   try {
     const { userId, currentPassword, newPassword } = req.body;
     if (!userId || !currentPassword || !newPassword) return res.json({ success: false, message: 'Vui lòng điền đầy đủ thông tin!' });
-    if (newPassword.length < 3) return res.json({ success: false, message: 'Mật khẩu mới phải có ít nhất 3 ký tự!' });
+    const check = validatePassword(newPassword);
+    if (!check.isValid) return res.json({ success: false, message: check.message });
     const user = await prisma.user.findUnique({ where: { id: parseInt(userId) } });
     if (!user) return res.json({ success: false, message: 'Không tìm thấy người dùng!' });
     const isHashed = user.password.startsWith('$2b') || user.password.startsWith('$2a');
