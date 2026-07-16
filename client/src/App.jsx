@@ -1157,9 +1157,6 @@ function App() {
       if (res.data.success) {
         showAlert(res.data.message, 'success');
         setForgotStep(2);
-        if (res.data.debugOtp) {
-          setForgotForm(prev => ({ ...prev, otp: res.data.debugOtp }));
-        }
       } else {
         setForgotError(res.data.message || 'Gửi OTP thất bại!');
       }
@@ -2946,6 +2943,16 @@ function App() {
                 <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 flex items-center gap-1.5"><input type="checkbox" checked={profileForm.showGender ?? true} onChange={e => setProfileForm({ ...profileForm, showGender: e.target.checked })} className="w-3.5 h-3.5 rounded border-zinc-300" /> Hiện Giới tính</label><select value={profileForm.gender || ''} onChange={e => setProfileForm({ ...profileForm, gender: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`}><option value="">Chọn giới tính</option><option value="Nam">Nam</option><option value="Nữ">Nữ</option><option value="Khác">Khác</option></select></div>
               </div>
               <div className="grid grid-cols-1 gap-3.5">
+                <div>
+                  <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Địa chỉ Gmail (Để khôi phục tài khoản)</label>
+                  <input 
+                    type="email" 
+                    placeholder="VD: sinhvien@gmail.com" 
+                    value={profileForm.email || ''} 
+                    onChange={e => setProfileForm({ ...profileForm, email: e.target.value })} 
+                    className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} 
+                  />
+                </div>
                 <div><label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Tên trường Đại học đang học</label><input type="text" placeholder="VD: Đại học Quy Nhơn" value={profileForm.schoolName || ''} onChange={e => setProfileForm({ ...profileForm, schoolName: e.target.value })} className={`w-full border px-3 py-2 rounded-lg outline-none text-[13px] ${panicMode ? 'bg-zinc-800 border-zinc-750 text-white' : 'bg-white border-zinc-200 focus:border-zinc-400 text-black'}`} /></div>
                 <div>
                   <label className="text-[11px] font-semibold text-zinc-500 mb-1 block">Định vị GPS (Dùng cho Check-in)</label>

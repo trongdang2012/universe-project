@@ -111,19 +111,51 @@ const removeAccents = (str) => { return str ? str.normalize('NFD').replace(/[\u0
 
 // Upload Ảnh API dùng chung
 app.post('/api/upload', upload.single('image'), (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "L�i" });
+  if (!req.file) return res.status(400).json({ error: "L i" });
   res.json({ url: `http://localhost:5000/uploads/${req.file.filename}` });
 });
 
 // User & Friends
 app.get('/api/users/search', async (req, res) => { const { q } = req.query; if (!q) return res.json([]); const users = await prisma.user.findMany({ select: { id: true, username: true, fullName: true, major: true, avatarUrl: true } }); const cleanQ = removeAccents(q); res.json(users.filter(u => removeAccents(u.fullName).includes(cleanQ) || removeAccents(u.username).includes(cleanQ) || removeAccents(u.major).includes(cleanQ))); });
-app.get('/api/users/:id/profile', async (req, res) => { try { const userId = parseInt(req.params.id); const userProfile = await prisma.user.findUnique({ where: { id: userId } }); const userPosts = await prisma.post.findMany({ where: { userId: userId }, include: { user: { select: { fullName: true, username: true, major: true, avatarUrl: true } }, reactions: true, comments: { where: { parentId: null }, include: { user: { select: { id: true, fullName: true, username: true, avatarUrl: true } }, likes: true, replies: { include: { user: { select: { id: true, fullName: true, username: true, avatarUrl: true } }, likes: true } } }, orderBy: { createdAt: 'asc' } } }, orderBy: { createdAt: 'desc' } }); const ratings = await prisma.userRating.findMany({ where: { ratedUserId: userId } }); const avgRating = ratings.length > 0 ? (ratings.reduce((acc, r) => acc + r.score, 0) / ratings.length).toFixed(1) : 5.0; res.json({ profile: { ...userProfile, ratingsCount: ratings.length, avgRating }, posts: userPosts }); } catch (err) { res.status(500).json({ error: "L�i" }); } });
-app.put('/api/users/:id', async (req, res) => { try { const updateData = { ...req.body }; delete updateData.ratingsCount; delete updateData.avgRating; const updatedUser = await prisma.user.update({ where: { id: parseInt(req.params.id) }, data: updateData }); res.json({ success: true, user: updatedUser }); } catch (err) { console.error("Update Profile Error:", err.message); res.status(500).json({ success: false, message: "L�i Server: " + err.message }); } });
+app.get('/api/users/:id/profile', async (req, res) => { try { const userId = parseInt(req.params.id); const userProfile = await prisma.user.findUnique({ where: { id: userId } }); const userPosts = await prisma.post.findMany({ where: { userId: userId }, include: { user: { select: { fullName: true, username: true, major: true, avatarUrl: true } }, reactions: true, comments: { where: { parentId: null }, include: { user: { select: { id: true, fullName: true, username: true, avatarUrl: true } }, likes: true, replies: { include: { user: { select: { id: true, fullName: true, username: true, avatarUrl: true } }, likes: true } } }, orderBy: { createdAt: 'asc' } } }, orderBy: { createdAt: 'desc' } }); const ratings = await prisma.userRating.findMany({ where: { ratedUserId: userId } }); const avgRating = ratings.length > 0 ? (ratings.reduce((acc, r) => acc + r.score, 0) / ratings.length).toFixed(1) : 5.0; res.json({ profile: { ...userProfile, ratingsCount: ratings.length, avgRating }, posts: userPosts }); } catch (err) { res.status(500).json({ error: "L i" }); } });
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const updateData = { ...req.body };
+    delete updateData.ratingsCount;
+    delete updateData.avgRating;
+
+    if (updateData.email) {
+      const emailLower = updateData.email.toLowerCase().trim();
+      const existingEmail = await prisma.user.findFirst({
+        where: {
+          email: emailLower,
+          id: { not: userId }
+        }
+      });
+      if (existingEmail) {
+        return res.json({ success: false, message: 'Gmail này đã được sử dụng bởi tài khoản khác!' });
+      }
+      updateData.email = emailLower;
+    } else if (updateData.email === '') {
+      updateData.email = null;
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: updateData
+    });
+    res.json({ success: true, user: updatedUser });
+  } catch (err) {
+    console.error("Update Profile Error:", err.message);
+    res.status(500).json({ success: false, message: "Lỗi Server khi cập nhật hồ sơ: " + err.message });
+  }
+});
 
 app.post('/api/users/rate', async (req, res) => {
   try {
     const { raterId, ratedUserId, score, comment } = req.body;
-    if (raterId === ratedUserId) return res.status(400).json({ success: false, message: "Không thỒ tự �ánh giá" });
+    if (raterId === ratedUserId) return res.status(400).json({ success: false, message: "Không thỒ tự  ánh giá" });
     const parsedScore = parseInt(score);
     if (!parsedScore || parsedScore < 1 || parsedScore > 5) return res.status(400).json({ success: false, message: "ĐiỒm không hợp l�!" });
     
@@ -1415,10 +1447,12 @@ const nodemailer = require('nodemailer');
 const otpStore = {};
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
-    user: process.env.EMAIL_USER || '',
-    pass: process.env.EMAIL_PASS || ''
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
   }
 });
 
@@ -1516,11 +1550,10 @@ app.post('/api/auth/forgot-password', async (req, res) => {
       await sendOTPEmail(inputEmail, otp);
       res.json({ success: true, message: 'Mã OTP đã được gửi về Gmail của bạn!' });
     } catch (mailErr) {
-      console.warn("Lỗi gửi email SMTP (chưa cấu hình credentials). Trả về OTP mock trên giao diện test.");
+      console.error("Lỗi gửi email SMTP:", mailErr.message);
       res.json({ 
-        success: true, 
-        message: 'Mã OTP đã được tạo (Do máy chủ chưa cấu hình Gmail SMTP nên mã OTP đã được in ra Console của Server hoặc tự điền ở đây để thử nghiệm).',
-        debugOtp: otp 
+        success: false, 
+        message: 'Không thể gửi mã OTP qua Gmail. Vui lòng kiểm tra lại cấu hình SMTP/Gmail trong file .env! Chi tiết lỗi: ' + mailErr.message 
       });
     }
   } catch (err) {
