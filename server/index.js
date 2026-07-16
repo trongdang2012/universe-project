@@ -1410,6 +1410,41 @@ app.post('/api/market/buy', async (req, res) => {
     res.json({ success: true, newCoinBalance: buyer.coins - item.reward });
   } catch (err) { res.json({ success: false }); }
 });
+const nodemailer = require('nodemailer');
+
+const otpStore = {};
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || '',
+    pass: process.env.EMAIL_PASS || ''
+  }
+});
+
+const sendOTPEmail = async (email, otp) => {
+  const mailOptions = {
+    from: `"UniVerse System" <${process.env.EMAIL_USER || 'noreply.universe@gmail.com'}>`,
+    to: email,
+    subject: '[UniVerse] Mã OTP khôi phục mật khẩu tài khoản của bạn',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+        <h2 style="color: #111827; text-align: center; border-bottom: 2px solid #f3f4f6; padding-bottom: 10px;">Đặt Lại Mật Khẩu UniVerse</h2>
+        <p style="color: #374151; font-size: 14px; line-height: 1.5;">Chào bạn,</p>
+        <p style="color: #374151; font-size: 14px; line-height: 1.5;">Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản UniVerse của bạn. Vui lòng sử dụng mã OTP dưới đây để hoàn tất quá trình:</p>
+        <div style="background-color: #f9fafb; border: 1px dashed #d1d5db; padding: 15px; text-align: center; margin: 20px 0;">
+          <span style="font-size: 24px; font-weight: bold; letter-spacing: 4px; color: #111827;">${otp}</span>
+        </div>
+        <p style="color: #6b7280; font-size: 12px;">Mã OTP này có hiệu lực trong vòng 5 phút. Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+        <div style="border-top: 1px solid #f3f4f6; margin-top: 20px; padding-top: 15px; text-align: center; color: #9ca3af; font-size: 11px;">
+          © 2026 UniVerse Social Network. All rights reserved.
+        </div>
+      </div>
+    `
+  };
+  await transporter.sendMail(mailOptions);
+};
+
 const validatePassword = (password) => {
   if (!password || password.length <= 6) {
     return { isValid: false, message: 'Mật khẩu phải dài hơn 6 ký tự!' };
@@ -1431,15 +1466,111 @@ const validatePassword = (password) => {
 
 app.post('/api/auth/register', async (req, res) => {
   try {
-    const { username, password, fullName, major } = req.body;
-    const existing = await prisma.user.findUnique({ where: { username } });
+    const { username, password, email, fullName, major } = req.body;
+    const existing = await prisma.user.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } });
     if (existing) return res.json({ success: false, message: 'Username đã tồn tại!' });
+    if (email) {
+      const existingEmail = await prisma.user.findFirst({ where: { email: email.toLowerCase() } });
+      if (existingEmail) return res.json({ success: false, message: 'Email đã được đăng ký bởi tài khoản khác!' });
+    }
     const check = validatePassword(password);
     if (!check.isValid) return res.json({ success: false, message: check.message });
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await prisma.user.create({ data: { username, password: hashedPassword, fullName: fullName || username, major: major || '', coins: 250 } });
+    const newUser = await prisma.user.create({ data: { username, password: hashedPassword, email: email ? email.toLowerCase() : null, fullName: fullName || username, major: major || '', coins: 250 } });
     res.json({ success: true, user: newUser });
-  } catch (err) { res.json({ success: false }); }
+  } catch (err) { res.json({ success: false, message: 'Đăng ký thất bại!' }); }
+});
+
+app.post('/api/auth/forgot-password', async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    if (!username || !email) return res.json({ success: false, message: 'Vui lòng điền đầy đủ tên đăng nhập và email!' });
+    
+    const user = await prisma.user.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } });
+    if (!user) return res.json({ success: false, message: 'Tên đăng nhập không tồn tại!' });
+
+    const inputEmail = email.toLowerCase().trim();
+
+    if (user.email) {
+      if (user.email.toLowerCase() !== inputEmail) {
+        return res.json({ success: false, message: 'Email không khớp với email đã đăng ký của tài khoản này!' });
+      }
+    } else {
+      // Nếu tài khoản cũ chưa có email, kiểm tra xem email này có bị trùng không
+      const emailUsed = await prisma.user.findFirst({ where: { email: inputEmail } });
+      if (emailUsed) return res.json({ success: false, message: 'Email này đã được sử dụng bởi tài khoản khác!' });
+      // Cập nhật email luôn cho user này
+      await prisma.user.update({ where: { id: user.id }, data: { email: inputEmail } });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    otpStore[username.toLowerCase()] = {
+      otp,
+      email: inputEmail,
+      expiresAt: Date.now() + 5 * 60 * 1000
+    };
+
+    console.log(`[OTP Forgot Password] User: ${username}, OTP: ${otp}`);
+
+    try {
+      await sendOTPEmail(inputEmail, otp);
+      res.json({ success: true, message: 'Mã OTP đã được gửi về Gmail của bạn!' });
+    } catch (mailErr) {
+      console.warn("Lỗi gửi email SMTP (chưa cấu hình credentials). Trả về OTP mock trên giao diện test.");
+      res.json({ 
+        success: true, 
+        message: 'Mã OTP đã được tạo (Do máy chủ chưa cấu hình Gmail SMTP nên mã OTP đã được in ra Console của Server hoặc tự điền ở đây để thử nghiệm).',
+        debugOtp: otp 
+      });
+    }
+  } catch (err) {
+    res.json({ success: false, message: 'Có lỗi xảy ra khi xử lý quên mật khẩu!' });
+  }
+});
+
+app.post('/api/auth/verify-otp', async (req, res) => {
+  try {
+    const { username, otp } = req.body;
+    if (!username || !otp) return res.json({ success: false, message: 'Thiếu thông tin xác thực!' });
+
+    const record = otpStore[username.toLowerCase()];
+    if (!record) return res.json({ success: false, message: 'Không tìm thấy yêu cầu đặt lại mật khẩu!' });
+    if (record.expiresAt < Date.now()) return res.json({ success: false, message: 'Mã OTP đã hết hạn!' });
+    if (record.otp !== otp) return res.json({ success: false, message: 'Mã OTP không chính xác!' });
+
+    res.json({ success: true, message: 'Xác thực OTP thành công!' });
+  } catch (err) {
+    res.json({ success: false, message: 'Lỗi xác thực!' });
+  }
+});
+
+app.post('/api/auth/reset-password', async (req, res) => {
+  try {
+    const { username, otp, newPassword } = req.body;
+    if (!username || !otp || !newPassword) return res.json({ success: false, message: 'Vui lòng điền đầy đủ thông tin!' });
+
+    const record = otpStore[username.toLowerCase()];
+    if (!record) return res.json({ success: false, message: 'Không tìm thấy yêu cầu đặt lại mật khẩu!' });
+    if (record.expiresAt < Date.now()) return res.json({ success: false, message: 'Mã OTP đã hết hạn!' });
+    if (record.otp !== otp) return res.json({ success: false, message: 'Mã OTP không chính xác!' });
+
+    const check = validatePassword(newPassword);
+    if (!check.isValid) return res.json({ success: false, message: check.message });
+
+    const user = await prisma.user.findFirst({ where: { username: { equals: username, mode: 'insensitive' } } });
+    if (!user) return res.json({ success: false, message: 'Người dùng không tồn tại!' });
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { password: hashedPassword }
+    });
+
+    delete otpStore[username.toLowerCase()];
+    res.json({ success: true, message: 'Đặt lại mật khẩu thành công! Hãy đăng nhập lại.' });
+  } catch (err) {
+    res.json({ success: false, message: 'Lỗi đặt lại mật khẩu!' });
+  }
 });
 app.post('/api/auth/login', async (req, res) => {
   try {

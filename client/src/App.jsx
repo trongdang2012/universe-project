@@ -670,10 +670,16 @@ function App() {
   const initNav = getInitialUrlState();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem('universe_user')) || null);
   const [authMode, setAuthMode] = useState('login');
-  const [authForm, setAuthForm] = useState({ username: '', password: '', fullName: '', major: '' });
+  const [authForm, setAuthForm] = useState({ username: '', password: '', email: '', fullName: '', major: '' });
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [showAuthPassword, setShowAuthPassword] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1);
+  const [forgotForm, setForgotForm] = useState({ username: '', email: '', otp: '', newPassword: '', confirmPassword: '' });
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
+  const [showForgotNewPassword, setShowForgotNewPassword] = useState(false);
+  const [showForgotConfirmPassword, setShowForgotConfirmPassword] = useState(false);
   const [showPwCurrent, setShowPwCurrent] = useState(false);
   const [showPwNew, setShowPwNew] = useState(false);
   const [showPwConfirm, setShowPwConfirm] = useState(false);
@@ -1138,6 +1144,65 @@ function App() {
       setAuthLoading(false);
     }
   };
+
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setForgotError('');
+    setForgotLoading(true);
+    try {
+      const res = await axios.post('/api/auth/forgot-password', {
+        username: forgotForm.username,
+        email: forgotForm.email
+      });
+      if (res.data.success) {
+        showAlert(res.data.message, 'success');
+        setForgotStep(2);
+        if (res.data.debugOtp) {
+          setForgotForm(prev => ({ ...prev, otp: res.data.debugOtp }));
+        }
+      } else {
+        setForgotError(res.data.message || 'Gửi OTP thất bại!');
+      }
+    } catch (err) {
+      setForgotError('Không thể kết nối đến máy chủ!');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleResetPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setForgotError('');
+    if (forgotForm.newPassword !== forgotForm.confirmPassword) {
+      setForgotError('Mật khẩu xác nhận không khớp!');
+      return;
+    }
+    const check = validatePassword(forgotForm.newPassword);
+    if (!check.isValid) {
+      setForgotError(check.message);
+      return;
+    }
+    setForgotLoading(true);
+    try {
+      const res = await axios.post('/api/auth/reset-password', {
+        username: forgotForm.username,
+        otp: forgotForm.otp,
+        newPassword: forgotForm.newPassword
+      });
+      if (res.data.success) {
+        showAlert('Đặt lại mật khẩu thành công! 🎉 Vui lòng đăng nhập lại.', 'success');
+        setAuthMode('login');
+        setForgotStep(1);
+        setForgotForm({ username: '', email: '', otp: '', newPassword: '', confirmPassword: '' });
+      } else {
+        setForgotError(res.data.message || 'Đặt lại mật khẩu thất bại!');
+      }
+    } catch (err) {
+      setForgotError('Không thể kết nối đến máy chủ!');
+    } finally {
+      setForgotLoading(false);
+    }
+  };
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setAuthLoading(true);
@@ -1426,36 +1491,94 @@ function App() {
             <h1 className="text-2xl font-semibold tracking-tight text-zinc-900 flex items-center justify-center gap-2">
               UniVerse
             </h1>
-            <p className="text-zinc-400 mt-1 text-[12px]">Hệ sinh thái thông minh cho sinh viên</p>
+            <p className="text-zinc-400 mt-1 text-[12px]">
+              {authMode === 'forgot-password' ? 'Khôi phục mật khẩu tài khoản' : 'Hệ sinh thái thông minh cho sinh viên'}
+            </p>
           </div>
-          <div className="flex bg-zinc-100 p-0.5 rounded-lg mb-6">
-            <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'login' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('login')}>Đăng Nhập</button>
-            <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'register' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('register')}>Đăng Ký</button>
-          </div>
-          <form onSubmit={handleAuthSubmit} className="space-y-3">
-            {authMode === 'register' && (
-              <>
-                <input type="text" placeholder="Họ và Tên" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.fullName} onChange={e => setAuthForm({ ...authForm, fullName: e.target.value })} />
-                <input type="text" placeholder="Lớp / Chuyên ngành" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.major} onChange={e => setAuthForm({ ...authForm, major: e.target.value })} />
-              </>
-            )}
-            <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.username} onChange={e => setAuthForm({ ...authForm, username: e.target.value })} />
-            <div className="relative">
-              <input type={showAuthPassword ? "text" : "password"} placeholder="Mật khẩu" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 pr-10 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
-              <button type="button" onClick={() => setShowAuthPassword(!showAuthPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition">
-                {showAuthPassword ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
-              </button>
+
+          {authMode !== 'forgot-password' ? (
+            <>
+              <div className="flex bg-zinc-100 p-0.5 rounded-lg mb-6">
+                <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'login' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('login')}>Đăng Nhập</button>
+                <button className={`flex-1 py-1.5 font-medium text-[13px] transition rounded-md ${authMode === 'register' ? 'bg-white text-zinc-900 shadow-[0_1px_2px_rgba(0,0,0,0.05)]' : 'text-zinc-500 hover:text-zinc-800'}`} onClick={() => setAuthMode('register')}>Đăng Ký</button>
+              </div>
+              <form onSubmit={handleAuthSubmit} className="space-y-3">
+                {authMode === 'register' && (
+                  <>
+                    <input type="text" placeholder="Họ và Tên" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.fullName} onChange={e => setAuthForm({ ...authForm, fullName: e.target.value })} />
+                    <input type="text" placeholder="Lớp / Chuyên ngành" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.major} onChange={e => setAuthForm({ ...authForm, major: e.target.value })} />
+                    <input type="email" placeholder="Địa chỉ Gmail" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.email} onChange={e => setAuthForm({ ...authForm, email: e.target.value })} />
+                  </>
+                )}
+                <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.username} onChange={e => setAuthForm({ ...authForm, username: e.target.value })} />
+                <div className="relative">
+                  <input type={showAuthPassword ? "text" : "password"} placeholder="Mật khẩu" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 pr-10 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
+                  <button type="button" onClick={() => setShowAuthPassword(!showAuthPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition">
+                    {showAuthPassword ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {authMode === 'login' && (
+                  <div className="flex justify-end">
+                    <button type="button" onClick={() => { setAuthMode('forgot-password'); setForgotStep(1); setForgotError(''); }} className="text-zinc-500 hover:text-zinc-800 text-[11px] font-medium transition-colors">
+                      Quên mật khẩu?
+                    </button>
+                  </div>
+                )}
+                {authError && <p className="text-red-500 text-xs font-medium text-center">{authError}</p>}
+                <button type="submit" disabled={authLoading} className="w-full py-2.5 mt-4 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 text-white rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2">
+                  {authLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                      Đang xử lý...
+                    </>
+                  ) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}
+                </button>
+              </form>
+            </>
+          ) : (
+            <div className="space-y-4">
+              {forgotStep === 1 ? (
+                <form onSubmit={handleForgotPasswordSubmit} className="space-y-3">
+                  <div className="text-xs text-zinc-500 mb-2">Nhập tên đăng nhập và Gmail liên kết để nhận mã OTP.</div>
+                  <input type="text" placeholder="Tên đăng nhập" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={forgotForm.username} onChange={e => setForgotForm({ ...forgotForm, username: e.target.value })} />
+                  <input type="email" placeholder="Gmail đã đăng ký" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={forgotForm.email} onChange={e => setForgotForm({ ...forgotForm, email: e.target.value })} />
+                  {forgotError && <p className="text-red-500 text-xs font-medium text-center">{forgotError}</p>}
+                  <button type="submit" disabled={forgotLoading} className="w-full py-2.5 mt-2 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 text-white rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2">
+                    {forgotLoading ? 'Đang gửi OTP...' : 'Gửi mã OTP'}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleResetPasswordSubmit} className="space-y-3">
+                  <div className="text-xs text-zinc-500 mb-2">Mã OTP đã được gửi. Vui lòng nhập mã OTP và mật khẩu mới.</div>
+                  <input type="text" placeholder="Nhập mã OTP (6 số)" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={forgotForm.otp} onChange={e => setForgotForm({ ...forgotForm, otp: e.target.value })} />
+                  
+                  <div className="relative">
+                    <input type={showForgotNewPassword ? "text" : "password"} placeholder="Mật khẩu mới" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 pr-10 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={forgotForm.newPassword} onChange={e => setForgotForm({ ...forgotForm, newPassword: e.target.value })} />
+                    <button type="button" onClick={() => setShowForgotNewPassword(!showForgotNewPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition">
+                      {showForgotNewPassword ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  <div className="relative">
+                    <input type={showForgotConfirmPassword ? "text" : "password"} placeholder="Xác nhận mật khẩu mới" required className="w-full bg-zinc-50/50 border border-zinc-200 focus:border-zinc-400 focus:ring-1 focus:ring-zinc-200 p-3 pr-10 rounded-lg outline-none text-zinc-800 text-[13px] transition-colors" value={forgotForm.confirmPassword} onChange={e => setForgotForm({ ...forgotForm, confirmPassword: e.target.value })} />
+                    <button type="button" onClick={() => setShowForgotConfirmPassword(!showForgotConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-650 transition">
+                      {showForgotConfirmPassword ? <Icons.EyeOff className="w-4 h-4" /> : <Icons.Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+
+                  {forgotError && <p className="text-red-500 text-xs font-medium text-center">{forgotError}</p>}
+                  <button type="submit" disabled={forgotLoading} className="w-full py-2.5 mt-2 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 text-white rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2">
+                    {forgotLoading ? 'Đang xử lý...' : 'Đặt lại mật khẩu'}
+                  </button>
+                </form>
+              )}
+              <div className="text-center mt-4">
+                <button type="button" onClick={() => setAuthMode('login')} className="text-zinc-500 hover:text-zinc-800 text-[11px] font-medium transition-colors">
+                  ← Quay lại Đăng nhập
+                </button>
+              </div>
             </div>
-            {authError && <p className="text-red-500 text-xs font-medium text-center">{authError}</p>}
-            <button type="submit" disabled={authLoading} className="w-full py-2.5 mt-4 bg-zinc-900 hover:bg-zinc-800 disabled:bg-zinc-300 text-white rounded-lg font-medium text-[13px] transition-colors flex items-center justify-center gap-2">
-              {authLoading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  Đang xử lý...
-                </>
-              ) : (authMode === 'login' ? 'Đăng nhập' : 'Đăng ký')}
-            </button>
-          </form>
+          )}
 
           <div className="relative flex py-4 items-center">
             <div className="flex-grow border-t border-zinc-200"></div>
