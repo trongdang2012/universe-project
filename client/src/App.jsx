@@ -713,6 +713,7 @@ function App() {
 
   // ===== H  THỐNG POPUP TH NG BÁO ĐẸP =====
   const [globalAlert, setGlobalAlert] = useState(null); // { msg, type: 'success'|'error'|'info'|'warning' }
+  const alertTimeoutRef = useRef(null);
   const [globalConfirm, setGlobalConfirm] = useState(null); // { msg, resolve }
   const [globalPrompt, setGlobalPrompt] = useState(null); // { msg, defaultVal, resolve }
   const [promptInputVal, setPromptInputVal] = useState('');
@@ -720,6 +721,13 @@ function App() {
   const showAlert = (msg, type = 'info') => {
     if (typeof msg === 'object') msg = JSON.stringify(msg);
     setGlobalAlert({ msg, type });
+    if (alertTimeoutRef.current) {
+      clearTimeout(alertTimeoutRef.current);
+    }
+    alertTimeoutRef.current = setTimeout(() => {
+      setGlobalAlert(null);
+      alertTimeoutRef.current = null;
+    }, 2000);
   };
   const showConfirm = (msg) => {
     return new Promise((resolve) => {
@@ -3391,19 +3399,45 @@ function App() {
         const iconMap = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
         const t = globalAlert.type || 'info';
         return (
-          <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4" onClick={() => setGlobalAlert(null)} style={{ backdropFilter: 'blur(3px)' }}>
-            <div className={`max-w-sm w-full shadow-lg rounded-xl overflow-hidden border ${panicMode ? 'bg-zinc-900 border-zinc-800 text-white' : 'bg-white border-zinc-200 text-zinc-900'}`} style={{ animation: 'popIn 0.15s ease-out' }} onClick={e => e.stopPropagation()}>
-              <div className={`px-5 py-3.5 flex items-center gap-2.5 border-b ${panicMode ? 'border-zinc-850' : 'border-zinc-100'}`}>
-                <span className="text-[16px]">{iconMap[t]}</span>
-                <span className="font-semibold text-xs flex-1">Thông báo</span>
-                <button onClick={() => setGlobalAlert(null)} className={`w-6 h-6 rounded-md flex items-center justify-center border transition-colors text-xs font-semibold ${panicMode ? 'bg-zinc-800 border-zinc-700 text-zinc-350 hover:bg-zinc-750' : 'bg-zinc-50 border-zinc-200 text-zinc-500 hover:bg-zinc-100'}`}>✕</button>
+          <>
+            <style>{`
+              @keyframes slideInRightAlert {
+                from { transform: translateX(120%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+              }
+            `}</style>
+            <div 
+              className="fixed top-4 right-4 z-[99999] max-w-sm w-full p-4 rounded-xl shadow-xl border flex items-start gap-3 transition-all duration-300"
+              style={{ 
+                animation: 'slideInRightAlert 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                background: panicMode ? '#1c1c1e' : '#ffffff',
+                borderColor: panicMode ? '#2c2c2e' : '#e5e7eb',
+                color: panicMode ? '#f2f2f7' : '#1c1c1e'
+              }}
+            >
+              <span className="text-[16px] mt-0.5">{iconMap[t]}</span>
+              <div className="flex-1 pr-2">
+                <p className="text-[12.5px] font-semibold mb-0.5">Thông báo</p>
+                <p className={`text-[12px] leading-relaxed whitespace-pre-line ${panicMode ? 'text-zinc-400' : 'text-zinc-500'}`}>{globalAlert.msg}</p>
               </div>
-              <div className="p-5">
-                <p className={`text-[12.5px] leading-relaxed mb-4 whitespace-pre-line ${panicMode ? 'text-zinc-300' : 'text-zinc-700'}`}>{globalAlert.msg}</p>
-                <button onClick={() => setGlobalAlert(null)} className="w-full py-2 bg-zinc-900 hover:bg-zinc-800 text-white rounded-lg font-medium text-xs transition-colors">Đã hiểu</button>
-              </div>
+              <button 
+                onClick={() => {
+                  setGlobalAlert(null);
+                  if (alertTimeoutRef.current) {
+                    clearTimeout(alertTimeoutRef.current);
+                    alertTimeoutRef.current = null;
+                  }
+                }} 
+                className={`w-5 h-5 rounded-md flex items-center justify-center border text-[10px] font-semibold transition-colors ${
+                  panicMode 
+                    ? 'bg-zinc-800 border-zinc-700 text-zinc-300 hover:bg-zinc-700' 
+                    : 'bg-zinc-50 border-zinc-200 text-zinc-500 hover:bg-zinc-100'
+                }`}
+              >
+                ✕
+              </button>
             </div>
-          </div>
+          </>
         );
       })()}
 
